@@ -6,6 +6,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * description ： retrofit客户端
+ * TODO：提供统一的网络层入口
+ * email : 3014386984@qq.com
+ * date : 2026/7/14 17:57
+ */
 object RetrofitClient {
     private const val BASE_URL = "http://baobab.kaiyanapp.com/api/"
 
