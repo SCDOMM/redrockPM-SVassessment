@@ -1,5 +1,8 @@
 package com.example.ept.home.fragment
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+
 /**   
  * 包名称： com.example.ept.home.fragment
  * 类名称：HomeViewModel
@@ -8,5 +11,9 @@ package com.example.ept.home.fragment
  * 创建时间：2026-07-14 16:44
  *
  */
-class HomeViewModel {
+class HomeViewModel (application: Application) : AndroidViewModel(application) {
+
+
+
+
 }
