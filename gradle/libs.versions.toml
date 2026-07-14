@@ -10,8 +10,15 @@ kotlin = "2.2.10"
 composeBom = "2026.02.01"
 appcompat = "1.7.1"
 material = "1.14.0"
+<<<<<<< Updated upstream
 
 [libraries]
+=======
+gsy-video = "13.1.0"
+
+[libraries]
+gsy-video-player = { group = "io.github.carguo", name = "gsyvideoplayer", version.ref = "gsy-video" }
+>>>>>>> Stashed changes
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
