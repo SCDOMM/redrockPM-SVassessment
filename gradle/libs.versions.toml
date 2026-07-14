@@ -14,7 +14,10 @@ gsy-video = "8.5.0"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 gson = "2.11.0"
+
 [libraries]
+
+gsy-video-player = { group = "com.shuyu", name = "GSYVideoPlayer", version.ref = "gsy-video" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ept.home"
+    namespace = "com.example.core.media"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -19,9 +19,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildFeatures {
-        viewBinding = true
-    }
 
 }
 
@@ -32,4 +29,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    implementation(libs.gsy.video.player)
 }

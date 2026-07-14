@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/core_common" />
+            <option value="$PROJECT_DIR$/core/core_media" />
             <option value="$PROJECT_DIR$/core/core_model" />
             <option value="$PROJECT_DIR$/core/core_network" />
             <option value="$PROJECT_DIR$/ept_daily" />
