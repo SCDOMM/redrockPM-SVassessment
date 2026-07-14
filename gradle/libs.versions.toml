@@ -10,8 +10,11 @@ kotlin = "2.2.10"
 composeBom = "2026.02.01"
 appcompat = "1.7.1"
 material = "1.14.0"
+gsy-video = "8.5.0"
 
 [libraries]
+
+gsy-video-player = { group = "com.shuyu", name = "GSYVideoPlayer", version.ref = "gsy-video" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
