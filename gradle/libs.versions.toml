@@ -10,7 +10,11 @@ kotlin = "2.2.10"
 composeBom = "2026.02.01"
 appcompat = "1.7.1"
 material = "1.14.0"
+retrofit = "2.11.0"
+okhttp = "4.12.0"
+gson = "2.11.0"
 gsy-video = "13.1.0"
+
 
 [libraries]
 gsy-video-player = { group = "io.github.carguo", name = "gsyvideoplayer", version.ref = "gsy-video" }
@@ -19,6 +23,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version = "1.8.5" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
