@@ -24,3 +24,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "Eyepetater"
 include(":app")
+include(":ept_home")
+include(":ept_daily")
+include(":ept_dicover")
+include(":ept_person")
+include(":core")
+include(":core:core_model")
+include(":core:core_network")
+include(":core:core_common")

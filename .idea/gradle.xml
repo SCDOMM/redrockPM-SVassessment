@@ -10,6 +10,14 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/core_common" />
+            <option value="$PROJECT_DIR$/core/core_model" />
+            <option value="$PROJECT_DIR$/core/core_network" />
+            <option value="$PROJECT_DIR$/ept_daily" />
+            <option value="$PROJECT_DIR$/ept_dicover" />
+            <option value="$PROJECT_DIR$/ept_home" />
+            <option value="$PROJECT_DIR$/ept_person" />
           </set>
         </option>
       </GradleProjectSettings>
