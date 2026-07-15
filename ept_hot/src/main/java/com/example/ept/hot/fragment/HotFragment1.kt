@@ -1,22 +1,26 @@
 package com.example.ept.hot.fragment
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.ept.hot.databinding.FragmentHotBinding
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.ept.hot.R
+import com.example.ept.hot.adapter.HotVideoAdapter
 import kotlinx.coroutines.launch
 
 class HotFragment1 : Fragment() {
 
-    private var _binding: FragmentHotBinding? = null
-    private val binding get() = _binding!!
     private val viewModel: HotViewModel by viewModels()
+    private lateinit var adapter: HotVideoAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private var apiUrl: String = ""
 
@@ -31,43 +35,59 @@ class HotFragment1 : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentHotBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        return inflater.inflate(R.layout.fragment_hot, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.mRecyclerView)
+        swipeRefreshLayout = view.findViewById(R.id.mSwipeRefreshLayout)
         setupRecyclerView()
+        setupSwipeRefresh()
         observeData()
         loadVideos()
     }
 
     private fun setupRecyclerView() {
-        binding.mRecyclerView.apply {
+        adapter = HotVideoAdapter { videoItem ->
+            Toast.makeText(requireContext(), videoItem.title, Toast.LENGTH_SHORT).show()
+        }
+        recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@HotFragment1.adapter
+        }
+    }
+
+    private fun setupSwipeRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light
+        )
+        swipeRefreshLayout.setOnRefreshListener {
+            loadVideos()
         }
     }
 
     private fun loadVideos() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.loadHotVideosByUrl(apiUrl)
-        }
+        viewModel.loadHotVideosByUrl(apiUrl)
     }
 
     private fun observeData() {
         viewModel.hotList.observe(viewLifecycleOwner) { list ->
-            // TODO: 设置适配器数据
+            adapter.submitList(adapter.parseItems(list))
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.mSwipeRefreshLayout.isRefreshing = isLoading
+            swipeRefreshLayout.isRefreshing = isLoading
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     companion object {

@@ -26,8 +26,7 @@ class HotViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // 使用动态 URL 请求
-                val response = api.getRankList("weekly")
+                val response = api.getRankListByUrl(apiUrl)
                 _hotList.value = response.itemList
                 _error.value = null
             } catch (e: Exception) {
