@@ -2,6 +2,7 @@ package com.example.core.media
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager.backFromWindowFull
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +50,7 @@ class VideoPlayerFragment : Fragment() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
     private lateinit var relatedAdapter: RelatedVideoAdapter
+    private var isPlay: Boolean = false
 
     private var videoId: Long = 0
     private var videoUrl: String = ""
@@ -121,36 +124,50 @@ class VideoPlayerFragment : Fragment() {
             .setNeedLockFull(false)
             .setCacheWithPlay(false)
             .setStartAfterPrepared(true)
+            .setNeedOrientationUtils(false)
+            .setVideoAllCallBack(object : GSYSampleCallBack() {
+
+
+                override fun onPrepared(url: String, vararg objects: Any) {
+                    super.onPrepared(url, *objects)
+                    // 开始播放了才能旋转和全屏
+                    orientationUtils?.setEnable(true)
+                    isPlay = true
+                }
+
+                override fun onQuitFullscreen(url: String, vararg objects: Any) {
+                    super.onQuitFullscreen(url, *objects)
+                    Log.e("VideoFragment",
+                        "***** onQuitFullscreen **** ${objects[0]}") // title
+                    Log.e(
+                        "VideoFragment",
+                        "***** onQuitFullscreen **** ${objects[1]}"
+                    ) // 当前非全屏player
+                    orientationUtils?.backToProtVideo()
+                }
+            })
+            .setLockClickListener { view, lock ->
+                // 配合下方的 onConfigurationChanged
+                orientationUtils?.setEnable(!lock)
+            }
             .build(videoPlayer)
 
         videoPlayer.setBackFromFullScreenListener {
 
-            backFromWindowFull(context)
+            backFromWindowFull(requireActivity())
         }
 
 
         orientationUtils = OrientationUtils(requireActivity(), videoPlayer)
         videoPlayer.fullscreenButton.setOnClickListener {
-            val isCurrentlyLand = orientationUtils?.isLand == 1
 
-            if (!isCurrentlyLand) {
-                Toast.makeText(context, "不是横屏", Toast.LENGTH_SHORT).show()
-                videoPlayer.startWindowFullscreen(requireActivity(), true, true)
-            } else {
-
-            }
-
-            // 触发旋转和播放器尺寸变更
             orientationUtils?.resolveByClick()
+            videoPlayer.startWindowFullscreen(requireActivity(), true, true)
+
         }
 
-        //设置返回按键功能
-        videoPlayer.backButton.setOnClickListener {
-            val isCurrentlyLand = orientationUtils?.isLand == 1
-        }
 
     }
-
 
 
     //初始化相关推荐列表及点击跳转逻辑
@@ -186,7 +203,7 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
-    /** 绑定视频标题、作者、分类、描述到 UI */
+    //绑定视频标题、作者、分类、描述到 UI
     private fun bindData() {
         tvTitle.text = videoTitle
         tvAuthorName.text = authorName
@@ -220,6 +237,7 @@ class VideoPlayerFragment : Fragment() {
     }
 
 
+
     companion object {
         private const val ARG_VIDEO_ID = "video_id"
         private const val ARG_VIDEO_URL = "video_url"
@@ -230,7 +248,7 @@ class VideoPlayerFragment : Fragment() {
         private const val ARG_CATEGORY = "category"
         private const val ARG_DESCRIPTION = "description"
 
-        /** 创建 Fragment 实例并传入视频参数 */
+        //创建 Fragment 实例并传入视频参数
         @JvmStatic
         fun newInstance(
             videoId: Long,
