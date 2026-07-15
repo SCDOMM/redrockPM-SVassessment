@@ -16,6 +16,11 @@ import com.example.core.model.videoEntity.VideoSmallCardData
 import com.example.ept.hot.R
 import com.google.gson.Gson
 
+/**
+ * description ： 视频列表项数据模型
+ * email : 3014386984@qq.com
+ * date : 2026/7/15 15:23
+ */
 data class VideoItem(
     val id: Long,
     val title: String,
@@ -28,6 +33,11 @@ data class VideoItem(
     val description: String = ""
 )
 
+/**
+ * description ： 热门视频列表适配器，负责视频卡片展示和点击事件
+ * email : 3014386984@qq.com
+ * date : 2026/7/15 15:23
+ */
 class HotVideoAdapter(
     private val onItemClick: (VideoItem) -> Unit = {}
 ) : RecyclerView.Adapter<HotVideoAdapter.VideoViewHolder>() {
@@ -35,6 +45,7 @@ class HotVideoAdapter(
     private var items: List<VideoItem> = emptyList()
     private val gson = Gson()
 
+    // 提交数据列表并刷新
     fun submitList(newItems: List<VideoItem>) {
         items = newItems
         notifyDataSetChanged()
@@ -51,12 +62,14 @@ class HotVideoAdapter(
 
     override fun getItemCount(): Int = items.size
 
+    //将Item列表解析为VideoItem
     fun parseItems(rawItems: List<Item>): List<VideoItem> {
         return rawItems.mapNotNull { item ->
             parseVideoItem(item)
         }
     }
 
+    //根据item.type解析Video或videoSmallCard类型数据
     private fun parseVideoItem(item: Item): VideoItem? {
         return try {
             when (item.type) {
@@ -104,6 +117,7 @@ class HotVideoAdapter(
         private val tvTitle: TextView = itemView.findViewById(R.id.actv_hot_description)
         private val tvAuthor: TextView = itemView.findViewById(R.id.actv_hot_author)
 
+        //绑定封面图、时长、作者、标题到ItemView
         fun bind(item: VideoItem) {
             Glide.with(itemView.context)
                 .load(item.coverUrl)
@@ -136,6 +150,7 @@ class HotVideoAdapter(
             }
         }
 
+        //将秒数格式化为 mm:ss
         private fun formatDuration(seconds: Long): String {
             val mins = seconds / 60
             val secs = seconds % 60

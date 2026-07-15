@@ -16,6 +16,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 
+/**
+ * description ： 热门排行榜 Tab 容器 Fragment，加载排行 Tab 并管理 ViewPager2
+ * email : 3014386984@qq.com
+ * date : 2026/7/15 15:28
+ */
 class HotFragment : Fragment() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
@@ -40,6 +45,7 @@ class HotFragment : Fragment() {
         loadTabs()
     }
 
+    //加载排行Tab
     private fun loadTabs() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
@@ -68,6 +74,7 @@ class HotFragment : Fragment() {
         }
     }
 
+    //将英文转换为中文
     private fun mapTabName(apiName: String): String {
         return when (apiName.lowercase()) {
             "monthly" -> "月排行"
@@ -77,6 +84,7 @@ class HotFragment : Fragment() {
         }
     }
 
+    //VP2和TabLayout联动
     private fun setupViewPager() {
         val adapter = HotPagerAdapter(this, tabApiUrls)
         viewPager.adapter = adapter
