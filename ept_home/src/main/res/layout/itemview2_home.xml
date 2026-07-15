@@ -11,8 +11,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="W,9:16"
         >
-        <com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
-            android:id="@+id/gsyv_home_item2"
+        <ImageView
+            android:id="@+id/iv_home_cover_item2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"

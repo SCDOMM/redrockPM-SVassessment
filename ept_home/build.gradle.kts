@@ -27,6 +27,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.gsy.video.player)
     implementation(project(":core:core_model"))
     implementation(libs.androidx.core.ktx)
