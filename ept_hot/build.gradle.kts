@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.gsy.video.player)
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
+    implementation(project(":core:core_media"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

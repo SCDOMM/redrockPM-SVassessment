@@ -5,6 +5,5 @@
         <domain includeSubdomains="true">img.kaiyanapp.com</domain>
         <domain includeSubdomains="true">ali-img.kaiyanapp.com</domain>
         <domain includeSubdomains="true">cdn.kaiyanapp.com</domain>
-        <domain includeSubdomains="true">baobab.kaiyanapp.com</domain>
     </domain-config>
 </network-security-config>
