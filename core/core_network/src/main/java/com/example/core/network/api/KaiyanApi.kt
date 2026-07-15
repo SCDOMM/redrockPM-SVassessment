@@ -6,7 +6,11 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
-
+/**
+ * description ： api接口
+ * email : 3014386984@qq.com
+ * date : 2026/7/14 19:57
+ */
 interface KaiyanApi {
     // ========== 首页相关 ==========
 

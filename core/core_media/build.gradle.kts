@@ -23,9 +23,13 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:core_model"))
+    implementation(project(":core:core_network"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
+    implementation(libs.glide)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
