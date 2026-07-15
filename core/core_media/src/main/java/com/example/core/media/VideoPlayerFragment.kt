@@ -138,7 +138,7 @@ class VideoPlayerFragment : Fragment() {
                 override fun onQuitFullscreen(url: String, vararg objects: Any) {
                     super.onQuitFullscreen(url, *objects)
                     Log.e("VideoFragment",
-                        "***** onQuitFullscreen **** ${objects[0]}") // title
+                          "***** onQuitFullscreen **** ${objects[0]}") // title
                     Log.e(
                         "VideoFragment",
                         "***** onQuitFullscreen **** ${objects[1]}"
@@ -147,15 +147,15 @@ class VideoPlayerFragment : Fragment() {
                 }
             })
             .setLockClickListener { view, lock ->
-                // 配合下方的 onConfigurationChanged
                 orientationUtils?.setEnable(!lock)
             }
             .build(videoPlayer)
-
+        //全屏时返回键
         videoPlayer.setBackFromFullScreenListener {
 
             backFromWindowFull(requireActivity())
         }
+
 
 
         orientationUtils = OrientationUtils(requireActivity(), videoPlayer)
@@ -164,6 +164,12 @@ class VideoPlayerFragment : Fragment() {
             orientationUtils?.resolveByClick()
             videoPlayer.startWindowFullscreen(requireActivity(), true, true)
 
+        }
+        //非全屏返回键
+        videoPlayer.backButton.setOnClickListener {
+            if(!videoPlayer.isIfCurrentIsFullscreen() ){
+                requireActivity().finish()
+            }
         }
 
 
