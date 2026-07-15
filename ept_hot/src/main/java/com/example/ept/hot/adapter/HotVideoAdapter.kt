@@ -23,7 +23,9 @@ data class VideoItem(
     val duration: Long,
     val authorName: String,
     val authorIcon: String,
-    val category: String = ""
+    val category: String = "",
+    val playUrl: String = "",
+    val description: String = ""
 )
 
 class HotVideoAdapter(
@@ -68,7 +70,9 @@ class HotVideoAdapter(
                         duration = video.duration,
                         authorName = video.author?.name ?: "",
                         authorIcon = video.author?.icon ?: "",
-                        category = video.category
+                        category = video.category,
+                        playUrl = video.playUrl,
+                        description = video.description
                     )
                 }
                 "videoSmallCard" -> {
@@ -81,7 +85,9 @@ class HotVideoAdapter(
                         duration = card.duration,
                         authorName = card.author?.name ?: "",
                         authorIcon = card.author?.icon ?: "",
-                        category = ""
+                        category = card.category ?: "",
+                        playUrl = card.playUrl ?: "",
+                        description = card.description ?: ""
                     )
                 }
                 else -> null
