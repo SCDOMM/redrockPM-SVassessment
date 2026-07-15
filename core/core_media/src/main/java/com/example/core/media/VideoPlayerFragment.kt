@@ -2,23 +2,29 @@ package com.example.core.media
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.activity.OnBackPressedCallback;
+import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.example.core.media.R
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.shuyu.gsyvideoplayer.GSYVideoManager
+import com.shuyu.gsyvideoplayer.GSYVideoManager.backFromWindowFull
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
+import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,12 +37,14 @@ import kotlinx.coroutines.withContext
 class VideoPlayerFragment : Fragment() {
 
     private lateinit var videoPlayer: StandardGSYVideoPlayer
+    private lateinit var scrollView: NestedScrollView
     private lateinit var tvTitle: TextView
     private lateinit var ivAuthor: ImageView
     private lateinit var tvAuthorName: TextView
     private lateinit var tvCategory: TextView
     private lateinit var tvDescription: TextView
     private lateinit var rvRelated: RecyclerView
+    private var orientationUtils: OrientationUtils? = null
 
     private val api = RetrofitClient.create<KaiyanApi>()
     private lateinit var relatedAdapter: RelatedVideoAdapter
@@ -81,6 +89,7 @@ class VideoPlayerFragment : Fragment() {
         tvCategory = view.findViewById(R.id.tv_category)
         tvDescription = view.findViewById(R.id.tv_description)
         rvRelated = view.findViewById(R.id.rv_related)
+        scrollView = view.findViewById(R.id.nsv_media_detail)
 
         bindData()
         initRelatedVideos()
@@ -100,9 +109,6 @@ class VideoPlayerFragment : Fragment() {
 
     //配置 GSYVideoPlayer 参数并开始播放
     private fun initVideoPlayer(realUrl: String) {
-        videoPlayer.backButton.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
 
         GSYVideoOptionBuilder()
             .setUrl(realUrl)
@@ -114,8 +120,38 @@ class VideoPlayerFragment : Fragment() {
             .setShowFullAnimation(false)
             .setNeedLockFull(false)
             .setCacheWithPlay(false)
+            .setStartAfterPrepared(true)
             .build(videoPlayer)
+
+        videoPlayer.setBackFromFullScreenListener {
+
+            backFromWindowFull(context)
+        }
+
+
+        orientationUtils = OrientationUtils(requireActivity(), videoPlayer)
+        videoPlayer.fullscreenButton.setOnClickListener {
+            val isCurrentlyLand = orientationUtils?.isLand == 1
+
+            if (!isCurrentlyLand) {
+                Toast.makeText(context, "不是横屏", Toast.LENGTH_SHORT).show()
+                videoPlayer.startWindowFullscreen(requireActivity(), true, true)
+            } else {
+
+            }
+
+            // 触发旋转和播放器尺寸变更
+            orientationUtils?.resolveByClick()
+        }
+
+        //设置返回按键功能
+        videoPlayer.backButton.setOnClickListener {
+            val isCurrentlyLand = orientationUtils?.isLand == 1
+        }
+
     }
+
+
 
     //初始化相关推荐列表及点击跳转逻辑
     private fun initRelatedVideos() {
@@ -165,6 +201,7 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
+
     override fun onPause() {
         videoPlayer.currentPlayer.onVideoPause()
         super.onPause()
@@ -176,9 +213,12 @@ class VideoPlayerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        orientationUtils?.releaseListener()
+        orientationUtils = null
         GSYVideoManager.releaseAllVideos()
         super.onDestroyView()
     }
+
 
     companion object {
         private const val ARG_VIDEO_ID = "video_id"

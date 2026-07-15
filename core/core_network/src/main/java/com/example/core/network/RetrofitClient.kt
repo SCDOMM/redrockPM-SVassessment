@@ -38,8 +38,12 @@ object RetrofitClient {
      */
     suspend fun resolvePlayUrl(redirectUrl: String): String {
         return try {
+            val client = okHttpClient.newBuilder()
+                .followRedirects(true)
+                .followSslRedirects(true)
+                .build()
             val request = okhttp3.Request.Builder().url(redirectUrl).build()
-            val response = okHttpClient.newCall(request).execute()
+            val response = client.newCall(request).execute()
             response.request.url.toString()
         } catch (e: Exception) {
             redirectUrl
