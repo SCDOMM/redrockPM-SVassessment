@@ -8,5 +8,5 @@ package com.example.ept.home.adapter
  * 创建时间：2026-07-15 17:06
  *
  */
-class InfoAdapter {
+class InfoAdapter:ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCallback) {
 }
