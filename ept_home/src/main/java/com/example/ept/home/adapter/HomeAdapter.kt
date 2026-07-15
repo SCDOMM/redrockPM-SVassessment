@@ -36,12 +36,24 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         parent: ViewGroup,
         viewType: Int
     ): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.itemview1_home, parent, false)
         return when (viewType) {
-            VIEW_TYPE_HEADER -> HeaderViewHolder(view)
-            VIEW_TYPE_SELECTED -> SelectedViewHolder(view)
-            else -> NormalViewHolder(view)
+            VIEW_TYPE_HEADER -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.itemview1_home, parent, false)
+                HeaderViewHolder(view)
+            }
+
+            VIEW_TYPE_SELECTED -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.itemview2_home, parent, false)
+                SelectedViewHolder(view)
+            }
+
+            else -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.itemview3_home, parent, false)
+                NormalViewHolder(view)
+            }
         }
     }
 
