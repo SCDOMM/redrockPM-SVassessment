@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DiscoveryViewModel : ViewModel() {
 
@@ -26,10 +28,14 @@ class DiscoveryViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val response = api.getTabList()
-                val list = response.tabInfo.tabList
-                    .filter { it.id > 0 }
-                    .map { CategoryItem(it.name, it.apiUrl, CategoryAdapter.getIconForCategory(it.name)) }
+                val response = withContext(Dispatchers.IO) {
+                    api.getTabList().execute()
+                }
+                val body = response.body()
+                val list = body?.tabInfo?.tabList
+                    ?.filter { it.id > 0 }
+                    ?.map { CategoryItem(it.name, it.apiUrl, CategoryAdapter.getIconForCategory(it.name)) }
+                    ?: emptyList()
                 Log.d("DiscoveryViewModel", "Loaded ${list.size} categories")
                 _categories.value = list
                 _error.value = null

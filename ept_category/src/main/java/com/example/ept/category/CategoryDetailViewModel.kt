@@ -9,7 +9,9 @@ import com.example.core.model.card.FollowCardData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CategoryDetailViewModel : ViewModel() {
 
@@ -35,10 +37,13 @@ class CategoryDetailViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val response = api.getRankListByUrl(apiUrl)
+                val response = withContext(Dispatchers.IO) {
+                    api.getRankListByUrl(apiUrl).execute()
+                }
+                val body = response.body()
                 allItems.clear()
-                allItems.addAll(parseItems(response.itemList))
-                nextPageUrl = response.nextPageUrl
+                allItems.addAll(parseItems(body?.itemList ?: emptyList()))
+                nextPageUrl = body?.nextPageUrl
                 hasNextPage = nextPageUrl != null
                 _items.value = allItems.toList()
                 _error.value = null
@@ -59,10 +64,13 @@ class CategoryDetailViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val response = api.getRankListByUrl(url)
-                val newItems = parseItems(response.itemList)
+                val response = withContext(Dispatchers.IO) {
+                    api.getRankListByUrl(url).execute()
+                }
+                val body = response.body()
+                val newItems = parseItems(body?.itemList ?: emptyList())
                 allItems.addAll(newItems)
-                nextPageUrl = response.nextPageUrl
+                nextPageUrl = body?.nextPageUrl
                 hasNextPage = nextPageUrl != null
                 _items.value = allItems.toList()
                 _error.value = null
@@ -86,7 +94,7 @@ class CategoryDetailViewModel : ViewModel() {
                 }
                 "followCard" -> {
                     val followCard = gson.fromJson(gson.toJson(item.data), FollowCardData::class.java)
-                    val video = followCard.content?.data ?: return@mapNotNull null
+                    val video = followCard.content ?: return@mapNotNull null
 
                     CategoryItem.Video(
                         videoId = video.id,

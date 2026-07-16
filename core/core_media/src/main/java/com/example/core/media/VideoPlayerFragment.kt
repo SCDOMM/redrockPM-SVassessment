@@ -201,8 +201,8 @@ class VideoPlayerFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val response = api.getVideoRelated(videoId)
-                relatedAdapter.submitList(relatedAdapter.parseItems(response.itemList))
+                val response = api.getVideoRelated(videoId).execute()
+                relatedAdapter.submitList(relatedAdapter.parseItems(response.body()?.itemList ?: emptyList()))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
