@@ -2,6 +2,7 @@ package com.example.core.network.api
 
 import com.example.core.model.EyepetizerResponse
 import com.example.core.model.RankListResponse
+import com.example.core.model.TabListResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -15,7 +16,7 @@ interface KaiyanApi {
     // ========== 首页相关 ==========
 
     @GET("v5/index/tab/list")
-    suspend fun getTabList(): EyepetizerResponse
+    suspend fun getTabList(): TabListResponse
 
     @GET("v5/index/tab/{tabId}")
     suspend fun getTabDetail(
