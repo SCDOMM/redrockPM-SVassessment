@@ -1,0 +1,44 @@
+package com.example.ept.dicover
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.core.network.RetrofitClient
+import com.example.core.network.api.KaiyanApi
+import kotlinx.coroutines.launch
+
+class DiscoveryViewModel : ViewModel() {
+
+    private val api = RetrofitClient.create<KaiyanApi>()
+
+    private val _categories = MutableLiveData<List<CategoryItem>>()
+    val categories: LiveData<List<CategoryItem>> = _categories
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
+
+    fun loadCategories() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val response = api.getTabList()
+                val list = response.tabInfo.tabList
+                    .filter { it.id > 0 }
+                    .map { CategoryItem(it.name, it.apiUrl, CategoryAdapter.getIconForCategory(it.name)) }
+                Log.d("DiscoveryViewModel", "Loaded ${list.size} categories")
+                _categories.value = list
+                _error.value = null
+            } catch (e: Exception) {
+                Log.e("DiscoveryViewModel", "loadCategories failed", e)
+                _error.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+}
