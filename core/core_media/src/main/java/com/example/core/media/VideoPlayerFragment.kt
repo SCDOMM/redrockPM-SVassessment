@@ -100,7 +100,9 @@ class VideoPlayerFragment : Fragment() {
         resolveAndPlay()
     }
 
-    //异步解析重定向 URL 后初始化播放器
+    /**
+     * 异步解析 playUrl 302 重定向后初始化播放器
+     */
     private fun resolveAndPlay() {
         viewLifecycleOwner.lifecycleScope.launch {
             val realUrl = withContext(Dispatchers.IO) {
@@ -110,7 +112,9 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
-    //配置 GSYVideoPlayer 参数并开始播放
+    /**
+     * 配置 GSYVideoPlayer 参数并开始播放
+     */
     private fun initVideoPlayer(realUrl: String) {
 
         GSYVideoOptionBuilder()
@@ -176,7 +180,9 @@ class VideoPlayerFragment : Fragment() {
     }
 
 
-    //初始化相关推荐列表及点击跳转逻辑
+    /**
+     * 初始化相关推荐列表及点击跳转逻辑
+     */
     private fun initRelatedVideos() {
         relatedAdapter = RelatedVideoAdapter { item ->
             val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
@@ -195,21 +201,29 @@ class VideoPlayerFragment : Fragment() {
         rvRelated.adapter = relatedAdapter
     }
 
-    //加载相关推荐视频数据
+    /**
+     * 加载相关推荐视频数据
+     */
     private fun loadRelatedVideos() {
         if (videoId == 0L) return
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val response = api.getVideoRelated(videoId)
-                relatedAdapter.submitList(relatedAdapter.parseItems(response.itemList))
+                val response = withContext(Dispatchers.IO) {
+                    api.getVideoRelated(videoId).execute()
+                }
+                if (response.isSuccessful) {
+                    relatedAdapter.submitList(relatedAdapter.parseItems(response.body()?.itemList ?: emptyList()))
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    //绑定视频标题、作者、分类、描述到 UI
+    /**
+     * 绑定视频标题、作者、分类、描述到 UI
+     */
     private fun bindData() {
         tvTitle.text = videoTitle
         tvAuthorName.text = authorName
@@ -245,16 +259,26 @@ class VideoPlayerFragment : Fragment() {
 
 
     companion object {
+        /** 视频 ID 参数键名 */
         private const val ARG_VIDEO_ID = "video_id"
+        /** 视频播放地址参数键名 */
         private const val ARG_VIDEO_URL = "video_url"
+        /** 视频标题参数键名 */
         private const val ARG_VIDEO_TITLE = "video_title"
+        /** 视频封面图参数键名 */
         private const val ARG_VIDEO_COVER = "video_cover"
+        /** 作者名称参数键名 */
         private const val ARG_AUTHOR_NAME = "author_name"
+        /** 作者头像参数键名 */
         private const val ARG_AUTHOR_ICON = "author_icon"
+        /** 视频分类参数键名 */
         private const val ARG_CATEGORY = "category"
+        /** 视频描述参数键名 */
         private const val ARG_DESCRIPTION = "description"
 
-        //创建 Fragment 实例并传入视频参数
+        /**
+         * 创建 Fragment 实例并传入视频参数
+         */
         @JvmStatic
         fun newInstance(
             videoId: Long,

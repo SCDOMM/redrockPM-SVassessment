@@ -17,17 +17,27 @@ import com.example.core.media.R
 class VideoPlayerActivity : AppCompatActivity() {
 
     companion object {
+        /** 视频 ID */
         const val EXTRA_VIDEO_ID = "video_id"
+        /** 视频播放地址 */
         const val EXTRA_VIDEO_URL = "video_url"
+        /** 视频标题 */
         const val EXTRA_VIDEO_TITLE = "video_title"
+        /** 视频封面图 */
         const val EXTRA_VIDEO_COVER = "video_cover"
+        /** 作者名称 */
         const val EXTRA_AUTHOR_NAME = "author_name"
+        /** 作者头像 */
         const val EXTRA_AUTHOR_ICON = "author_icon"
+        /** 视频分类 */
         const val EXTRA_CATEGORY = "category"
+        /** 视频描述 */
         const val EXTRA_DESCRIPTION = "description"
     }
 
-    //初始化窗口适配、解析 Intent参数、加载Fragment
+    /**
+     * 初始化窗口适配、解析 Intent 参数、加载 VideoPlayerFragment
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
