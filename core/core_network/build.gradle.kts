@@ -32,6 +32,7 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     testImplementation(libs.junit)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
