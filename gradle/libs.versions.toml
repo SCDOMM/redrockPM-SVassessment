@@ -21,6 +21,7 @@ swiperefreshlayout = "1.1.0"
 swiperefreshlayoutVersion = "1.2.0"
 recyclerview = "1.4.0"
 constraintlayout = "2.2.1"
+flexbox="3.0.0"
 
 [libraries]
 gsy-video-player = { group = "io.github.carguo", name = "gsyvideoplayer", version.ref = "gsyVideo" }
@@ -50,9 +51,6 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayoutVersion" }
-androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
