@@ -5,10 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.TabListResponse
 import com.example.core.model.videoEntity.VideoData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -36,8 +40,18 @@ class HomeViewModel (application: Application) : AndroidViewModel(application) {
         }
     }
     suspend fun request(): String{
+        appService.getTabList().enqueue(object : Callback<TabListResponse!> {
+            override fun onResponse(p0: Call<TabListResponse?>, p1: Response<TabListResponse?>) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFailure(p0: Call<TabListResponse?>, p1: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+
         return suspendCoroutine {continuation ->
-            appService.getTabList().
+
 
 
         }
