@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit
 
 /**
  * description ： retrofit客户端
- * TODO：提供统一的网络层入口
  * email : 3014386984@qq.com
  * date : 2026/7/14 17:57
  */
@@ -33,4 +32,21 @@ object RetrofitClient {
         .build()
 
     inline fun <reified T> create(): T = retrofit.create(T::class.java)
+
+    /**
+     * 解析playUrl的302重定向，获取真实视频地址
+     */
+    suspend fun resolvePlayUrl(redirectUrl: String): String {
+        return try {
+            val client = okHttpClient.newBuilder()
+                .followRedirects(true)
+                .followSslRedirects(true)
+                .build()
+            val request = okhttp3.Request.Builder().url(redirectUrl).build()
+            val response = client.newCall(request).execute()
+            response.request.url.toString()
+        } catch (e: Exception) {
+            redirectUrl
+        }
+    }
 }

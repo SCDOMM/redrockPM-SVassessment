@@ -18,6 +18,7 @@ data class VideoSmallCardData(
     val id: Long,
     val title: String,
     val description: String?,
+    val category: String?,          // 分类（创意/旅行/记录/搞笑/...）
     val cover: Cover,
     val playUrl: String?,
     val playInfo: List<PlayInfo>?,

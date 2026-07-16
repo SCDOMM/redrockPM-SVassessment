@@ -9,6 +9,11 @@ import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import kotlinx.coroutines.launch
 
+/**
+ * description ： 热门排行榜 ViewModel，管理视频列表数据和加载状态
+ * email : 3014386984@qq.com
+ * date : 2026/7/15 15:46
+ */
 class HotViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
@@ -22,12 +27,12 @@ class HotViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    //加载排行榜视频列表
     fun loadHotVideosByUrl(apiUrl: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // 使用动态 URL 请求
-                val response = api.getRankList("weekly")
+                val response = api.getRankListByUrl(apiUrl)
                 _hotList.value = response.itemList
                 _error.value = null
             } catch (e: Exception) {
