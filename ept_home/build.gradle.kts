@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.gsy.video.player)
     implementation(project(":core:core_model"))
+    implementation(project(":core:core_network"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
