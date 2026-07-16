@@ -11,6 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * description ： 发现页分类 ViewModel，加载分类列表
+ * email : 3014386984@qq.com
+ * date : 2026/7/16 11:39
+ */
 class DiscoveryViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
@@ -24,6 +29,9 @@ class DiscoveryViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    /**
+     * 加载分类列表
+     */
     fun loadCategories() {
         viewModelScope.launch {
             _isLoading.value = true

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.model.Item
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
+import com.example.core.network.await
 import kotlinx.coroutines.launch
 
 /**
@@ -27,12 +28,14 @@ class HotViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    //加载排行榜视频列表
+    /**
+     * 根据 API URL 加载排行榜视频列表
+     */
     fun loadHotVideosByUrl(apiUrl: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val response = api.getRankListByUrl(apiUrl)
+                val response = api.getRankListByUrl(apiUrl).await()
                 _hotList.value = response.itemList
                 _error.value = null
             } catch (e: Exception) {

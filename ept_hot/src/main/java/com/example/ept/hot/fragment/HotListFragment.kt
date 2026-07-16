@@ -55,7 +55,9 @@ class HotListFragment : Fragment() {
         loadVideos()
     }
 
-    //初始化RV和视频列表适配器，设置点击跳转播放页
+    /**
+     * 初始化 RecyclerView 和视频列表适配器，设置点击跳转播放页
+     */
     private fun setupRecyclerView() {
         adapter = HotVideoAdapter { videoItem ->
             val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
@@ -76,7 +78,9 @@ class HotListFragment : Fragment() {
         }
     }
 
-    //配置下拉刷新样式和刷新监听
+    /**
+     * 配置下拉刷新样式和刷新监听
+     */
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -88,12 +92,16 @@ class HotListFragment : Fragment() {
         }
     }
 
-    //触发加载排行榜视频数据
+    /**
+     * 触发加载排行榜视频数据
+     */
     private fun loadVideos() {
         viewModel.loadHotVideosByUrl(apiUrl)
     }
 
-    //观察 ViewModel 数据变化，更新列表、刷新状态和错误提示
+    /**
+     * 观察 ViewModel 数据变化，更新列表、刷新状态和错误提示
+     */
     private fun observeData() {
         viewModel.hotList.observe(viewLifecycleOwner) { list ->
             adapter.submitList(adapter.parseItems(list))
@@ -111,9 +119,12 @@ class HotListFragment : Fragment() {
     }
 
     companion object {
+        /** API URL 参数键名 */
         private const val ARG_API_URL = "api_url"
 
-        //创建Fragment实例并传入APIURL
+        /**
+         * 创建 Fragment 实例并传入 API URL
+         */
         @JvmStatic
         fun newInstance(apiUrl: String) =
             HotListFragment().apply {

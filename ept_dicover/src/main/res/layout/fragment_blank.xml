@@ -2,8 +2,7 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -13,28 +12,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_gradient_category">
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/actx_doscovery_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="分类"
-                android:textSize="20sp"
-                android:textColor="#000000"
-                android:layout_marginStart="15dp"/>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_doscovery_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:clipToPadding="false"
-                android:padding="8dp" />
+                android:background="@drawable/bg_gradient_category"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/actx_doscovery_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="分类"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_doscovery_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:clipToPadding="false"
+                    android:padding="8dp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+

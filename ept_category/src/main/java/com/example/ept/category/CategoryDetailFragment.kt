@@ -1,5 +1,6 @@
 package com.example.ept.category
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.core.media.VideoPlayerActivity
 
 class CategoryDetailFragment : Fragment() {
 
@@ -43,7 +45,17 @@ class CategoryDetailFragment : Fragment() {
         rvCategory.layoutManager = layoutManager
 
         val adapter = CategoryDetailAdapter { video ->
-            // TODO: 点击视频跳转到播放页
+            val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, video.videoId)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_URL, video.playUrl)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_TITLE, video.title)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_COVER, video.coverUrl)
+                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_NAME, video.authorName)
+                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_ICON, video.authorIcon)
+                putExtra(VideoPlayerActivity.EXTRA_CATEGORY, video.category)
+                putExtra(VideoPlayerActivity.EXTRA_DESCRIPTION, video.description)
+            }
+            startActivity(intent)
         }
         rvCategory.adapter = adapter
 

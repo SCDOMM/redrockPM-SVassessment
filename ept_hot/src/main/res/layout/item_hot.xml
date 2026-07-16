@@ -85,7 +85,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="石原测试，一则关于色盲的浪漫动画故事"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="12sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -97,7 +97,8 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="全球创意视频精选 #创意"
-                android:textColor="#666666"
+                android:textColor="?attr/colorOnBackground"
+                android:alpha="0.6"
                 android:textSize="10sp" />
 
         </LinearLayout>
@@ -114,3 +115,4 @@
     </LinearLayout>
 
 </LinearLayout>
+

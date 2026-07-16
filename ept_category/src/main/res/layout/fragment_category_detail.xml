@@ -3,7 +3,7 @@
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F6F8">
+    android:background="?android:attr/colorBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_category_detail"
@@ -13,3 +13,4 @@
         android:clipToPadding="false" />
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+

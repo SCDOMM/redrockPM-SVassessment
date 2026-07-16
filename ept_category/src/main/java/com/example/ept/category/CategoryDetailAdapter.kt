@@ -22,7 +22,12 @@ sealed class CategoryItem {
         val duration: Long,
         val authorName: String,
         val authorIcon: String,
-        val description: String
+        val description: String,
+        val playUrl: String = "",
+        val category: String = "",
+        val collectionCount: Int = 0,
+        val shareCount: Int = 0,
+        val replyCount: Int = 0
     ) : CategoryItem()
 }
 
@@ -59,6 +64,11 @@ class CategoryDetailAdapter(
         val authorIcon: ImageView = view.findViewById(R.id.iv_hot_author)
         val title: TextView = view.findViewById(R.id.actv_hot_description)
         val description: TextView = view.findViewById(R.id.actv_hot_author)
+        val collectionCount: TextView = view.findViewById(R.id.tv_category_collection)
+        val replyIcon: ImageView = view.findViewById(R.id.iv_category_reply)
+        val replyCount: TextView = view.findViewById(R.id.tv_category_reply)
+        val shareIcon: ImageView = view.findViewById(R.id.iv_category_share)
+        val shareCount: TextView = view.findViewById(R.id.tv_category_share)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -97,6 +107,10 @@ class CategoryDetailAdapter(
                 val secs = item.duration % 60
                 vh.duration.text = String.format("%02d:%02d", mins, secs)
 
+                vh.collectionCount.text = formatCount(item.collectionCount)
+                vh.replyCount.text = formatCount(item.replyCount)
+                vh.shareCount.text = formatCount(item.shareCount)
+
                 Glide.with(vh.itemView)
                     .load(item.coverUrl)
                     .transform(CenterCrop(), RoundedCorners(20))
@@ -111,6 +125,13 @@ class CategoryDetailAdapter(
 
                 vh.itemView.setOnClickListener { onVideoClick(item) }
             }
+        }
+    }
+
+    private fun formatCount(count: Int): String {
+        return when {
+            count >= 10000 -> String.format("%.1f万", count / 10000.0)
+            else -> count.toString()
         }
     }
 }

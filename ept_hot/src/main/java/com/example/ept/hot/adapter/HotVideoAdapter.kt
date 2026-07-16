@@ -45,7 +45,9 @@ class HotVideoAdapter(
     private var items: List<VideoItem> = emptyList()
     private val gson = Gson()
 
-    // 提交数据列表并刷新
+    /**
+     * 提交数据列表并刷新
+     */
     fun submitList(newItems: List<VideoItem>) {
         items = newItems
         notifyDataSetChanged()
@@ -62,14 +64,18 @@ class HotVideoAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    //将Item列表解析为VideoItem
+    /**
+     * 将Item列表解析为VideoItem
+     */
     fun parseItems(rawItems: List<Item>): List<VideoItem> {
         return rawItems.mapNotNull { item ->
             parseVideoItem(item)
         }
     }
 
-    //根据item.type解析Video或videoSmallCard类型数据
+    /**
+     * 根据item.type解析Video、videoSmallCard或followCard类型数据
+     */
     private fun parseVideoItem(item: Item): VideoItem? {
         return try {
             when (item.type) {
@@ -103,6 +109,25 @@ class HotVideoAdapter(
                         description = card.description ?: ""
                     )
                 }
+                "followCard" -> {
+                    // followCard.content is an Item, not VideoData — parse manually
+                    val data = item.data as? Map<*, *> ?: return null
+                    val content = data["content"] as? Map<*, *> ?: return null
+                    val contentData = content["data"] as? Map<*, *> ?: return null
+                    val videoJson = gson.toJson(contentData)
+                    val video = gson.fromJson(videoJson, VideoData::class.java)
+                    VideoItem(
+                        id = video.id,
+                        title = video.title,
+                        coverUrl = video.cover.feed,
+                        duration = video.duration,
+                        authorName = video.author?.name ?: "",
+                        authorIcon = video.author?.icon ?: "",
+                        category = video.category,
+                        playUrl = video.playUrl,
+                        description = video.description
+                    )
+                }
                 else -> null
             }
         } catch (e: Exception) {
@@ -110,6 +135,9 @@ class HotVideoAdapter(
         }
     }
 
+    /**
+     * 视频卡片 ViewHolder，绑定封面图、时长、作者、标题到 itemView
+     */
     inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivCover: ImageView = itemView.findViewById(R.id.iv_hot_title)
         private val tvDuration: TextView = itemView.findViewById(R.id.actv_hot_geration)
@@ -117,7 +145,9 @@ class HotVideoAdapter(
         private val tvTitle: TextView = itemView.findViewById(R.id.actv_hot_description)
         private val tvAuthor: TextView = itemView.findViewById(R.id.actv_hot_author)
 
-        //绑定封面图、时长、作者、标题到ItemView
+        /**
+         * 绑定封面图、时长、作者、标题到 itemView
+         */
         fun bind(item: VideoItem) {
             Glide.with(itemView.context)
                 .load(item.coverUrl)
@@ -150,7 +180,9 @@ class HotVideoAdapter(
             }
         }
 
-        //将秒数格式化为 mm:ss
+        /**
+         * 将秒数格式化为 mm:ss
+         */
         private fun formatDuration(seconds: Long): String {
             val mins = seconds / 60
             val secs = seconds % 60

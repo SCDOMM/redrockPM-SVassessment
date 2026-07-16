@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
+import com.example.core.network.await
 import com.example.ept.hot.R
 import com.example.ept.hot.adapter.HotPagerAdapter
 import com.google.android.material.tabs.TabLayout
@@ -45,11 +46,13 @@ class HotFragment : Fragment() {
         loadTabs()
     }
 
-    //加载排行Tab
+    /**
+     * 加载排行Tab列表
+     */
     private fun loadTabs() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val response = api.getRankListTabs()
+                val response = api.getRankListTabs().await()
                 val tabs = response.tabInfo.tabList
 
                 tabTitles.clear()
@@ -74,7 +77,9 @@ class HotFragment : Fragment() {
         }
     }
 
-    //将英文转换为中文
+    /**
+     * 将英文 Tab 名称转换为中文
+     */
     private fun mapTabName(apiName: String): String {
         return when (apiName.lowercase()) {
             "monthly" -> "月排行"
@@ -84,7 +89,9 @@ class HotFragment : Fragment() {
         }
     }
 
-    //VP2和TabLayout联动
+    /**
+     * 配置 ViewPager2 和 TabLayout 联动
+     */
     private fun setupViewPager() {
         val adapter = HotPagerAdapter(this, tabApiUrls)
         viewPager.adapter = adapter
