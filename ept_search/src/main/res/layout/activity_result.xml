@@ -5,6 +5,60 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingHorizontal="16dp"
     tools:context=".activity.ResultActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_result_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.search.SearchView
+            android:id="@+id/sv_result_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:queryHint="🔍搜索视频、作者、用户及标签"
+            app:searchBarElevation="0dp"
+            app:searchBarStrokeWidth="0dp"
+            app:searchIcon="@drawable/ic_search_search" />
+
+        <TextView
+            android:id="@+id/tv_result_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:text="取消"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/vl_result_default"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="2dp"
+        android:alpha="0.5"
+        android:background="#333333"
+        android:layout_marginHorizontal="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_result_1" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp2_result_default"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/ll_result_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
