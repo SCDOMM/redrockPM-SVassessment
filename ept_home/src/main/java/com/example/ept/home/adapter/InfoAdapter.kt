@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.message.MessageData
+import com.example.core.model.MessageData
 import com.example.ept.home.R
 import java.text.SimpleDateFormat
 import java.util.Date

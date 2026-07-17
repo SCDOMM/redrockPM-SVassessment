@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -11,6 +12,7 @@ android {
     }
 
     defaultConfig {
+        applicationId = "com.example.ept.home"
         minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -44,4 +46,5 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
+    implementation(libs.glide.okhttp)
 }

@@ -1,5 +1,7 @@
 package com.example.core.network
 
+import com.example.core.model.Item
+import com.google.gson.GsonBuilder
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -42,10 +44,13 @@ object RetrofitClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
+    val gson = GsonBuilder()
+        .registerTypeAdapter(Item::class.java, ItemDeserializer())
+        .create()
     val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
     inline fun <reified T> create(): T = retrofit.create(T::class.java)

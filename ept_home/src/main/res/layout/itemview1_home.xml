@@ -27,16 +27,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="测试测试"
-        android:textSize="20sp"
+        android:textSize="15sp"
+        android:textColor="	#000000"
         app:layout_constraintStart_toEndOf="@id/iv_home_default_item1"
         app:layout_constraintTop_toTopOf="@+id/iv_home_default_item1" />
     <TextView
-        android:id="@+id/tv_home_desc_item1"
+        android:id="@+id/tv_home_author_item1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="测试测试"
-        android:textSize="10sp"
+        android:textSize="13sp"
         android:textColor="#808080"
         app:layout_constraintStart_toStartOf="@id/tv_home_title_item1"
         app:layout_constraintTop_toBottomOf="@+id/tv_home_title_item1" />
@@ -46,10 +47,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="#标签"
-        android:textSize="10sp"
+        android:textSize="13sp"
         android:textColor="#808080"
-        app:layout_constraintStart_toEndOf="@id/tv_home_desc_item1"
-        app:layout_constraintTop_toTopOf="@+id/tv_home_desc_item1" />
+        app:layout_constraintStart_toEndOf="@id/tv_home_author_item1"
+        app:layout_constraintTop_toTopOf="@+id/tv_home_author_item1" />
 
     <TextView
         android:id="@+id/tv_home_duration_item1"
@@ -57,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="114:00"
-        android:textSize="10sp"
+        android:textSize="13sp"
         android:textColor="#808080"
         app:layout_constraintStart_toEndOf="@id/tv_home_label_item1"
         app:layout_constraintTop_toTopOf="@+id/tv_home_label_item1" />
@@ -71,13 +72,15 @@
         android:layout_height="60dp"
         android:layout_margin="20dp"
         android:layout_marginBottom="20dp"
+        android:padding="2dp"
+        app:strokeWidth="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cv_home_item1"
         />
     <View
         android:id="@+id/divider_home_default_item1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="#E0E0E0"
         android:layout_marginTop="15dp"
 

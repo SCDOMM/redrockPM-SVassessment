@@ -1,6 +1,7 @@
 package com.example.ept.daily
 
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.videoEntity.VideoData
-import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
+import com.example.core.model.VideoData
 
 /**   
  * 包名称： com.example.ept.daily
@@ -21,12 +21,12 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
  * 创建时间：2026-07-15 21:11
  *
  */
-class DailyAdapter  : ListAdapter<VideoData, DailyAdapter.DailyViewHolder>(DailyDiffCallback) {
+class DailyAdapter : ListAdapter<VideoData, DailyAdapter.DailyViewHolder>(DailyDiffCallback) {
     override fun onBindViewHolder(
         holder: DailyViewHolder,
         position: Int
     ) {
-        val video=getItem(position)
+        val video = getItem(position)
         holder.bindData(video)
     }
 
@@ -38,31 +38,34 @@ class DailyAdapter  : ListAdapter<VideoData, DailyAdapter.DailyViewHolder>(Daily
             .inflate(R.layout.itemview_daily, parent, false)
         return DailyViewHolder(view)
     }
+
     inner class DailyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val gsyvDailyCoverItem: GSYVideoPlayer = view.findViewById(R.id.gsyv_daily_cover_item)
-        val ivDailyDefaultItem: ImageView = view.findViewById(R.id.iv_daily_default_item)
+        val ivDailyCoverItem: ImageView = view.findViewById(R.id.iv_daily_cover_item)
+        val ivDailyAuthorItem: ImageView = view.findViewById(R.id.iv_daily_author_item)
         val tvDailyTitleItem: TextView = view.findViewById(R.id.tv_daily_title_item)
         val tvDailyLabelItem: TextView = view.findViewById(R.id.tv_daily_label_item)
-        val tvDailyDescItem: TextView = view.findViewById(R.id.tv_daily_desc_item)
+        val tvAuthorDescItem: TextView = view.findViewById(R.id.tv_daily_author_item)
         val tvDailyDurationItem: TextView = view.findViewById(R.id.tv_daily_duration_item)
-        fun bindData(videoData: VideoData){
-            gsyvDailyCoverItem.setUp(videoData.playUrl, false, "") // false = 不自动播放
-            gsyvDailyCoverItem.let { player ->
+        fun bindData(videoData: VideoData) {
+            ivDailyCoverItem.let { player ->
                 Glide.with(player.context)
-                    .load(videoData.cover.feed)
-                    .into(player.thumbImageView as ImageView)
+                    .load(videoData.cover?.feed)
+                    .into(player)
             }
-            Glide.with(ivDailyDefaultItem)
-                .load(videoData.cover.feed)
-                .into(ivDailyDefaultItem)
+            Glide.with(ivDailyAuthorItem)
+                .load(videoData.cover?.feed)
+                .into(ivDailyAuthorItem)
             tvDailyTitleItem.text = videoData.title
-            tvDailyLabelItem.text = videoData.label?.text
-                ?: videoData.category ?: videoData.tags?.firstOrNull()?.name
-            tvDailyDescItem.text = videoData.description
-            tvDailyDurationItem.text = DateUtils.formatElapsedTime(videoData.duration)
+            val label = videoData.label?.text
+                ?: videoData.category
+            tvDailyLabelItem.text = "#$label"
+            tvAuthorDescItem.text = videoData.author?.name
+            val duration = DateUtils.formatElapsedTime(videoData.duration)
+            tvDailyDurationItem.text = "▶$duration"
         }
     }
 }
+
 object DailyDiffCallback : DiffUtil.ItemCallback<VideoData>() {
     override fun areItemsTheSame(
         oldItem: VideoData,

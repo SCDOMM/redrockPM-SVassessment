@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- ⭐ 明确允许所有开眼相关域名的明文通信 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">kaiyanapp.com</domain>
+        <domain includeSubdomains="true">ali-img.kaiyanapp.com</domain>
+        <domain includeSubdomains="true">img.kaiyanapp.com</domain>
+        <domain includeSubdomains="true">eyepetizer-videos.oss-cn-beijing.aliyuncs.com</domain>
+        <domain includeSubdomains="true">aliyuncs.com</domain>
+    </domain-config>
+    <!-- ⭐ 兜底：允许所有明文（如果上面没覆盖到） -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

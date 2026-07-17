@@ -2,53 +2,73 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
+
     <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cv_daily_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="W,9:16"
-        >
-        <com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
-            android:id="@+id/gsyv_daily_cover_item"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_daily_cover_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/eyepetater_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_daily_play"
+                app:layout_constraintBottom_toBottomOf="@id/iv_daily_cover_item"
+                app:layout_constraintEnd_toEndOf="@id/iv_daily_cover_item"
+                app:layout_constraintStart_toStartOf="@id/iv_daily_cover_item"
+                app:layout_constraintTop_toTopOf="@id/iv_daily_cover_item" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/tv_daily_title_item"
-        android:layout_marginStart="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="测试测试"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@id/iv_daily_default_item"
-        app:layout_constraintTop_toTopOf="@+id/iv_daily_default_item" />
+        android:textSize="15sp"
+        android:textColor="#000000"
+        app:layout_constraintStart_toEndOf="@id/iv_daily_author_item"
+        app:layout_constraintTop_toTopOf="@+id/iv_daily_author_item" />
+
     <TextView
-        android:id="@+id/tv_daily_desc_item"
+        android:id="@+id/tv_daily_author_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="测试测试"
-        android:textSize="10sp"
         android:textColor="#808080"
+        android:textSize="13sp"
         app:layout_constraintStart_toStartOf="@id/tv_daily_title_item"
         app:layout_constraintTop_toBottomOf="@+id/tv_daily_title_item" />
+
     <TextView
         android:id="@+id/tv_daily_label_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="#标签"
-        android:textSize="10sp"
         android:textColor="#808080"
-        app:layout_constraintStart_toEndOf="@id/tv_daily_desc_item"
-        app:layout_constraintTop_toTopOf="@+id/tv_daily_desc_item" />
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@id/tv_daily_author_item"
+        app:layout_constraintTop_toTopOf="@+id/tv_daily_author_item" />
 
     <TextView
         android:id="@+id/tv_daily_duration_item"
@@ -56,31 +76,31 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="114:00"
-        android:textSize="10sp"
         android:textColor="#808080"
+        android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@id/tv_daily_label_item"
         app:layout_constraintTop_toTopOf="@+id/tv_daily_label_item" />
 
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_daily_default_item"
+        android:id="@+id/iv_daily_author_item"
         android:layout_width="60dp"
-        android:src="@drawable/eyepetater"
-        app:shapeAppearanceOverlay="@style/round"
         android:layout_height="60dp"
         android:layout_margin="20dp"
         android:layout_marginBottom="20dp"
+        android:src="@drawable/eyepetater"
+        android:padding="2dp"
+        app:strokeWidth="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cv_daily_item"
-    />
+        app:shapeAppearanceOverlay="@style/round" />
+
     <View
         android:id="@+id/divider_daily_default_item"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E0E0E0"
+        android:layout_height="10dp"
         android:layout_marginTop="15dp"
-
-        app:layout_constraintTop_toBottomOf="@+id/iv_daily_default_item"
-
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/iv_daily_author_item"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
