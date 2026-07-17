@@ -45,6 +45,9 @@ class VideoPlayerFragment : Fragment() {
     private lateinit var tvAuthorName: TextView
     private lateinit var tvCategory: TextView
     private lateinit var tvDescription: TextView
+    private lateinit var tvCollectionCount: TextView
+    private lateinit var tvReplyCount: TextView
+    private lateinit var ivShare: ImageView
     private lateinit var rvRelated: RecyclerView
     private var orientationUtils: OrientationUtils? = null
 
@@ -60,6 +63,9 @@ class VideoPlayerFragment : Fragment() {
     private var authorIcon: String = ""
     private var category: String = ""
     private var description: String = ""
+    private var collectionCount: Int = 0
+    private var replyCount: Int = 0
+    private var playUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +78,9 @@ class VideoPlayerFragment : Fragment() {
             authorIcon = it.getString(ARG_AUTHOR_ICON, "")
             category = it.getString(ARG_CATEGORY, "")
             description = it.getString(ARG_DESCRIPTION, "")
+            collectionCount = it.getInt(ARG_COLLECTION_COUNT, 0)
+            replyCount = it.getInt(ARG_REPLY_COUNT, 0)
+            playUrl = it.getString(ARG_PLAY_URL, "")
         }
     }
 
@@ -91,6 +100,9 @@ class VideoPlayerFragment : Fragment() {
         tvAuthorName = view.findViewById(R.id.tv_author_name)
         tvCategory = view.findViewById(R.id.tv_category)
         tvDescription = view.findViewById(R.id.tv_description)
+        tvCollectionCount = view.findViewById(R.id.tv_collection_count)
+        tvReplyCount = view.findViewById(R.id.tv_reply_count)
+        ivShare = view.findViewById(R.id.iv_share)
         rvRelated = view.findViewById(R.id.rv_related)
         scrollView = view.findViewById(R.id.nsv_media_detail)
 
@@ -229,12 +241,33 @@ class VideoPlayerFragment : Fragment() {
         tvAuthorName.text = authorName
         tvCategory.text = if (category.isNotEmpty()) "#$category" else ""
         tvDescription.text = description
+        tvCollectionCount.text = formatCount(collectionCount)
+        tvReplyCount.text = formatCount(replyCount)
 
         if (authorIcon.isNotEmpty()) {
             Glide.with(this)
                 .load(authorIcon)
                 .transform(CircleCrop())
                 .into(ivAuthor)
+        }
+
+        // 分享按钮
+        val shareUrl = playUrl.ifEmpty { videoUrl }
+        ivShare.setOnClickListener {
+            if (shareUrl.isNotEmpty()) {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareUrl)
+                }
+                startActivity(Intent.createChooser(shareIntent, "分享视频"))
+            }
+        }
+    }
+
+    private fun formatCount(count: Int): String {
+        return when {
+            count >= 10000 -> String.format("%.1f万", count / 10000.0)
+            else -> count.toString()
         }
     }
 
@@ -275,6 +308,12 @@ class VideoPlayerFragment : Fragment() {
         private const val ARG_CATEGORY = "category"
         /** 视频描述参数键名 */
         private const val ARG_DESCRIPTION = "description"
+        /** 收藏数参数键名 */
+        private const val ARG_COLLECTION_COUNT = "collection_count"
+        /** 回复数参数键名 */
+        private const val ARG_REPLY_COUNT = "reply_count"
+        /** 视频播放地址参数键名（用于分享） */
+        private const val ARG_PLAY_URL = "play_url"
 
         /**
          * 创建 Fragment 实例并传入视频参数
@@ -288,7 +327,10 @@ class VideoPlayerFragment : Fragment() {
             authorName: String,
             authorIcon: String,
             category: String,
-            description: String
+            description: String,
+            collectionCount: Int = 0,
+            replyCount: Int = 0,
+            playUrl: String = ""
         ) = VideoPlayerFragment().apply {
             arguments = Bundle().apply {
                 putLong(ARG_VIDEO_ID, videoId)
@@ -299,6 +341,9 @@ class VideoPlayerFragment : Fragment() {
                 putString(ARG_AUTHOR_ICON, authorIcon)
                 putString(ARG_CATEGORY, category)
                 putString(ARG_DESCRIPTION, description)
+                putInt(ARG_COLLECTION_COUNT, collectionCount)
+                putInt(ARG_REPLY_COUNT, replyCount)
+                putString(ARG_PLAY_URL, playUrl)
             }
         }
     }
