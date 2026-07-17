@@ -1,0 +1,51 @@
+package com.example.ept.dicover
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+
+/**
+ * description ： 推荐主题横向列表适配器
+ * email : 3014386984@qq.com
+ * date : 2026/7/17
+ */
+class TopicAdapter : ListAdapter<TopicItem, TopicAdapter.ViewHolder>(DIFF_CALLBACK) {
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val icon: ImageView = view.findViewById(R.id.iv_topic_icon)
+        val title: TextView = view.findViewById(R.id.tv_topic_title)
+        val desc: TextView = view.findViewById(R.id.tv_topic_desc)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_topic, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.title.text = item.title
+        holder.desc.text = item.description
+
+        Glide.with(holder.icon)
+            .load(item.icon)
+            .transform(CenterCrop(), RoundedCorners(16))
+            .into(holder.icon)
+    }
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicItem>() {
+            override fun areItemsTheSame(old: TopicItem, new: TopicItem) = old.id == new.id
+            override fun areContentsTheSame(old: TopicItem, new: TopicItem) = old == new
+        }
+    }
+}

@@ -5,8 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.ept.dicover.DiscoveryFragment
-import com.example.ept.hot.fragment.HotFragment
+import com.example.ept.community.CommunityFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, DiscoveryFragment())
+                .replace(R.id.fragment_container, CommunityFragment())
                 .commit()
         }
     }

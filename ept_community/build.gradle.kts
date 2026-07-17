@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ept.person"
+    namespace = "com.example.ept.community"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -23,9 +23,18 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:core_network"))
+    implementation(project(":core:core_model"))
+    implementation(project(":core:core_media"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
+    implementation(libs.retrofit.core)
+    implementation(libs.gson)
+    implementation(libs.glide)
+    implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

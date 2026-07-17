@@ -27,12 +27,14 @@ sealed class CategoryItem {
         val category: String = "",
         val collectionCount: Int = 0,
         val shareCount: Int = 0,
-        val replyCount: Int = 0
+        val replyCount: Int = 0,
+        val webUrl: String = ""
     ) : CategoryItem()
 }
 
 class CategoryDetailAdapter(
-    private val onVideoClick: (CategoryItem.Video) -> Unit = {}
+    private val onVideoClick: (CategoryItem.Video) -> Unit = {},
+    private val onShareClick: (CategoryItem.Video) -> Unit = {}
 ) : ListAdapter<CategoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -124,6 +126,7 @@ class CategoryDetailAdapter(
                 }
 
                 vh.itemView.setOnClickListener { onVideoClick(item) }
+                vh.shareIcon.setOnClickListener { onShareClick(item) }
             }
         }
     }

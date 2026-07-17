@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="@color/text_primary"
                 android:textSize="12sp" />
 
             <LinearLayout
@@ -158,7 +158,7 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:textColor="?attr/colorOnBackground"
+                    android:textColor="@color/text_primary"
                     android:alpha="0.6"
                     android:textSize="10sp" />
 
@@ -181,7 +181,7 @@
                 android:layout_width="32dp"
                 android:layout_height="37dp"
                 android:src="@drawable/ic_category_share"
-                app:tint="?attr/colorOnBackground"
+                app:tint="@color/text_primary"
                 android:alpha="0.6" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -190,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:paddingStart="1dp"
-                android:textColor="?attr/colorOnBackground"
+                android:textColor="@color/text_primary"
                 android:alpha="0.6"
                 android:textSize="12sp" />
         </LinearLayout>
