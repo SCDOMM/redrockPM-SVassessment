@@ -1,4 +1,4 @@
-package com.example.ept.search.fragment.resultcontent
+package com.example.ept.search.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ept.search.R
 import com.example.ept.search.adapter.ResultAdapter
-import com.example.ept.search.fragment.FragmentInterface
-import com.example.ept.search.viewmodel.ResultViewModel
+import com.example.ept.search.fragment.resultcontent.ResultArticlesFragment
+import com.example.ept.search.fragment.resultcontent.ResultCreatorsFragment
+import com.example.ept.search.fragment.resultcontent.ResultTopicsFragment
+import com.example.ept.search.fragment.resultcontent.ResultUsersFragment
+import com.example.ept.search.fragment.resultcontent.ResultVideosFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -18,7 +21,6 @@ class ResultFragment : Fragment() {
     private lateinit var view: View
     private lateinit var vp2ResultDefault: ViewPager2
     private lateinit var tlResultDefault: TabLayout
-    private lateinit var viewModel: ResultViewModel
     private var fragmentList = mutableListOf<FragmentInterface>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,9 +29,7 @@ class ResultFragment : Fragment() {
         view=inflater.inflate(R.layout.fragment_result, container, false)
         vp2ResultDefault = view.findViewById(R.id.vp2_result_default)
         tlResultDefault = view.findViewById(R.id.tl_result_default)
-         viewModel= ViewModelProvider(this)[ResultViewModel::class.java]
         initEvent()
-        initRequest()
         initTabs()
         return view
     }
@@ -63,14 +63,6 @@ class ResultFragment : Fragment() {
         val adapter = ResultAdapter(fragmentList, this)
         vp2ResultDefault.adapter = adapter
     }
-    fun initRequest(){
-
-
-
-
-
-    }
-
 
     fun initTabs() {
         TabLayoutMediator(tlResultDefault, vp2ResultDefault) { p0, p1 ->

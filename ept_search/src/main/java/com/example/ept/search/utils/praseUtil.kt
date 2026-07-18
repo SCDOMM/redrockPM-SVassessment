@@ -10,52 +10,36 @@ import com.example.core.model.*
  * 创建时间：2026-07-18 15:26
  *
  */
-data class SearchParsedResult(
-    val videoList: List<MetroData>,
-    val authorList: List<MetroData>,
-    val graphicList: List<MetroData>,
-    val topicList: List<MetroData>,
-    val userList: List<MetroData>
+data class SearchResultData(
+    val videoList: List<MetroData> = emptyList(),
+    val creatorList: List<MetroData> = emptyList(),   // 作者（pgc user）
+    val articleList: List<MetroData> = emptyList(),   // 图文（image）
+    val topicList: List<MetroData> = emptyList(),     // 话题（topic）
+    val userList: List<MetroData> = emptyList(),
 )
-fun parseSearchResponse(response: SearchResponse): SearchParsedResult {
+fun parseSearchResponse(response: SearchResponse): SearchResultData {
     val videoList = mutableListOf<MetroData>()
-    val authorList = mutableListOf<MetroData>()
-    val graphicList = mutableListOf<MetroData>()
+    val creatorList = mutableListOf<MetroData>()
+    val articleList = mutableListOf<MetroData>()
     val topicList = mutableListOf<MetroData>()
     val userList = mutableListOf<MetroData>()
     response.result?.item_list?.forEach { category ->
         val navType = category.nav?.type ?: return@forEach
-
         val metroItems = category.card_list.flatMap { card ->
             card.card_data?.body?.metro_list ?: emptyList()
         }
         when (navType) {
-            "video" -> {
-                // 只取 type == "video" 的 metro 项（可能还有别的 type，但通常都是 video）
-                videoList.addAll(metroItems.filter { it.type == "video" }.mapNotNull { it.metroData })
-            }
-            "pgc" -> {
-                // 作者栏目，type 为 "user"
-                authorList.addAll(metroItems.filter { it.type == "user" }.mapNotNull { it.metroData })
-            }
-            "graphic" -> {
-                // 图文栏目，type 为 "image"
-                graphicList.addAll(metroItems.filter { it.type == "image" }.mapNotNull { it.metroData })
-            }
-            "topic" -> {
-                // 话题栏目，type 为 "topic"
-                topicList.addAll(metroItems.filter { it.type == "topic" }.mapNotNull { it.metroData })
-            }
-            "ugc" -> {
-                // 普通用户栏目，type 为 "user"
-                userList.addAll(metroItems.filter { it.type == "user" }.mapNotNull { it.metroData })
-            }
+            "video" -> videoList.addAll(metroItems.filter { it.type == "video" }.mapNotNull { it.metroData })
+            "pgc"   -> creatorList.addAll(metroItems.filter { it.type == "user" }.mapNotNull { it.metroData })
+            "graphic" -> articleList.addAll(metroItems.filter { it.type == "image" }.mapNotNull { it.metroData })
+            "topic" -> topicList.addAll(metroItems.filter { it.type == "topic" }.mapNotNull { it.metroData })
+            "ugc"   -> userList.addAll(metroItems.filter { it.type == "user" }.mapNotNull { it.metroData })
         }
     }
-    return SearchParsedResult(
+    return SearchResultData(
         videoList = videoList,
-        authorList = authorList,
-        graphicList = graphicList,
+        creatorList = creatorList,
+        articleList = articleList,
         topicList = topicList,
         userList = userList
     )

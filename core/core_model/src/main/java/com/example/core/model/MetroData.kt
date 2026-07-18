@@ -167,8 +167,8 @@ data class CoverInfo(
 )
 
 data class ImageInfo(
-    val width: Int = 0,
-    val height: Int = 0,
+    val width: Double = 0.0,
+    val height: Double = 0.0,
     val scale: Double = 0.0
 )
 

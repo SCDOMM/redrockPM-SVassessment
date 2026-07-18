@@ -13,7 +13,12 @@ import com.example.core.model.VideoData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.TimeUnit
 
 /**   
  * 包名称： com.example.ept.daily
@@ -36,6 +41,33 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         refreshLiveData()
+//        viewModelScope.launch(IO) {
+//            try {
+//                val client = OkHttpClient.Builder()
+//                    .connectTimeout(10, TimeUnit.SECONDS)
+//                    .readTimeout(30, TimeUnit.SECONDS)
+//                    .build()
+//
+//                val formBody = FormBody.Builder()
+//                    .add("query", "艺术")
+//                    .add("start","0")
+//                    .add("num","20")
+//                    .build()
+//
+//                val request = Request.Builder()
+//                    .url("https://api.eyepetizer.net/v1/search/search/get_search_result_v2")
+//                    .post(formBody)
+//                    .addHeader("Cookie", "ky_udid=e53bcd5aa95847c0b0bd31c80b7fc102;ky_auth=APPIDahpagrcrf2p7m6rg;P95E551D-bdf22c23d2df47687d7bceef5c8bd00")
+//                    .build()
+//
+//                val response = client.newCall(request).execute()
+//                val body = response.body?.string()
+//                Log.d("SEARCH_POST", "Response code: ${response.code}")
+//                Log.d("SEARCH_POST", "Body: $body")
+//            } catch (e: Exception) {
+//                Log.e("SEARCH_POST", "Error", e)
+//            }
+//        }
     }
 
     fun refreshLiveData() {

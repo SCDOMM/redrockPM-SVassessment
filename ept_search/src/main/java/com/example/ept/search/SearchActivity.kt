@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.ept.search.fragment.InitialFragment
-import com.example.ept.search.fragment.resultcontent.ResultFragment
+import com.example.ept.search.fragment.ResultFragment
 import com.example.ept.search.fragment.SuggestionFragment
 import com.example.ept.search.viewmodel.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var viewModel: SearchViewModel
+    val viewModel: SearchViewModel by viewModels()
     private lateinit var svSearchTop: SearchView
     private lateinit var initialFragment: InitialFragment
     private lateinit var suggestionFragment: SuggestionFragment
@@ -25,7 +26,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-        viewModel= ViewModelProvider(this)[SearchViewModel::class.java]
+//        viewModel= ViewModelProvider(this)[SearchViewModel::class.java]
         svSearchTop=findViewById(R.id.sv_search_top)
 
         tvSearchCancel=findViewById(R.id.tv_search_cancel)
@@ -69,6 +70,7 @@ class SearchActivity : AppCompatActivity() {
                 }else{
                     svSearchTop.clearFocus()
                     showResult()
+                    viewModel.search(p0)
                     val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(svSearchTop.windowToken, 0)
                 }

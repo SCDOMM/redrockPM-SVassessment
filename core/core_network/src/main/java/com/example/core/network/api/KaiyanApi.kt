@@ -5,8 +5,11 @@ import com.example.core.model.RankListResponse
 import com.example.core.model.SearchResponse
 import com.example.core.model.TabListResponse
 import retrofit2.Call
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -126,13 +129,13 @@ interface KaiyanApi {
     @GET("v3/queries/hot")
     fun getHotQueries(): Call<List<String>>
 
-    @GET("v1/search/search/get_search_result_v2")
+    @FormUrlEncoded
+    @POST("v1/search/search/get_search_result_v2")
     fun search(
-        @Query("query") query: String,
-        @Query("start") start: Int = 0,
-        @Query("num") num: Int = 10
-    ): Call<SearchResponse>
-
+        @Field("query") query: String,
+        @Field("start") start: Int = 0,
+        @Field("num") num: Int = 10
+    ): Call<SearchResponse>   // 这里使用 suspend 函数 + Retrofit 2.6 以上支持
     // ========== 日历相关 ==========
     @GET("v7/roamingCalendar/index")
     fun getCalendar(

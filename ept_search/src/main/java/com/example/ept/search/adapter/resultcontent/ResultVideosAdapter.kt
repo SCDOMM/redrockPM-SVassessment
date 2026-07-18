@@ -52,7 +52,7 @@ class ResultVideosAdapter : ListAdapter<MetroData, ResultVideosAdapter.VideosVie
             tvResultVideosTitleItem.text=metroData.title
             val label= metroData.tags?.firstOrNull()?.title?.removePrefix("#")
            tvResultVideosLabelItem.text="#$label"
-            val duration=DateUtils.formatElapsedTime(metroData.duration?.text?.toLong() ?: 0)
+            val duration=DateUtils.formatElapsedTime(metroData.duration?.value?.toLong() ?: 0)
                 tvResultVideosDurationItem.text = "▶$duration"
         }
     }

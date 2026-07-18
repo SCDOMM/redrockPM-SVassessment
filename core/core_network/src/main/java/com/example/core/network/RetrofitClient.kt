@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,12 +17,36 @@ import java.util.concurrent.TimeUnit
  * date : 2026/7/14 17:57
  */
 object RetrofitClient {
-    private const val BASE_URL = "http://baobab.kaiyanapp.com/api/"
+//    private const val BASE_URL = "http://baobab.kaiyanapp.com/api/"
+    private const val BASE_URL = "https://api.eyepetizer.net/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
-
+    class CookieInterceptor : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val originalRequest = chain.request()
+            val newRequest = if (originalRequest.url.encodedPath.contains("get_search_result_v2")) {
+                originalRequest.newBuilder()
+                    .addHeader("Cookie", "ky_udid=e53bcd5aa95847c0b0bd31c80b7fc102;ky_auth=APPIDahpagrcrf2p7m6rg;P95E551D-bdf22c23d2df47687d7bceef5c8bd00")
+                    .build()
+            } else {
+                originalRequest
+            }
+            return chain.proceed(newRequest)
+        }
+    }
+    private val cookieInterceptor = Interceptor { chain ->
+        val original = chain.request()
+        val newRequest = if (original.url.encodedPath.contains("get_search_result_v2")) {
+            original.newBuilder()
+                .addHeader("Cookie", "ky_udid=e53bcd5aa95847c0b0bd31c80b7fc102;ky_auth=APPIDahpagrcrf2p7m6rg;P95E551D-bdf22c23d2df47687d7bceef5c8bd00")
+                .build()
+        } else {
+            original
+        }
+        chain.proceed(newRequest)
+    }
     private val commonParamsInterceptor = Interceptor { chain ->
         val original = chain.request()
         val url = original.url.newBuilder()
@@ -39,6 +64,7 @@ object RetrofitClient {
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(commonParamsInterceptor)
         .addInterceptor(loggingInterceptor)
+        .addInterceptor ( cookieInterceptor )
         .followRedirects(true)
         .followSslRedirects(true)
         .connectTimeout(30, TimeUnit.SECONDS)

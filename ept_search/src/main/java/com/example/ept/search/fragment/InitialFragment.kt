@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import com.example.ept.search.R
-import com.example.ept.search.viewmodel.InitialViewModel
 import com.google.android.flexbox.FlexboxLayout
 
 class InitialFragment : Fragment() {
-    private lateinit var viewModel: InitialViewModel
     private lateinit var view: View
 
     private lateinit var tvInitialDelete: TextView
@@ -27,7 +24,6 @@ class InitialFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         view=inflater.inflate(R.layout.fragment_initial, container, false)
-        viewModel= ViewModelProvider(this)[InitialViewModel::class.java]
         tvInitialDelete=view.findViewById(R.id.tv_initial_delete)
         flexInitialRecommend=view.findViewById(R.id.flex_initial_recommend)
         flexInitialHistory=view.findViewById(R.id.flex_initial_history)
