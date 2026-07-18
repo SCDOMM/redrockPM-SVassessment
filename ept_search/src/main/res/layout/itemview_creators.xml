@@ -46,7 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="10dp"
-
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:layout_weight="1"
                 android:lineSpacingExtra="6dp"
                 android:text="标题测试"
@@ -62,6 +63,8 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:lineSpacingExtra="6dp"
                 android:text="描述测试"
                 android:textSize="16sp"

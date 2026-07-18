@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.application)
 }
 
 android {
@@ -27,6 +27,10 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.flexbox)
     implementation(libs.material)
     testImplementation(libs.junit)
@@ -36,6 +40,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.glide.okhttp)
     implementation(project(":core:core_model"))
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.glide)
     implementation(project(":core:core_network"))
     androidTestImplementation(libs.androidx.espresso.core)

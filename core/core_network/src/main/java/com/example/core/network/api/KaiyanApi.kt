@@ -2,6 +2,7 @@ package com.example.core.network.api
 
 import com.example.core.model.EyepetizerResponse
 import com.example.core.model.RankListResponse
+import com.example.core.model.SearchResponse
 import com.example.core.model.TabListResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -125,12 +126,12 @@ interface KaiyanApi {
     @GET("v3/queries/hot")
     fun getHotQueries(): Call<List<String>>
 
-    @GET("v3/search")
+    @GET("v1/search/search/get_search_result_v2")
     fun search(
         @Query("query") query: String,
         @Query("start") start: Int = 0,
         @Query("num") num: Int = 10
-    ): Call<EyepetizerResponse>
+    ): Call<SearchResponse>
 
     // ========== 日历相关 ==========
     @GET("v7/roamingCalendar/index")

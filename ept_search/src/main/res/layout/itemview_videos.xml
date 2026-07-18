@@ -56,6 +56,8 @@
                 android:layout_height="wrap_content"
                 android:text="测试测试"
                 android:textSize="16sp"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:textColor="	#000000"
                 app:layout_constraintStart_toEndOf="@id/gl_result_videos_item"
                 app:layout_constraintEnd_toEndOf="parent"
