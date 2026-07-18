@@ -6,4 +6,7 @@
         <domain includeSubdomains="true">ali-img.kaiyanapp.com</domain>
         <domain includeSubdomains="true">cdn.kaiyanapp.com</domain>
     </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">images.unsplash.com</domain>
+    </domain-config>
 </network-security-config>

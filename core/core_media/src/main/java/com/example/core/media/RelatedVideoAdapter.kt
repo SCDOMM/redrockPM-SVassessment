@@ -30,6 +30,11 @@ data class RelatedVideoItem(
     val playUrl: String = ""
 )
 
+/**
+ * description ： 相关推荐视频列表适配器
+ * email : 3014386984@qq.com
+ * date : 2026/7/15 13:27
+ */
 class RelatedVideoAdapter(
     private val onItemClick: (RelatedVideoItem) -> Unit = {}
 ) : RecyclerView.Adapter<RelatedVideoAdapter.VideoViewHolder>() {
@@ -37,18 +42,24 @@ class RelatedVideoAdapter(
     private var items: List<RelatedVideoItem> = emptyList()
     private val gson = Gson()
 
-    //提交数据列表并刷新RV
+    /**
+     * 提交数据列表并刷新 RecyclerView
+     */
     fun submitList(newItems: List<RelatedVideoItem>) {
         items = newItems
         notifyDataSetChanged()
     }
 
-    //将Item列表解析为RelatedVideoItem
+    /**
+     * 将 Item 列表解析为 RelatedVideoItem 列表
+     */
     fun parseItems(rawItems: List<Item>): List<RelatedVideoItem> {
         return rawItems.mapNotNull { item -> parseVideoItem(item) }
     }
 
-    //根据item.type解析video或videoSmallCard类型数据
+    /**
+     * 根据 item.type 解析 video 或 videoSmallCard 类型数据
+     */
     private fun parseVideoItem(item: Item): RelatedVideoItem? {
         return try {
             when (item.type) {
@@ -101,13 +112,18 @@ class RelatedVideoAdapter(
 
     override fun getItemCount(): Int = items.size
 
+    /**
+     * 相关推荐视频 ViewHolder
+     */
     inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivCover: ImageView = itemView.findViewById(R.id.iv_cover)
         private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
         private val tvDuration: TextView = itemView.findViewById(R.id.tv_duration)
         private val tvAuthor: TextView = itemView.findViewById(R.id.tv_author)
 
-        //绑定封面图、标题、时长、作者到 itemView
+        /**
+         * 绑定封面图、标题、时长、作者到 itemView
+         */
         fun bind(item: RelatedVideoItem) {
             Glide.with(itemView.context)
                 .load(item.coverUrl)
@@ -123,7 +139,9 @@ class RelatedVideoAdapter(
             }
         }
 
-        //格式化秒数为
+        /**
+         * 将秒数格式化为 mm:ss
+         */
         private fun formatDuration(seconds: Long): String {
             val mins = seconds / 60
             val secs = seconds % 60
