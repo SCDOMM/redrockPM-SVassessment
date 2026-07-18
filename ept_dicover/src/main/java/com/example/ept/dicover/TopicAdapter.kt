@@ -17,7 +17,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
  * email : 3014386984@qq.com
  * date : 2026/7/17
  */
-class TopicAdapter : ListAdapter<TopicItem, TopicAdapter.ViewHolder>(DIFF_CALLBACK) {
+class TopicAdapter(
+    private val onItemClick: (TopicItem) -> Unit = {}
+) : ListAdapter<TopicItem, TopicAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: ImageView = view.findViewById(R.id.iv_topic_icon)
@@ -40,6 +42,8 @@ class TopicAdapter : ListAdapter<TopicItem, TopicAdapter.ViewHolder>(DIFF_CALLBA
             .load(item.icon)
             .transform(CenterCrop(), RoundedCorners(16))
             .into(holder.icon)
+
+        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     companion object {

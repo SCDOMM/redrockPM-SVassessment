@@ -6,6 +6,13 @@ package com.example.ept.community
  * date : 2026/7/17  18:15
  */
 sealed class CommunityItem {
+    /** 话题详情页 header（头图 + 标题 + 描述） */
+    data class HeaderCard(
+        val title: String,
+        val description: String,
+        val headerImage: String
+    ) : CommunityItem()
+
     /** 入口卡片（主题创作广场、话题讨论大厅） */
     data class EntryCard(
         val title: String,

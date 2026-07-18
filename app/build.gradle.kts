@@ -41,7 +41,6 @@ dependencies {
     implementation(project(":ept_category"))
     implementation(project(":ept_community"))
     implementation(project(":ept_dicover"))
-    implementation(project(":ept_hot"))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(platform(libs.androidx.compose.bom))

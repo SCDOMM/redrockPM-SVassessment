@@ -44,10 +44,17 @@ class DiscoveryFragment : Fragment() {
         }
         rvCategory.adapter = categoryAdapter
 
+        // 更多话题按钮
+        view.findViewById<android.widget.ImageView>(R.id.iv_doscovery_topicMore).setOnClickListener {
+            startActivity(android.content.Intent(requireContext(), TopicListActivity::class.java))
+        }
+
         // 推荐主题横向列表
         val rvTopic = view.findViewById<RecyclerView>(R.id.rv_discovery_topic)
         rvTopic.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val topicAdapter = TopicAdapter()
+        val topicAdapter = TopicAdapter { topic ->
+            TopicDetailActivity.start(requireContext(), topic.id.toInt(), topic.title)
+        }
         rvTopic.adapter = topicAdapter
 
         // 推荐作者横向列表

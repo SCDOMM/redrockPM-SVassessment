@@ -25,12 +25,14 @@ class CommunityAdapter(
 ) : ListAdapter<CommunityItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
+        private const val TYPE_HEADER = -1
         private const val TYPE_ENTRY = 0
         private const val TYPE_CONTENT = 1
 
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CommunityItem>() {
             override fun areItemsTheSame(old: CommunityItem, new: CommunityItem): Boolean {
                 return when {
+                    old is CommunityItem.HeaderCard && new is CommunityItem.HeaderCard -> old.title == new.title
                     old is CommunityItem.EntryCard && new is CommunityItem.EntryCard -> old.title == new.title
                     old is CommunityItem.ContentCard && new is CommunityItem.ContentCard -> old.id == new.id
                     else -> false
@@ -41,6 +43,12 @@ class CommunityAdapter(
                 return old == new
             }
         }
+    }
+
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val headerImage: ImageView = view.findViewById(R.id.iv_topic_header)
+        val title: TextView = view.findViewById(R.id.actv_topic_title)
+        val description: TextView = view.findViewById(R.id.actv_topic_desc)
     }
 
     class EntryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -63,6 +71,7 @@ class CommunityAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
+            is CommunityItem.HeaderCard -> TYPE_HEADER
             is CommunityItem.EntryCard -> TYPE_ENTRY
             is CommunityItem.ContentCard -> TYPE_CONTENT
         }
@@ -70,6 +79,11 @@ class CommunityAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            TYPE_HEADER -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_topic_header, parent, false)
+                HeaderViewHolder(view)
+            }
             TYPE_ENTRY -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_community_entry, parent, false)
@@ -85,6 +99,16 @@ class CommunityAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
+            is CommunityItem.HeaderCard -> {
+                val vh = holder as HeaderViewHolder
+                vh.title.text = item.title
+                vh.description.text = item.description
+                Glide.with(vh.headerImage)
+                    .load(item.headerImage)
+                    .placeholder(android.R.color.darker_gray)
+                    .transform(CenterCrop())
+                    .into(vh.headerImage)
+            }
             is CommunityItem.EntryCard -> {
                 val vh = holder as EntryViewHolder
                 vh.title.text = item.title

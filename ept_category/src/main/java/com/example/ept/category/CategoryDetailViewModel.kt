@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.FollowCardData
+import com.example.core.model.TextCardData
+import com.example.core.model.VideoData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -15,7 +17,6 @@ import kotlinx.coroutines.withContext
 class CategoryDetailViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
-    private val gson = Gson()
 
     data class TagInfo(val description: String, val headerImage: String, val fallbackCover: String)
 
@@ -111,42 +112,33 @@ class CategoryDetailViewModel : ViewModel() {
         var firstCover = ""
 
         for (item in rawItems) {
-            val data = item.data as? Map<*, *> ?: continue
-
-            // 提取第一个视频的封面作为 fallback
             if (firstCover.isEmpty()) {
                 firstCover = when (item.type) {
                     "followCard" -> {
-                        val content = data["content"] as? Map<*, *> ?: ""
-                        val contentData = (content as? Map<*, *>)?.get("data") as? Map<*, *>
-                        val cover = contentData?.get("cover") as? Map<*, *>
-                        cover?.get("detail") as? String ?: ""
+                        (item.data as? FollowCardData)?.content?.data?.cover?.detail ?: ""
                     }
                     "videoSmallCard" -> {
-                        val cover = data["cover"] as? Map<*, *>
-                        cover?.get("feed") as? String ?: ""
+                        (item.data as? VideoData)?.cover?.feed ?: ""
                     }
                     else -> ""
                 }
             }
 
-            // 从 tags 中查找匹配分类名的描述
             if (desc.isEmpty()) {
                 val tags = when (item.type) {
                     "followCard" -> {
-                        val content = data["content"] as? Map<*, *> ?: continue
-                        val contentData = content["data"] as? Map<*, *> ?: continue
-                        contentData["tags"] as? List<*> ?: continue
+                        val card = item.data as? FollowCardData ?: continue
+                        card.content?.data?.tags ?: continue
                     }
                     "videoSmallCard" -> {
-                        data["tags"] as? List<*> ?: continue
+                        val v = item.data as? VideoData ?: continue
+                        v.tags ?: continue
                     }
                     else -> continue
                 }
                 for (tag in tags) {
-                    val tagMap = tag as? Map<*, *> ?: continue
-                    if (tagMap["name"] as? String == categoryName) {
-                        desc = tagMap["desc"] as? String ?: ""
+                    if (tag.name == categoryName) {
+                        desc = tag.desc ?: ""
                         break
                     }
                 }
@@ -155,9 +147,7 @@ class CategoryDetailViewModel : ViewModel() {
             if (firstCover.isNotEmpty() && desc.isNotEmpty()) break
         }
 
-        // 直接使用映射表中的头图 URL
         val headerImage = categoryImageMap[categoryName] ?: ""
-
         _tagInfo.value = TagInfo(desc, headerImage, firstCover)
     }
 
@@ -198,81 +188,45 @@ class CategoryDetailViewModel : ViewModel() {
         return rawItems.mapNotNull { item ->
             when (item.type) {
                 "textCard" -> {
-                    val data = item.data as? Map<*, *>
-                    val text = data?.get("text") as? String ?: return@mapNotNull null
+                    val card = item.data as? TextCardData ?: return@mapNotNull null
+                    val text = card.text ?: return@mapNotNull null
                     CategoryItem.Header(text)
                 }
                 "followCard" -> {
-                    // followCard.content 是 Item 包装器，不是 VideoData 需要手动解析
-                    val data = item.data as? Map<*, *> ?: return@mapNotNull null
-                    val content = data["content"] as? Map<*, *> ?: return@mapNotNull null
-                    val contentData = content["data"] as? Map<*, *> ?: return@mapNotNull null
-                    val id = (contentData["id"] as? Double)?.toLong() ?: return@mapNotNull null
-                    val title = contentData["title"] as? String ?: ""
-                    val cover = contentData["cover"] as? Map<*, *>
-                    val coverUrl = cover?.get("detail") as? String ?: ""
-                    val duration = (contentData["duration"] as? Double)?.toLong() ?: 0
-                    val author = contentData["author"] as? Map<*, *>
-                    val authorName = author?.get("name") as? String ?: ""
-                    val authorIcon = author?.get("icon") as? String ?: ""
-                    val description = contentData["description"] as? String ?: ""
-                    val playUrl = contentData["playUrl"] as? String ?: ""
-                    val category = contentData["category"] as? String ?: ""
-                    val consumption = contentData["consumption"] as? Map<*, *>
-                    val collectionCount = (consumption?.get("collectionCount") as? Double)?.toInt() ?: 0
-                    val shareCount = (consumption?.get("shareCount") as? Double)?.toInt() ?: 0
-                    val replyCount = (consumption?.get("replyCount") as? Double)?.toInt() ?: 0
-                    val webUrl = contentData["webUrl"] as? Map<*, *>
-                    val webUrlRaw = webUrl?.get("raw") as? String ?: ""
+                    val card = item.data as? FollowCardData ?: return@mapNotNull null
+                    val v = card.content?.data ?: return@mapNotNull null
                     CategoryItem.Video(
-                        videoId = id,
-                        title = title,
-                        coverUrl = coverUrl,
-                        duration = duration,
-                        authorName = authorName,
-                        authorIcon = authorIcon,
-                        description = description,
-                        playUrl = playUrl,
-                        category = category,
-                        collectionCount = collectionCount,
-                        shareCount = shareCount,
-                        replyCount = replyCount,
-                        webUrl = webUrlRaw
+                        videoId = v.id,
+                        title = v.title,
+                        coverUrl = v.cover?.detail ?: "",
+                        duration = v.duration,
+                        authorName = v.author?.name ?: "",
+                        authorIcon = v.author?.icon ?: "",
+                        description = v.description,
+                        playUrl = v.playUrl,
+                        category = v.category,
+                        collectionCount = v.consumption?.collectionCount ?: 0,
+                        shareCount = v.consumption?.shareCount ?: 0,
+                        replyCount = v.consumption?.replyCount ?: 0,
+                        webUrl = v.webUrl?.raw ?: ""
                     )
                 }
                 "videoSmallCard" -> {
-                    val data = item.data as? Map<*, *> ?: return@mapNotNull null
-                    val id = (data["id"] as? Double)?.toLong() ?: return@mapNotNull null
-                    val title = data["title"] as? String ?: ""
-                    val cover = data["cover"] as? Map<*, *>
-                    val coverUrl = cover?.get("feed") as? String ?: ""
-                    val duration = (data["duration"] as? Double)?.toLong() ?: 0
-                    val author = data["author"] as? Map<*, *>
-                    val authorName = author?.get("name") as? String ?: ""
-                    val authorIcon = author?.get("icon") as? String ?: ""
-                    val description = data["description"] as? String ?: ""
-                    val playUrl = data["playUrl"] as? String ?: ""
-                    val category = data["category"] as? String ?: ""
-                    val consumption = data["consumption"] as? Map<*, *>
-                    val collectionCount = (consumption?.get("collectionCount") as? Double)?.toInt() ?: 0
-                    val shareCount = (consumption?.get("shareCount") as? Double)?.toInt() ?: 0
-                    val replyCount = (consumption?.get("replyCount") as? Double)?.toInt() ?: 0
-                    val webUrl = data["webUrl"] as? Map<*, *>
-                    val webUrlRaw = webUrl?.get("raw") as? String ?: ""
+                    val v = item.data as? VideoData ?: return@mapNotNull null
                     CategoryItem.Video(
-                        videoId = id,
-                        title = title,
-                        coverUrl = coverUrl,
-                        duration = duration,
-                        authorName = authorName,
-                        authorIcon = authorIcon,
-                        description = description,
-                        playUrl = playUrl,
-                        category = category,
-                        collectionCount = collectionCount,
-                        shareCount = shareCount,
-                        replyCount = replyCount,
-                        webUrl = webUrlRaw
+                        videoId = v.id,
+                        title = v.title,
+                        coverUrl = v.cover?.feed ?: "",
+                        duration = v.duration,
+                        authorName = v.author?.name ?: "",
+                        authorIcon = v.author?.icon ?: "",
+                        description = v.description,
+                        playUrl = v.playUrl,
+                        category = v.category,
+                        collectionCount = v.consumption?.collectionCount ?: 0,
+                        shareCount = v.consumption?.shareCount ?: 0,
+                        replyCount = v.consumption?.replyCount ?: 0,
+                        webUrl = v.webUrl?.raw ?: ""
                     )
                 }
                 else -> null

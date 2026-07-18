@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.TextCardData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.google.gson.Gson
@@ -86,23 +87,19 @@ class DiscoveryViewModel : ViewModel() {
         var foundHeader = false
 
         for (item in items) {
-            val data = item.data as? Map<*, *> ?: continue
-
             if (item.type == "textCard") {
-                val dataType = data["dataType"] as? String ?: ""
-                val type = data["type"] as? String ?: ""
-                val text = data["text"] as? String ?: ""
-                if (dataType == "TextCardWithRightAndLeftTitle" && type == "header7") {
-                    if (text == headerText) {
+                val card = item.data as? TextCardData ?: continue
+                if (card.dataType == "TextCardWithRightAndLeftTitle" && card.type == "header7") {
+                    if (card.text == headerText) {
                         foundHeader = true
                         continue
                     }
-                    // 遇到下一个 header7 就停止（如果已经在收集）
                     if (foundHeader) break
                 }
             }
 
             if (foundHeader && item.type == "briefCard") {
+                val data = item.data as? Map<*, *> ?: continue
                 val id = (data["id"] as? Double)?.toLong() ?: continue
                 val title = (data["title"] as? String)?.removePrefix("#") ?: continue
                 val icon = data["icon"] as? String ?: ""

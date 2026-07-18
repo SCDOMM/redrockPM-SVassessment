@@ -26,6 +26,9 @@ interface KaiyanApi {
         @Query("page") page: Int = 0
     ): Call<EyepetizerResponse>
 
+    @GET
+    fun getTabDetailByUrl(@Url url: String): Call<EyepetizerResponse>
+
     @GET("v7/index/tab/discovery")
     fun getDiscovery(): Call<EyepetizerResponse>
 
@@ -60,7 +63,8 @@ interface KaiyanApi {
     @GET("v6/tag/dynamics")
     fun getTagDynamics(
         @Query("id") tagId: Int,
-        @Query("page") page: Int = 0
+        @Query("page") page: Int = 0,
+        @Query("udid") udid: String = "435865baacfc49499632ea13c5a78f944c2f28aa"
     ): Call<EyepetizerResponse>
 
     @GET("v1/tag/videos")
@@ -100,7 +104,7 @@ interface KaiyanApi {
     ): Call<EyepetizerResponse>
 
     @GET("v7/tag/tabList")
-    fun getTagTabList(): Call<EyepetizerResponse>
+    fun getTagTabList(): Call<TabListResponse>
 
     @GET("v7/topic/list")
     fun getTopicList(@Query("page") page: Int = 0): Call<EyepetizerResponse>

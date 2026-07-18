@@ -26,6 +26,15 @@
         </activity>
         <activity
             android:name="com.example.ept.category.CategoryDetailActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.dicover.TopicListActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.dicover.TopicDetailActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
     </application>
 
