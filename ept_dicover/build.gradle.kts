@@ -23,9 +23,22 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:core_model"))
+    implementation(project(":core:core_network"))
+    implementation(project(":core:core_media"))
+    implementation(project(":ept_community"))
+    implementation(project(":ept_category"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.retrofit.core)
+    implementation(libs.glide)
+    implementation(libs.gson)
+    annotationProcessor(libs.glide.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

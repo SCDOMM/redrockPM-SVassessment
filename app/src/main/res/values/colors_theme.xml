@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 浅色模式下使用浅色背景和深色文字 -->
+    <color name="background">@color/background_light</color>
+    <color name="surface">@color/surface_light</color>
+    <color name="text_primary">@color/text_primary_light</color>
+    <color name="text_secondary">@color/text_secondary_light</color>
+    <color name="text_hint">@color/text_hint_light</color>
+</resources>

@@ -15,11 +15,12 @@
             <option value="$PROJECT_DIR$/core/core_media" />
             <option value="$PROJECT_DIR$/core/core_model" />
             <option value="$PROJECT_DIR$/core/core_network" />
+            <option value="$PROJECT_DIR$/ept_category" />
+            <option value="$PROJECT_DIR$/ept_community" />
             <option value="$PROJECT_DIR$/ept_daily" />
             <option value="$PROJECT_DIR$/ept_dicover" />
             <option value="$PROJECT_DIR$/ept_home" />
-            <option value="$PROJECT_DIR$/ept_hot" />
-            <option value="$PROJECT_DIR$/ept_person" />
+            <option value="$PROJECT_DIR$/ept_search" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -9,12 +9,10 @@ package com.example.core.model
  *
  */
 data class EyepetizerResponse(
-    val itemList: List<Item>,       //列表数据
-    val count: Int,                 // 当前返回数量
-    val total: Int,                 // 总数（可选）
-    val nextPageUrl: String?,       // 下一页URL（分页）
-    val date: Long?,                // 请求日期时间戳
-    val refreshCount: Int?,         // 刷新数
-    val adExist: Boolean?           // 是否有广告
+    val itemList: List<Item> = emptyList(),   // 列表数据（核心字段）
+    val count: Int = 0,                        // 当前返回数量
+    val total: Int = 0,                        // 总数
+    val nextPageUrl: String? = null,           // 下一页URL（分页用）
+    val adExist: Boolean? = null               // 是否有广告
+    // ⚠️ 实际JSON中不存在 date、refreshCount，已移除
 )
-

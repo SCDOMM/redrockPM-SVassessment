@@ -4,7 +4,7 @@ import com.example.core.model.author.Follow
 import com.example.core.model.navigation.TextHeaderData
 import com.example.core.model.videoEntity.VideoData
 
-/**   
+/**
  * 包名称： com.example.core.model.banner
  * 类名称：FollowCardData
  * 类描述：TODO

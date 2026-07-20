@@ -18,6 +18,9 @@ gsyVideo = "13.1.0"
 glide = "4.16.0"
 viewpager2 = "1.0.0"
 swiperefreshlayout = "1.1.0"
+recyclerview = "1.4.0"
+constraintlayout = "2.2.1"
+flexbox="3.0.0"
 
 [libraries]
 gsy-video-player = { group = "io.github.carguo", name = "gsyvideoplayer", version.ref = "gsyVideo" }

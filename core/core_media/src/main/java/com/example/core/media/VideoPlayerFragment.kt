@@ -45,6 +45,9 @@ class VideoPlayerFragment : Fragment() {
     private lateinit var tvAuthorName: TextView
     private lateinit var tvCategory: TextView
     private lateinit var tvDescription: TextView
+    private lateinit var tvCollectionCount: TextView
+    private lateinit var tvReplyCount: TextView
+    private lateinit var ivShare: ImageView
     private lateinit var rvRelated: RecyclerView
     private var orientationUtils: OrientationUtils? = null
 
@@ -60,6 +63,9 @@ class VideoPlayerFragment : Fragment() {
     private var authorIcon: String = ""
     private var category: String = ""
     private var description: String = ""
+    private var collectionCount: Int = 0
+    private var replyCount: Int = 0
+    private var playUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +78,9 @@ class VideoPlayerFragment : Fragment() {
             authorIcon = it.getString(ARG_AUTHOR_ICON, "")
             category = it.getString(ARG_CATEGORY, "")
             description = it.getString(ARG_DESCRIPTION, "")
+            collectionCount = it.getInt(ARG_COLLECTION_COUNT, 0)
+            replyCount = it.getInt(ARG_REPLY_COUNT, 0)
+            playUrl = it.getString(ARG_PLAY_URL, "")
         }
     }
 
@@ -91,6 +100,9 @@ class VideoPlayerFragment : Fragment() {
         tvAuthorName = view.findViewById(R.id.tv_author_name)
         tvCategory = view.findViewById(R.id.tv_category)
         tvDescription = view.findViewById(R.id.tv_description)
+        tvCollectionCount = view.findViewById(R.id.tv_collection_count)
+        tvReplyCount = view.findViewById(R.id.tv_reply_count)
+        ivShare = view.findViewById(R.id.iv_share)
         rvRelated = view.findViewById(R.id.rv_related)
         scrollView = view.findViewById(R.id.nsv_media_detail)
 
@@ -100,7 +112,9 @@ class VideoPlayerFragment : Fragment() {
         resolveAndPlay()
     }
 
-    //异步解析重定向 URL 后初始化播放器
+    /**
+     * 异步解析 playUrl 302 重定向后初始化播放器
+     */
     private fun resolveAndPlay() {
         viewLifecycleOwner.lifecycleScope.launch {
             val realUrl = withContext(Dispatchers.IO) {
@@ -110,7 +124,9 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
-    //配置 GSYVideoPlayer 参数并开始播放
+    /**
+     * 配置 GSYVideoPlayer 参数并开始播放
+     */
     private fun initVideoPlayer(realUrl: String) {
 
         GSYVideoOptionBuilder()
@@ -176,7 +192,9 @@ class VideoPlayerFragment : Fragment() {
     }
 
 
-    //初始化相关推荐列表及点击跳转逻辑
+    /**
+     * 初始化相关推荐列表及点击跳转逻辑
+     */
     private fun initRelatedVideos() {
         relatedAdapter = RelatedVideoAdapter { item ->
             val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
@@ -195,32 +213,61 @@ class VideoPlayerFragment : Fragment() {
         rvRelated.adapter = relatedAdapter
     }
 
-    //加载相关推荐视频数据
+    /**
+     * 加载相关推荐视频数据
+     */
     private fun loadRelatedVideos() {
         if (videoId == 0L) return
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val response = api.getVideoRelated(videoId)
-                relatedAdapter.submitList(relatedAdapter.parseItems(response.itemList))
+                val response = withContext(Dispatchers.IO) {
+                    api.getVideoRelated(videoId).execute()
+                }
+                if (response.isSuccessful) {
+                    relatedAdapter.submitList(relatedAdapter.parseItems(response.body()?.itemList ?: emptyList()))
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    //绑定视频标题、作者、分类、描述到 UI
+    /**
+     * 绑定视频标题、作者、分类、描述到 UI
+     */
     private fun bindData() {
         tvTitle.text = videoTitle
         tvAuthorName.text = authorName
         tvCategory.text = if (category.isNotEmpty()) "#$category" else ""
         tvDescription.text = description
+        tvCollectionCount.text = formatCount(collectionCount)
+        tvReplyCount.text = formatCount(replyCount)
 
         if (authorIcon.isNotEmpty()) {
             Glide.with(this)
                 .load(authorIcon)
                 .transform(CircleCrop())
                 .into(ivAuthor)
+        }
+
+        // 分享按钮
+        val shareUrl = playUrl.ifEmpty { videoUrl }
+        ivShare.setOnClickListener {
+            if (shareUrl.isNotEmpty()) {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareUrl)
+                }
+                startActivity(Intent.createChooser(shareIntent, "分享视频"))
+            }
+        }
+    }
+
+    private fun formatCount(count: Int): String {
+        return when {
+            count >= 10000 -> String.format("%.1f万", count / 10000.0)
+            else -> count.toString()
         }
     }
 
@@ -245,16 +292,32 @@ class VideoPlayerFragment : Fragment() {
 
 
     companion object {
+        /** 视频 ID 参数键名 */
         private const val ARG_VIDEO_ID = "video_id"
+        /** 视频播放地址参数键名 */
         private const val ARG_VIDEO_URL = "video_url"
+        /** 视频标题参数键名 */
         private const val ARG_VIDEO_TITLE = "video_title"
+        /** 视频封面图参数键名 */
         private const val ARG_VIDEO_COVER = "video_cover"
+        /** 作者名称参数键名 */
         private const val ARG_AUTHOR_NAME = "author_name"
+        /** 作者头像参数键名 */
         private const val ARG_AUTHOR_ICON = "author_icon"
+        /** 视频分类参数键名 */
         private const val ARG_CATEGORY = "category"
+        /** 视频描述参数键名 */
         private const val ARG_DESCRIPTION = "description"
+        /** 收藏数参数键名 */
+        private const val ARG_COLLECTION_COUNT = "collection_count"
+        /** 回复数参数键名 */
+        private const val ARG_REPLY_COUNT = "reply_count"
+        /** 视频播放地址参数键名（用于分享） */
+        private const val ARG_PLAY_URL = "play_url"
 
-        //创建 Fragment 实例并传入视频参数
+        /**
+         * 创建 Fragment 实例并传入视频参数
+         */
         @JvmStatic
         fun newInstance(
             videoId: Long,
@@ -264,7 +327,10 @@ class VideoPlayerFragment : Fragment() {
             authorName: String,
             authorIcon: String,
             category: String,
-            description: String
+            description: String,
+            collectionCount: Int = 0,
+            replyCount: Int = 0,
+            playUrl: String = ""
         ) = VideoPlayerFragment().apply {
             arguments = Bundle().apply {
                 putLong(ARG_VIDEO_ID, videoId)
@@ -275,6 +341,9 @@ class VideoPlayerFragment : Fragment() {
                 putString(ARG_AUTHOR_ICON, authorIcon)
                 putString(ARG_CATEGORY, category)
                 putString(ARG_DESCRIPTION, description)
+                putInt(ARG_COLLECTION_COUNT, collectionCount)
+                putInt(ARG_REPLY_COUNT, replyCount)
+                putString(ARG_PLAY_URL, playUrl)
             }
         }
     }
