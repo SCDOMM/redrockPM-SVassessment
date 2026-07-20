@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 /**
  * description ： 推荐主题横向列表适配器
  * email : 3014386984@qq.com
- * date : 2026/7/17
+ * date : 2026/7/17  13:28
  */
 class TopicAdapter(
     private val onItemClick: (TopicItem) -> Unit = {}
