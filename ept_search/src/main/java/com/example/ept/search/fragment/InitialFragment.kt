@@ -71,7 +71,7 @@ class InitialFragment : Fragment() {
             }
         }
         searchViewModel.rankingLiveData.observe(viewLifecycleOwner){ data ->
-            for (i in 0 ..6){
+            for (i in 0 ..5){
                 val child=llInitialContainer.getChildAt(i)
                 child.visibility=View.VISIBLE
                 val ivCover = child.findViewById<ImageView>(R.id.iv_ranking_cover_item)

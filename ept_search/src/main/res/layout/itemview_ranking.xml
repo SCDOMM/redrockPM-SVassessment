@@ -52,6 +52,7 @@
                 android:textColor="#1A1A1A"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/iv_ranking_cover_item"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/iv_ranking_cover_item"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>

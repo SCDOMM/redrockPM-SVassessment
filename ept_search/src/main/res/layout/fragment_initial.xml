@@ -89,6 +89,10 @@
             app:layout_constraintTop_toBottomOf="@id/tv_initial_ranking">
 
             <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_0"
+                />
+
+            <include layout="@layout/itemview_ranking"
                 android:id="@+id/rank_initial_1"
                 />
 
@@ -104,13 +108,6 @@
                 android:id="@+id/rank_initial_4"
                 />
 
-            <include layout="@layout/itemview_ranking"
-                android:id="@+id/rank_initial_5"
-                />
-
-            <include layout="@layout/itemview_ranking"
-                android:id="@+id/rank_initial_6"
-                />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

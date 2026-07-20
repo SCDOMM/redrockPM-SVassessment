@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.ept.notify.fragment.InfoFragment">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_info_default"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_info_default"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.core.network.api
 
 import com.example.core.model.EyepetizerResponse
+import com.example.core.model.NoticeResponse
 import com.example.core.model.PreSearchResponse
 import com.example.core.model.RankListResponse
 import com.example.core.model.SearchResponse
@@ -148,6 +149,19 @@ interface KaiyanApi {
         @Query("source") source: String = "aliyun"
     ): Call<EyepetizerResponse>
 
+    @GET("v1/common/notice/get_push_list")
+    fun getPushList(
+        @Query("last_item_id") lastItemId: Int
+//        @Query("udid") udid: String = "e53bcd5aa95847c0b0bd31c80b7fc102",
+//        @Query("vc") vc: String = "7090000",
+//        @Query("vn") vn: String = "7.9.0",
+//        @Query("deviceModel") deviceModel: String = "V2364A",
+//        @Query("size") size: String = "1080X2185",
+//        @Query("first_channel") firstChannel: String = "huawei",
+//        @Query("last_channel") lastChannel: String = "huawei",
+//        @Query("system_version_code") systemVersionCode: String = "36",
+//        @Query("token") token: String = ""
+    ): Call<NoticeResponse>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_result_v2")
