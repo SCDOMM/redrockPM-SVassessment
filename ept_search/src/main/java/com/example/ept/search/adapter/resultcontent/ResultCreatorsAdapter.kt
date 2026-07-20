@@ -1,5 +1,6 @@
 package com.example.ept.search.adapter.resultcontent
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,7 @@ import com.example.ept.search.R
  *
  */
 class ResultCreatorsAdapter :
-    ListAdapter<MetroData, ResultCreatorsAdapter.CreatorViewHolder>(ArticlesDiffCallback) {
+    ListAdapter<MetroData, ResultCreatorsAdapter.CreatorViewHolder>(CreatorDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -42,19 +43,16 @@ class ResultCreatorsAdapter :
         val ivResultCreatorCoverItem: ImageView =
             itemView.findViewById(R.id.iv_result_creators_cover_item)
         val tvResultCreatorTitleItem: TextView =
-            itemView.findViewById(R.id.tv_result_creators_title_item)
+            itemView.findViewById(R.id.tv_result_creators_name_item)
         val tvResultCreatorDescItem: TextView =
             itemView.findViewById(R.id.tv_result_creators_desc_item)
         val ivResultCreatorAddItem: ImageView = itemView.findViewById(R.id.iv_result_creators_add)
         fun bindData(metroData: MetroData) {
-
-            ivResultCreatorCoverItem.let { player ->
-                {
-                    Glide.with(player.context)
-                        .load(metroData.cover?.url)
-                        .into(player)
-                }
-            }
+            Glide.with(ivResultCreatorCoverItem.context)
+                .load(metroData.avatar?.url)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
+                .into(ivResultCreatorCoverItem)
             tvResultCreatorTitleItem.text = metroData.nick
             tvResultCreatorDescItem.text = metroData.description
         }

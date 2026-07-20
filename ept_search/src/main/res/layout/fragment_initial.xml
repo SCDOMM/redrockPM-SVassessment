@@ -19,7 +19,7 @@
             android:paddingBottom="10dp"
             android:text="搜索历史"
             android:textColor="#111111"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="删除"
             android:textColor="#0066CC"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,7 +51,7 @@
             android:paddingBottom="10dp"
             android:text="推荐搜索"
             android:textColor="#111111"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/flex_initial_history" />
 
@@ -74,12 +74,12 @@
             android:paddingBottom="20dp"
             android:text="视频周榜 >"
             android:textColor="#111111"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/flex_initial_recommend" />
 
         <LinearLayout
-            android:id="@+id/ll_initial_2"
+            android:id="@+id/ll_initial_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="100dp"
@@ -88,17 +88,29 @@
             app:layout_constraintStart_toStartOf="@id/tv_initial_ranking"
             app:layout_constraintTop_toBottomOf="@id/tv_initial_ranking">
 
-            <include layout="@layout/itemview_ranking" />
+            <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_1"
+                />
 
-            <include layout="@layout/itemview_ranking" />
+            <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_2"
+                />
 
-            <include layout="@layout/itemview_ranking" />
+            <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_3"
+                />
 
-            <include layout="@layout/itemview_ranking" />
+            <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_4"
+                />
 
-            <include layout="@layout/itemview_ranking" />
+            <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_5"
+                />
 
-            <include layout="@layout/itemview_ranking" />
+            <include layout="@layout/itemview_ranking"
+                android:id="@+id/rank_initial_6"
+                />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

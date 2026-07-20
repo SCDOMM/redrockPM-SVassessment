@@ -23,24 +23,11 @@ object RetrofitClient {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
-    class CookieInterceptor : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val originalRequest = chain.request()
-            val newRequest = if (originalRequest.url.encodedPath.contains("get_search_result_v2")) {
-                originalRequest.newBuilder()
-                    .addHeader("Cookie", "ky_udid=e53bcd5aa95847c0b0bd31c80b7fc102;ky_auth=APPIDahpagrcrf2p7m6rg;P95E551D-bdf22c23d2df47687d7bceef5c8bd00")
-                    .build()
-            } else {
-                originalRequest
-            }
-            return chain.proceed(newRequest)
-        }
-    }
     private val cookieInterceptor = Interceptor { chain ->
         val original = chain.request()
         val newRequest = if (original.url.encodedPath.contains("get_search_result_v2")) {
             original.newBuilder()
-                .addHeader("Cookie", "ky_udid=e53bcd5aa95847c0b0bd31c80b7fc102;ky_auth=APPIDahpagrcrf2p7m6rg;P95E551D-bdf22c23d2df47687d7bceef5c8bd00")
+               .header("Cookie", "ky_udid=58d1cf919db5480fbf33d4e306642a4e;ky_auth=;APPID=ahpagrcrf2p7m6rg;PHPSESSID=fb950631740ecf259abd1519ed26d1c3")
                 .build()
         } else {
             original

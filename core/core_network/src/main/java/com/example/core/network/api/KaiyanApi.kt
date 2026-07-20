@@ -1,9 +1,12 @@
 package com.example.core.network.api
 
 import com.example.core.model.EyepetizerResponse
+import com.example.core.model.PreSearchResponse
 import com.example.core.model.RankListResponse
 import com.example.core.model.SearchResponse
+import com.example.core.model.SearchResponseV2
 import com.example.core.model.TabListResponse
+import com.example.core.model.WeeklyRankResponse
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -29,6 +32,19 @@ interface KaiyanApi {
         @Path("tabId") tabId: String,
         @Query("page") page: Int = 0,
     ): Call<EyepetizerResponse>
+
+    @GET("v1/recommend/search/get_hot_queries")
+    fun getHotQueries(
+        @Query("udid") udid: String = "58d1cf919db5480fbf33d4e306642a4e",
+        @Query("vc") vc: String = "7090000",
+        @Query("vn") vn: String = "7.9.0",
+        @Query("deviceModel") deviceModel: String = "V2410A",
+        @Query("size") size: String = "1080X2163",
+        @Query("first_channel") firstChannel: String = "huawei",
+        @Query("last_channel") lastChannel: String = "huawei",
+        @Query("system_version_code") systemVersionCode: String = "35",
+        @Query("token") token: String = ""
+    ): Call<PreSearchResponse>
 
     @GET
     fun getTabDetailByUrl(@Url url: String): Call<EyepetizerResponse>
@@ -125,9 +141,6 @@ interface KaiyanApi {
         @Query("source") source: String = "aliyun"
     ): Call<EyepetizerResponse>
 
-    // ========== 搜索相关 ==========
-    @GET("v3/queries/hot")
-    fun getHotQueries(): Call<List<String>>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_result_v2")
@@ -135,7 +148,37 @@ interface KaiyanApi {
         @Field("query") query: String,
         @Field("start") start: Int = 0,
         @Field("num") num: Int = 10
-    ): Call<SearchResponse>   // 这里使用 suspend 函数 + Retrofit 2.6 以上支持
+    ): Call<SearchResponse>
+
+    @GET("v1/recommend/search/get_pre_search")
+    fun getPreSearch(
+        @Query("query") query: String
+    ): Call<PreSearchResponse>
+
+    @FormUrlEncoded
+    @POST("v1/search/search/get_search_recommend_card_list")
+    fun getWeeklyRank(
+        @Field("udid") udid: String = "58d1cf919db5480fbf33d4e306642a4e",
+        @Field("vc") vc: String = "7090000",
+        @Field("vn") vn: String = "7.9.0",
+        @Field("deviceModel") deviceModel: String = "V2410A",
+        @Field("first_channel") firstChannel: String = "huawei",
+        @Field("size") size: String = "1080X2163",
+        @Field("system_version_code") systemVersionCode: String = "35",
+        @Field("token") token: String = ""
+    ): Call<WeeklyRankResponse>
+
+    @FormUrlEncoded
+    @POST("v1/search/search/get_search_result_v2")
+    fun searchLoad(
+        @Field("query") query: String,
+        @Field("type") type: String,          // "video", "graphic" 等
+        @Field("last_item_id") lastItemId: Int,
+        @Field("num") num: Int = 10,
+    ): Call<SearchResponseV2>
+
+
+
     // ========== 日历相关 ==========
     @GET("v7/roamingCalendar/index")
     fun getCalendar(

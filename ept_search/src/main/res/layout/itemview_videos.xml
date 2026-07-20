@@ -11,8 +11,6 @@
         android:id="@+id/cv_result_videos_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardElevation="0dp"
-        app:cardMaxElevation="0dp"
         app:strokeWidth="0.5dp"
         app:cardCornerRadius="10dp"
         app:strokeColor="#E0E0E0"

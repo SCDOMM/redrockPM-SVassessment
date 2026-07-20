@@ -1,6 +1,7 @@
 package com.example.ept.search.adapter.resultcontent
 
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +53,7 @@ class ResultVideosAdapter : ListAdapter<MetroData, ResultVideosAdapter.VideosVie
             tvResultVideosTitleItem.text=metroData.title
             val label= metroData.tags?.firstOrNull()?.title?.removePrefix("#")
            tvResultVideosLabelItem.text="#$label"
-            val duration=DateUtils.formatElapsedTime(metroData.duration?.value?.toLong() ?: 0)
+            val duration=DateUtils.formatElapsedTime(metroData.duration?.value?.toLong()!!)
                 tvResultVideosDurationItem.text = "▶$duration"
         }
     }

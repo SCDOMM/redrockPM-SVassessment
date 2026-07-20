@@ -22,6 +22,7 @@ class DailyFragment : Fragment() {
     private lateinit var viewModel: DailyViewModel
     private lateinit var adapter: DailyAdapter
     private var isLoading=false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -52,17 +52,15 @@ class ResultArticlesAdapter : ListAdapter<MetroData, ResultArticlesAdapter.Artic
                     ivResultArticlesStackItem.visibility= ImageView.GONE
                 }
             }
-            ivResultArticlesCoverItem.let { player->{
-                Glide.with(player.context)
-                    .load(metroData.cover?.url)
-                    .into(player)
-                }
-            }
-            val dashIndex = findDelimiterIndex(metroData.title, "-")
+            Glide.with(ivResultArticlesCoverItem.context)
+                .load(metroData.cover?.url)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
+                .into(ivResultArticlesCoverItem)
+            val dashIndex = findDelimiterIndex(metroData.title, "\n")
             if (dashIndex >= 0) {
                 val mainPart = metroData.title?.substring(0, dashIndex)?.trim()
                 val subPart = metroData.title?.substring(dashIndex + 1)?.trim()
-                    ?.replace(Regex("\\n+"), "\n")
                 tvResultArticlesTitleItem.text=mainPart
                 tvResultArticlesDescItem.text=subPart
             }else{
@@ -73,7 +71,7 @@ class ResultArticlesAdapter : ListAdapter<MetroData, ResultArticlesAdapter.Artic
                 tvResultArticlesInteractItem.text="0人互动"
             }else {
                 tvResultArticlesInteractItem.text =
-                    "${metroData.consumption?.likeCount}人喜欢,${metroData.consumption?.collectionCount}人首次"
+                    "${metroData.consumption?.likeCount}人喜欢,${metroData.consumption?.collectionCount}人收藏"
             }
         }
     }
