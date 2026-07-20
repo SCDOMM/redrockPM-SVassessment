@@ -20,6 +20,7 @@ class ResultAdapter(
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position].back()
     }
+
     override fun getItemCount(): Int {
         return fragmentList.size
     }

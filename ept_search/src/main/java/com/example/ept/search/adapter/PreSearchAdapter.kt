@@ -39,6 +39,7 @@ class PreSearchAdapter :
     inner class PreSearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var tvPreSearchDefault: TextView =
             itemView.findViewById(R.id.tv_presearch_default)
+
         fun bindData(str: String) {
             tvPreSearchDefault.text = str
         }

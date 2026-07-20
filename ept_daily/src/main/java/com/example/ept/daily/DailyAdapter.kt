@@ -1,7 +1,6 @@
 package com.example.ept.daily
 
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,13 +46,15 @@ class DailyAdapter : ListAdapter<VideoData, DailyAdapter.DailyViewHolder>(DailyD
         val tvAuthorDescItem: TextView = view.findViewById(R.id.tv_daily_author_item)
         val tvDailyDurationItem: TextView = view.findViewById(R.id.tv_daily_duration_item)
         fun bindData(videoData: VideoData) {
-            ivDailyCoverItem.let { player ->
-                Glide.with(player.context)
-                    .load(videoData.cover?.feed)
-                    .into(player)
-            }
+            Glide.with(ivDailyCoverItem.context)
+                .load(videoData.cover?.feed)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
+                .into(ivDailyCoverItem)
             Glide.with(ivDailyAuthorItem)
                 .load(videoData.cover?.feed)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
                 .into(ivDailyAuthorItem)
             tvDailyTitleItem.text = videoData.title
             val label = videoData.label?.text

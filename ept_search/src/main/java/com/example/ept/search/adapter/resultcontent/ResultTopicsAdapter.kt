@@ -1,6 +1,5 @@
 package com.example.ept.search.adapter.resultcontent
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,15 +47,16 @@ class ResultTopicsAdapter :
             itemView.findViewById(R.id.tv_result_topics_desc_item)
         val tvResultTopicsInteractItem: TextView =
             itemView.findViewById(R.id.tv_result_topics_interact_item)
+
         fun bindData(metroData: MetroData) {
             Glide.with(ivResultTopicsCoverItem.context)
                 .load(metroData.cover?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
                 .into(ivResultTopicsCoverItem)
-            tvResultTopicsTitleItem.text=metroData.title
-            tvResultTopicsDescItem.text=metroData.description
-            tvResultTopicsInteractItem.text= metroData.tags?.firstOrNull()?.title
+            tvResultTopicsTitleItem.text = metroData.title
+            tvResultTopicsDescItem.text = metroData.description
+            tvResultTopicsInteractItem.text = metroData.tags?.firstOrNull()?.title
         }
     }
 

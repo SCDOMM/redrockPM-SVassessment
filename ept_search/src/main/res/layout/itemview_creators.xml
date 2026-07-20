@@ -11,19 +11,17 @@
         android:id="@+id/cv_result_creators_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp"
+        app:strokeWidth="0.5dp"
+        app:cardCornerRadius="10dp"
+        app:strokeColor="#E0E0E0"
         app:layout_constraintDimensionRatio="W,5:16"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp"
-            app:strokeWidth="0.5dp"
-            app:cardCornerRadius="10dp"
-            app:strokeColor="#E0E0E0"
             >
 
             <com.google.android.material.imageview.ShapeableImageView

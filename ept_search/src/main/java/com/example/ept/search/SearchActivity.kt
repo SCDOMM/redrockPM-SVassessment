@@ -46,7 +46,17 @@ class SearchActivity : AppCompatActivity() {
         initPreSearch()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        svSearchTop.setOnQueryTextListener(null)
+        tvSearchCancel.setOnClickListener(null)
+    }
+
+
     fun initEvent() {
+        tvSearchCancel.setOnClickListener {
+            finish()
+        }
         initialFragment = InitialFragment()
         preSearchFragment = PreSearchFragment()
         resultFragment = ResultFragment()
@@ -67,8 +77,12 @@ class SearchActivity : AppCompatActivity() {
                 }
                 SearchState.Ranking -> {}
                 SearchState.Recommend -> {}
-                SearchState.Result -> {}
+                is SearchState.Result -> {}
                 SearchState.PreSearch -> {}
+                is SearchState.History -> {
+                    svSearchTop.isIconified = false
+                    svSearchTop.setQuery(value.query,true)
+                }
             }
         }
     }

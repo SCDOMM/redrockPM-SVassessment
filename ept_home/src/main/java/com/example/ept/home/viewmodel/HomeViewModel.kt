@@ -84,7 +84,6 @@ class HomeViewModel (application: Application) : AndroidViewModel(application) {
     }
 }
 sealed class HomeState{
-//    data class InitState(val videoList:MutableList<VideoData>): HomeState()
     data class RefreshState(val videoList:MutableList<VideoData>): HomeState()
     data class LoadingMoreState( val newVideoList: MutableList<VideoData>): HomeState()
     data class ErrorState(val errorMsg: String): HomeState()

@@ -55,13 +55,18 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                 val response = appService.search(query, 0, 10).await()
                 val result = parseSearchResponse(response, query)
                 _resultLiveData.value = result
-                _liveData.value = SearchState.Result
+                _liveData.value = SearchState.Result(query)
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.postValue(SearchState.Failed(e.message.toString()))
             }
         }
     }
+    fun searchHistory(query: String){
+
+        _liveData.value= SearchState.History(query)
+    }
+
     //获取推荐词
     fun fetchRecommend(){
         viewModelScope.launch {
@@ -117,6 +122,7 @@ sealed class SearchState {
     object Ranking : SearchState()
     object Recommend: SearchState()
     object PreSearch : SearchState()
-    object Result : SearchState()
+    data class History(val query: String): SearchState()
+    data class Result(val query: String): SearchState()
     data class Failed(val message: String) : SearchState()
 }

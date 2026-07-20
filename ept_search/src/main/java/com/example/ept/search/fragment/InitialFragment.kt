@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.ept.search.R
@@ -22,7 +21,6 @@ import com.google.android.flexbox.FlexboxLayout
 
 class InitialFragment : Fragment() {
     private lateinit var view: View
-
     private lateinit var tvInitialDelete: TextView
     private lateinit var flexInitialHistory: FlexboxLayout
     private lateinit var flexInitialRecommend: FlexboxLayout
@@ -80,18 +78,17 @@ class InitialFragment : Fragment() {
                 val tvTitle = child.findViewById<TextView>(R.id.tv_ranking_title_item)
                 Glide.with(ivCover)
                     .load(data[i].cover?.url)
+                    .error(R.drawable.eyepetater)
                     .placeholder(R.drawable.eyepetater)
                     .into(ivCover)
                 tvTitle.text = data[i].title
-
             }
         }
 
-
     }
-    private fun createTagView(text: String): TextView {
+    private fun createTagView(query: String): TextView {
         return TextView(requireContext()).apply {
-            this.text = text
+            this.text = query
             setPadding(
                 dp2px(12),
                 dp2px(6),
@@ -104,6 +101,9 @@ class InitialFragment : Fragment() {
                 dp2px(36)                                  // 固定高度
             ).apply {
                 setMargins(0, 0, dp2px(8), dp2px(8))      // 标签间距
+            }
+            setOnClickListener {
+                searchViewModel.searchHistory(query)
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.example.ept.home.adapter
 
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,22 +78,24 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         val tvHomeDurationItem1: TextView = view.findViewById(R.id.tv_home_duration_item1)
         fun bindData(videoData: VideoData) {
             gsyvHomeDefaultItem1.setUp(videoData.playUrl, true, videoData.title)
-            gsyvHomeDefaultItem1.let { player ->
-                player.backButton.visibility= View.GONE
-                player.thumbImageView= ImageView(player.context)
-                Glide.with(player.context)
-                    .load(videoData.cover?.feed)
-                    .into(player.thumbImageView!! as ImageView)
-            }
+
+            gsyvHomeDefaultItem1.backButton.visibility = View.GONE
+            gsyvHomeDefaultItem1.thumbImageView = ImageView(gsyvHomeDefaultItem1.context)
+            Glide.with(gsyvHomeDefaultItem1.context)
+                .load(videoData.cover?.feed)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
+                .into(gsyvHomeDefaultItem1.thumbImageView!! as ImageView)
+
             Glide.with(ivHomeDefaultItem1)
                 .load(videoData.author?.icon)
                 .into(ivHomeDefaultItem1)
             tvHomeTitleItem1.text = videoData.title
-            val label= videoData.label?.text
+            val label = videoData.label?.text
                 ?: videoData.category
-            tvHomeLabelItem1.text ="#$label"
+            tvHomeLabelItem1.text = "#$label"
             tvHomeAuthorItem1.text = videoData.author?.name
-            val duration=DateUtils.formatElapsedTime(videoData.duration)
+            val duration = DateUtils.formatElapsedTime(videoData.duration)
             tvHomeDurationItem1.text = "▶$duration"
         }
     }
@@ -107,20 +108,22 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         val tvHomeAuthorItem2: TextView = view.findViewById(R.id.tv_home_author_item2)
         val tvHomeDurationItem2: TextView = view.findViewById(R.id.tv_home_duration_item2)
         fun bindData(videoData: VideoData) {
-           ivHomeCoverItem2.let { cover ->
-                Glide.with(cover.context)
-                    .load(videoData.cover?.feed)
-                    .into(cover)
-            }
+            Glide.with(ivHomeCoverItem2.context)
+                .load(videoData.cover?.feed)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
+                .into(ivHomeCoverItem2)
             Glide.with(ivHomeDefaultItem2)
                 .load(videoData.author?.icon)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
                 .into(ivHomeDefaultItem2)
             tvHomeTitleItem2.text = videoData.title
-            val label= videoData.label?.text
+            val label = videoData.label?.text
                 ?: videoData.category
-            tvHomeLabelItem2.text ="#$label"
+            tvHomeLabelItem2.text = "#$label"
             tvHomeAuthorItem2.text = videoData.author?.name
-            val duration=DateUtils.formatElapsedTime(videoData.duration)
+            val duration = DateUtils.formatElapsedTime(videoData.duration)
             tvHomeDurationItem2.text = "▶$duration"
         }
     }
@@ -131,15 +134,15 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         val tvHomeLabelItem3: TextView = view.findViewById(R.id.tv_home_label_item3)
         val tvHomeDurationItem3: TextView = view.findViewById(R.id.tv_home_duration_item3)
         fun bindData(videoData: VideoData) {
-            ivHomeCoverItem3.let { player ->
-                Glide.with(player.context)
+                Glide.with(ivHomeCoverItem3.context)
                     .load(videoData.cover?.feed)
-                    .into(player)
-            }
+                    .placeholder(R.drawable.eyepetater)
+                    .error(R.drawable.eyepetater)
+                    .into(ivHomeCoverItem3)
             tvHomeTitleItem3.text = videoData.title
-            val label= videoData.label?.text
+            val label = videoData.label?.text
                 ?: videoData.category
-            tvHomeLabelItem3.text ="#$label"
+            tvHomeLabelItem3.text = "#$label"
             tvHomeDurationItem3.text = DateUtils.formatElapsedTime(videoData.duration)
         }
     }
