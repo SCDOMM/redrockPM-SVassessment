@@ -17,22 +17,35 @@ import kotlinx.coroutines.withContext
  * email : 3014386984@qq.com
  * date : 2026/7/18
  */
+/**
+ * 话题列表页 ViewModel
+ * 加载话题分类 Tab 列表
+ */
 class TopicListViewModel : ViewModel() {
 
+    /** 开眼 API 接口实例，用于网络请求 */
     private val api = RetrofitClient.create<KaiyanApi>()
 
+    /** Tab 列表，展示话题分类 */
     private val _tabs = MutableLiveData<List<TabItem>>()
     val tabs: LiveData<List<TabItem>> = _tabs
 
+    /** 加载状态 */
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    /** 错误信息 */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    /** 标记是否已加载过数据，防止返回时重复加载 */
     var loaded = false
         private set
 
+    /**
+     * 加载 Tab 列表
+     * 从 API 获取话题分类标签
+     */
     fun loadTabs() {
         loaded = true
         viewModelScope.launch {

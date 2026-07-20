@@ -20,6 +20,7 @@ import com.example.core.media.VideoPlayerActivity
  */
 class CommunityFragment : Fragment() {
 
+    /** 社区页 ViewModel，管理数据加载和分页逻辑 */
     private val viewModel: CommunityViewModel by viewModels()
 
     override fun onCreateView(
@@ -32,12 +33,16 @@ class CommunityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /** 下拉刷新布局，用于触发刷新操作和显示加载状态 */
         val swipeRefresh = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
+        /** 社区内容列表，展示视频和图片卡片 */
         val rvCommunity = view.findViewById<RecyclerView>(R.id.rv_community)
 
+        /** 线性布局管理器，垂直排列列表项 */
         val layoutManager = LinearLayoutManager(requireContext())
         rvCommunity.layoutManager = layoutManager
 
+        /** 社区适配器，处理卡片点击事件并跳转到视频播放页 */
         val adapter = CommunityAdapter { video ->
             val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
                 putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, video.id)
@@ -56,31 +61,37 @@ class CommunityFragment : Fragment() {
         }
         rvCommunity.adapter = adapter
 
+        /** 观察数据变化，更新列表显示 */
         viewModel.items.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
         }
 
+        /** 观察加载状态，控制下拉刷新动画 */
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
             swipeRefresh.isRefreshing = loading
         }
 
+        /** 观察错误信息，显示 Toast 提示 */
         viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
             errorMsg?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
 
+        /** 下拉刷新监听器，触发数据重新加载 */
         swipeRefresh.setOnRefreshListener {
             viewModel.refresh()
         }
 
-        // 上拉加载更多
+        /** 上拉加载更多监听器，滚动到底部时自动加载下一页 */
         rvCommunity.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                // 向下滚动时检测是否需要加载更多
                 if (dy > 0) {
                     val lastVisible = layoutManager.findLastVisibleItemPosition()
                     val totalItems = layoutManager.itemCount
+                    // 距离底部还有3个item时触发加载，且有下一页且不在加载中
                     if (lastVisible >= totalItems - 3 && viewModel.hasNextPage && viewModel.isLoading.value != true) {
                         viewModel.loadNextPage()
                     }
@@ -88,6 +99,7 @@ class CommunityFragment : Fragment() {
             }
         })
 
+        /** 首次加载数据，防止返回时重复加载 */
         if (!viewModel.loaded) {
             viewModel.refresh()
         }
