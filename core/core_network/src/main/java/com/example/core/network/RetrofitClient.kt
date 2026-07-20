@@ -54,6 +54,8 @@ object RetrofitClient {
         .addInterceptor ( cookieInterceptor )
         .followRedirects(true)
         .followSslRedirects(true)
+        .followRedirects(true)
+        .followSslRedirects(true)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)

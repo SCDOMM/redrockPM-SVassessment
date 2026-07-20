@@ -25,12 +25,12 @@ import retrofit2.http.Url
 interface KaiyanApi {
     // ========== 首页相关 ==========
     @GET("v5/index/tab/list")
-     fun getTabList(): Call<TabListResponse>
+    fun getTabList(): Call<TabListResponse>
 
     @GET("v5/index/tab/{tabId}")
     fun getTabDetail(
         @Path("tabId") tabId: String,
-        @Query("page") page: Int = 0,
+        @Query("page") page: Int = 0
     ): Call<EyepetizerResponse>
 
     @GET("v1/recommend/search/get_hot_queries")
@@ -58,66 +58,73 @@ interface KaiyanApi {
     @GET("v4/categories/all")
     fun getAllCategories(): Call<EyepetizerResponse>
 
+    @GET("v5/index/tab/category/{categoryId}")
+    fun getCategoryDetail(
+        @Path("categoryId") categoryId: Int,
+        @Query("udid") udid: String = "435865baacfc49499632ea13c5a78f944c2f28aa"
+    ): Call<EyepetizerResponse>
+
     // ========== 排行榜 ==========
     @GET("v4/rankList")
-     fun getRankListTabs(): Call<RankListResponse>
+    fun getRankListTabs(): Call<RankListResponse>
 
     @GET("v4/rankList/videos")
-     fun getRankList(
+    fun getRankList(
         @Query("strategy") strategy: String = "historical"
     ): Call<EyepetizerResponse>
 
     @GET
-     fun getRankListByUrl(@Url url: String): Call<EyepetizerResponse>
+    fun getRankListByUrl(@Url url: String): Call<EyepetizerResponse>
 
     // ========== 分类/标签相关 ==========
     @GET("v6/tag/index")
-     fun getTagIndex(@Query("id") tagId: Int): Call<EyepetizerResponse>
+    fun getTagIndex(@Query("id") tagId: Int): Call<EyepetizerResponse>
 
     @GET("v6/tag/dynamics")
     fun getTagDynamics(
         @Query("id") tagId: Int,
-        @Query("page") page: Int = 0
+        @Query("page") page: Int = 0,
+        @Query("udid") udid: String = "435865baacfc49499632ea13c5a78f944c2f28aa"
     ): Call<EyepetizerResponse>
 
     @GET("v1/tag/videos")
-     fun getTagVideos(
+    fun getTagVideos(
         @Query("id") tagId: Int,
         @Query("page") page: Int = 0
     ): Call<EyepetizerResponse>
 
     // ========== 专题相关 ==========
     @GET("v3/specialTopics")
-     fun getSpecialTopics(): Call<EyepetizerResponse>
+    fun getSpecialTopics(): Call<EyepetizerResponse>
 
     @GET("v3/lightTopics/internal/{topicId}")
-     fun getTopicDetail(@Path("topicId") topicId: Int): Call<EyepetizerResponse>
+    fun getTopicDetail(@Path("topicId") topicId: Int): Call<EyepetizerResponse>
 
     // ========== 社区相关 ==========
     @GET("v7/community/tab/rec")
-     fun getCommunityRec(): Call<EyepetizerResponse>
+    fun getCommunityRec(): Call<EyepetizerResponse>
 
     @GET("v5/community/tab/list")
-     fun getCommunityTabList(): Call<EyepetizerResponse>
+    fun getCommunityTabList(): Call<EyepetizerResponse>
 
     @GET("v6/community/tab/follow")
-     fun getFollowList(@Query("page") page: Int = 0): Call<EyepetizerResponse>
+    fun getFollowList(@Query("page") page: Int = 0): Call<EyepetizerResponse>
 
     @GET("v5/community/tab/dynamicFeeds")
-     fun getDynamicFeeds(@Query("page") page: Int = 0): Call<EyepetizerResponse>
+    fun getDynamicFeeds(@Query("page") page: Int = 0): Call<EyepetizerResponse>
 
     // ========== 通知相关 ==========
     @GET("v3/messages/tabList")
-     fun getMessageTabList(): Call<EyepetizerResponse>
+    fun getMessageTabList(): Call<EyepetizerResponse>
 
     @GET("v3/messages")
-     fun getMessages(
+    fun getMessages(
         @Query("start") start: Int = 0,
         @Query("num") num: Int = 10
     ): Call<EyepetizerResponse>
 
     @GET("v7/tag/tabList")
-    fun getTagTabList(): Call<EyepetizerResponse>
+    fun getTagTabList(): Call<TabListResponse>
 
     @GET("v7/topic/list")
     fun getTopicList(@Query("page") page: Int = 0): Call<EyepetizerResponse>
@@ -141,6 +148,9 @@ interface KaiyanApi {
         @Query("source") source: String = "aliyun"
     ): Call<EyepetizerResponse>
 
+    // ========== 搜索相关 ==========
+    @GET("v3/queries/hot")
+    fun getHotQueries(): Call<List<String>>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_result_v2")

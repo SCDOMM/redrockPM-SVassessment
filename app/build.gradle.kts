@@ -38,6 +38,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":ept_category"))
+    implementation(project(":ept_community"))
+    implementation(project(":ept_dicover"))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(platform(libs.androidx.compose.bom))

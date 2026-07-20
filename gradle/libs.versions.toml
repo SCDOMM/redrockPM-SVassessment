@@ -18,6 +18,8 @@ gsyVideo = "13.1.0"
 glide = "4.16.0"
 viewpager2 = "1.0.0"
 swiperefreshlayout = "1.1.0"
+recyclerview = "1.4.0"
+constraintlayout = "2.2.1"
 flexbox="3.0.0"
 
 [libraries]
@@ -48,7 +50,6 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
-flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
