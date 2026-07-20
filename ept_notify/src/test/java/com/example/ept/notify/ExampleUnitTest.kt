@@ -1,4 +1,4 @@
-package com.example.ept_hot
+package com.example.ept.notify
 
 import org.junit.Test
 
