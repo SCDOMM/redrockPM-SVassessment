@@ -16,6 +16,7 @@ import com.example.ept.home.R
 import com.example.ept.home.adapter.HomeAdapter
 import com.example.ept.home.viewmodel.HomeState
 import com.example.ept.home.viewmodel.HomeViewModel
+import com.therouter.TheRouter
 
 class HomeFragment : Fragment() {
     private lateinit var ivHomeNotify: ImageView
@@ -91,8 +92,11 @@ class HomeFragment : Fragment() {
         })
     }
     fun initNotify() {
-
-
+        ivHomeNotify.setOnClickListener {
+            Log.d("TheRouter测试","1")
+            TheRouter.build("http://therouter.com/notify")
+                .navigation(view.context)
+        }
     }
 
 

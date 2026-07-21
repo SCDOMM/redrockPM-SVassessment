@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-
+@com.therouter.router.Route(path = "http://therouter.com/search")
 class SearchActivity : AppCompatActivity() {
     lateinit var viewModel: SearchViewModel
     private lateinit var svSearchTop: SearchView

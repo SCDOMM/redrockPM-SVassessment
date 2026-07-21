@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -42,6 +43,8 @@ dependencies {
     implementation(project(":ept_community"))
     implementation(project(":ept_dicover"))
     implementation(libs.androidx.appcompat)
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
     implementation(libs.material)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -59,4 +62,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
+ksp {
+    arg("therouter.moduleName", ":app")
 }

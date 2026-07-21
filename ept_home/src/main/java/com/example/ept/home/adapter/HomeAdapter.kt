@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.VideoData
+import com.example.core.model.official.MetroData
 import com.example.ept.home.R
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
 
@@ -22,7 +22,7 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
  * 创建时间：2026-07-14 16:44
  *
  */
-class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCallback) {
+class HomeAdapter : ListAdapter<MetroData, RecyclerView.ViewHolder>(HomeDiffCallback) {
     override fun getItemViewType(position: Int): Int {
         if (position == 0) {
             return VIEW_TYPE_HEADER
@@ -76,26 +76,27 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         val tvHomeLabelItem1: TextView = view.findViewById(R.id.tv_home_label_item1)
         val tvHomeAuthorItem1: TextView = view.findViewById(R.id.tv_home_author_item1)
         val tvHomeDurationItem1: TextView = view.findViewById(R.id.tv_home_duration_item1)
-        fun bindData(videoData: VideoData) {
+        fun bindData(videoData: MetroData) {
             gsyvHomeDefaultItem1.setUp(videoData.playUrl, true, videoData.title)
 
             gsyvHomeDefaultItem1.backButton.visibility = View.GONE
             gsyvHomeDefaultItem1.thumbImageView = ImageView(gsyvHomeDefaultItem1.context)
             Glide.with(gsyvHomeDefaultItem1.context)
-                .load(videoData.cover?.feed)
+                .load(videoData.cover?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
                 .into(gsyvHomeDefaultItem1.thumbImageView!! as ImageView)
 
             Glide.with(ivHomeDefaultItem1)
-                .load(videoData.author?.icon)
+                .load(videoData.author?.avatar?.url)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
                 .into(ivHomeDefaultItem1)
             tvHomeTitleItem1.text = videoData.title
-            val label = videoData.label?.text
-                ?: videoData.category
+            val label =  videoData.tags?.firstOrNull()?.title?.removePrefix("# ")
             tvHomeLabelItem1.text = "#$label"
-            tvHomeAuthorItem1.text = videoData.author?.name
-            val duration = DateUtils.formatElapsedTime(videoData.duration)
+            tvHomeAuthorItem1.text = videoData.author?.nick
+            val duration = DateUtils.formatElapsedTime(videoData.duration?.value?.toLong()!!)
             tvHomeDurationItem1.text = "▶$duration"
         }
     }
@@ -107,23 +108,22 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         val tvHomeLabelItem2: TextView = view.findViewById(R.id.tv_home_label_item2)
         val tvHomeAuthorItem2: TextView = view.findViewById(R.id.tv_home_author_item2)
         val tvHomeDurationItem2: TextView = view.findViewById(R.id.tv_home_duration_item2)
-        fun bindData(videoData: VideoData) {
+        fun bindData(videoData: MetroData) {
             Glide.with(ivHomeCoverItem2.context)
-                .load(videoData.cover?.feed)
+                .load(videoData.cover?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
                 .into(ivHomeCoverItem2)
             Glide.with(ivHomeDefaultItem2)
-                .load(videoData.author?.icon)
+                .load(videoData.author?.avatar?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
                 .into(ivHomeDefaultItem2)
             tvHomeTitleItem2.text = videoData.title
-            val label = videoData.label?.text
-                ?: videoData.category
+            val label =  videoData.tags?.firstOrNull()?.title?.removePrefix("# ")
             tvHomeLabelItem2.text = "#$label"
-            tvHomeAuthorItem2.text = videoData.author?.name
-            val duration = DateUtils.formatElapsedTime(videoData.duration)
+            tvHomeAuthorItem2.text = videoData.author?.nick
+            val duration = DateUtils.formatElapsedTime(videoData.duration?.value?.toLong()!!)
             tvHomeDurationItem2.text = "▶$duration"
         }
     }
@@ -133,34 +133,34 @@ class HomeAdapter : ListAdapter<VideoData, RecyclerView.ViewHolder>(HomeDiffCall
         val tvHomeTitleItem3: TextView = view.findViewById(R.id.tv_home_title_item3)
         val tvHomeLabelItem3: TextView = view.findViewById(R.id.tv_home_label_item3)
         val tvHomeDurationItem3: TextView = view.findViewById(R.id.tv_home_duration_item3)
-        fun bindData(videoData: VideoData) {
+        fun bindData(videoData: MetroData) {
                 Glide.with(ivHomeCoverItem3.context)
-                    .load(videoData.cover?.feed)
+                    .load(videoData.cover?.url)
                     .placeholder(R.drawable.eyepetater)
                     .error(R.drawable.eyepetater)
                     .into(ivHomeCoverItem3)
             tvHomeTitleItem3.text = videoData.title
-            val label = videoData.label?.text
-                ?: videoData.category
+            val label =  videoData.tags?.firstOrNull()?.title?.removePrefix("# ")
             tvHomeLabelItem3.text = "#$label"
-            tvHomeDurationItem3.text = DateUtils.formatElapsedTime(videoData.duration)
+            val duration = DateUtils.formatElapsedTime(videoData.duration?.value?.toLong()!!)
+            tvHomeDurationItem3.text = "▶$duration"
         }
     }
 }
 
-object HomeDiffCallback : DiffUtil.ItemCallback<VideoData>() {
+object HomeDiffCallback : DiffUtil.ItemCallback<MetroData>() {
     override fun areItemsTheSame(
-        oldItem: VideoData,
-        newItem: VideoData
+        oldItem: MetroData,
+        newItem: MetroData
     ): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.videoId == newItem.videoId
     }
 
     override fun areContentsTheSame(
-        oldItem: VideoData,
-        newItem: VideoData
+        oldItem: MetroData,
+        newItem: MetroData
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.playUrl == newItem.playUrl
     }
 }
 

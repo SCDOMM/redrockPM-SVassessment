@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/srl_creator_default"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="10dp"
+    tools:context=".pgc.CreatorActivity">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/cl_creator_default"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/apl_creator_default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/ctl_creator_default"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/iv_creator_background"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/eyepetater"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintDimensionRatio="W,9:16" />
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/iv_creator_profile"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/eyepetater"
+                                app:shapeAppearanceOverlay="@style/round"
+                                app:strokeWidth="2dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/iv_creator_background" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="田所浩二"
+                                android:textColor="#000000"
+                                android:textSize="16dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/iv_creator_profile" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_desc"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="10dp"
+                                android:text="24岁，是创作者"
+                                android:textSize="10dp"
+                                android:maxLines="3"
+                                android:ellipsize="end"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/tv_creator_unfold"
+                                app:layout_constraintTop_toBottomOf="@id/tv_creator_name" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_unfold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=">"
+                                android:textSize="25dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_creator_desc" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_fans"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="114粉丝"
+                                android:textSize="10sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_creator_desc" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_follow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="514关注"
+                                android:textSize="10sp"
+                                app:layout_constraintStart_toEndOf="@id/tv_creator_fans"
+                                app:layout_constraintTop_toBottomOf="@id/tv_creator_desc" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_badge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="1919810勋章"
+                                android:textSize="10sp"
+                                app:layout_constraintStart_toEndOf="@id/tv_creator_follow"
+                                app:layout_constraintTop_toBottomOf="@id/tv_creator_desc" />
+
+                            <TextView
+                                android:id="@+id/tv_creator_popular"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="被收藏1919次 · 被分享810次"
+                                android:textSize="10sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_creator_fans" />
+
+                            <Button
+                                android:id="@+id/btn_creator_add"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:text="+"
+                                android:textColor="#FFFFFF"
+                                android:background="#000000"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/iv_creator_background" />
+
+                            <com.google.android.material.tabs.TabLayout
+                                android:id="@+id/tl_creator_default"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                app:tabMode="fixed"
+                                app:tabGravity="fill"
+                                app:tabIndicatorColor="#A9A9A9"
+                                app:tabSelectedTextColor="#000000"
+                                app:tabTextColor="#808080"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_creator_popular"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp2_creator_default"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

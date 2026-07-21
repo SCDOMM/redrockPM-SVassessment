@@ -9,17 +9,21 @@
 
     <ImageView
         android:id="@+id/iv_notify_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:padding="2dp"
+        android:layout_margin="5dp"
         android:src="@drawable/ic_notify_back"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintBottom_toBottomOf="@id/tl_notify_default"
         app:layout_constraintStart_toStartOf="parent"
         />
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_notify_default"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100dp"
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabIndicatorColor="#A9A9A9"

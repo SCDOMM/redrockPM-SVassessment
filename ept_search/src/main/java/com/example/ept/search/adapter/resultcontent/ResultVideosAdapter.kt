@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.MetroData
+import com.example.core.model.official.MetroData
 import com.example.ept.search.R
 
 /**   
@@ -50,11 +50,11 @@ class ResultVideosAdapter :
             itemView.findViewById(R.id.tv_result_videos_label_item)
 
         fun bindData(metroData: MetroData) {
-            ivResultVideosCoverItem.let { player ->
-                Glide.with(player.context)
-                    .load(metroData.cover?.url)
-                    .into(player)
-            }
+            Glide.with(ivResultVideosCoverItem.context)
+                .load(metroData.cover?.url)
+                .placeholder(R.drawable.eyepetater)
+                .error(R.drawable.eyepetater)
+                .into(ivResultVideosCoverItem)
             tvResultVideosTitleItem.text = metroData.title
             val label = metroData.tags?.firstOrNull()?.title?.removePrefix("#")
             tvResultVideosLabelItem.text = "#$label"

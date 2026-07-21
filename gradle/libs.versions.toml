@@ -26,6 +26,11 @@ ksp = "2.3.10"
 legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.11.0"
 lifecycleViewmodelKtx = "2.11.0"
+
+therouter = "1.3.1"
+lifecycleRuntimeCompose = "2.8.7"
+transportationConsumer = "4.1.0"
+
 [libraries]
 gsy-video-player = { group = "io.github.carguo", name = "gsyvideoplayer", version.ref = "gsyVideo" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +67,11 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbo
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+
+therouter-api = { group = "cn.therouter", name = "router", version.ref = "therouter" }
+therouter-compiler = { group = "cn.therouter", name = "apt", version.ref = "therouter" }
+lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeCompose" }
+transportation-consumer = { group = "com.google.android.libraries.mapsplatform.transportation", name = "transportation-consumer", version.ref = "transportationConsumer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

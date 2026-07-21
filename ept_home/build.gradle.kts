@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.gsy.video.player)
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
+    implementation(project(":ept_notify"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
@@ -47,4 +48,10 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.glide.okhttp)
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
+
+}
+ksp {
+    arg("therouter.moduleName", ":ept_home")
 }

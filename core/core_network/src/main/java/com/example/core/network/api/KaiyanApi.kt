@@ -1,18 +1,19 @@
 package com.example.core.network.api
 
+import com.example.core.model.official.CallMetroListResponse
 import com.example.core.model.EyepetizerResponse
-import com.example.core.model.NoticeResponse
-import com.example.core.model.PreSearchResponse
+import com.example.core.model.official.HomePageResponse
+import com.example.core.model.official.NoticeResponse
+import com.example.core.model.official.PreSearchResponse
 import com.example.core.model.RankListResponse
-import com.example.core.model.SearchResponse
-import com.example.core.model.SearchResponseV2
+import com.example.core.model.official.SearchResponse
+import com.example.core.model.official.SearchResponseV2
 import com.example.core.model.TabListResponse
-import com.example.core.model.WeeklyRankResponse
+import com.example.core.model.official.WeeklyRankResponse
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -198,8 +199,28 @@ interface KaiyanApi {
         @Field("num") num: Int = 10,
     ): Call<SearchResponseV2>
 
-
-
+    @FormUrlEncoded
+    @POST("v1/card/page/get_page")
+    fun getPage(
+        @Field("page_label") pageLabel: String,
+        @Field("page_type") pageType: String = "card",
+    ): Call<HomePageResponse>
+    @FormUrlEncoded
+    @POST("v1/card/metro/call_metro_list_v2")
+    fun getMoreHomePage(
+        @Field("page_label") pageLabel: String ,
+        @Field("data_source") dataSource: String="",
+        @Field("material") material: String,        // JSON 字符串，从首次请求的 api_request 中获取
+        @Field("card") card: String,                // card JSON 字符串，从首次请求中获取
+        @Field("last_item_id") lastItemId: Int
+    ): Call<CallMetroListResponse>
+    @FormUrlEncoded
+    @POST("v1/card/metro/call_metro_list_v2")
+    fun getMoreDailyPage(
+        @Field("data_source") dataSource: String = "history_issue_feed",
+        @Field("material") material: String,
+        @Field("last_item_id") lastItemId: Int
+    ): Call<CallMetroListResponse>
     // ========== 日历相关 ==========
     @GET("v7/roamingCalendar/index")
     fun getCalendar(

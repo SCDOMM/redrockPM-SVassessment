@@ -1,4 +1,4 @@
-package com.example.core.model
+package com.example.core.model.official
 
 import com.google.gson.annotations.SerializedName
 /**   
@@ -62,9 +62,13 @@ data class SearchCard(
     val style: Any? = null,
     val interaction: Any? = null,
     val card_data: MetroCardData? = null,
-    val tracking_data: Any? = null
+    val tracking_data: Any? = null,
+    val api_request: ApiRequest? = null
 )
-
+data class ApiRequest(
+    val url: String = "",
+    val params: Map<String, Any?>? = null
+)
 data class MetroCardData(
     val header: CardHeaderFooter? = null,
     val body: MetroBody? = null,
@@ -78,7 +82,8 @@ data class CardHeaderFooter(
 )
 
 data class MetroBody(
-    val metro_list: List<MetroItem> = emptyList()
+    val metro_list: List<MetroItem> = emptyList(),
+    val api_request: ApiRequest? = null
 )
 
 data class MetroItem(

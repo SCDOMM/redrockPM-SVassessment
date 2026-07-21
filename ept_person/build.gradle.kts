@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -23,10 +24,33 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.flexbox)
     implementation(libs.material)
     testImplementation(libs.junit)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging)
+    implementation(libs.glide.okhttp)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.glide)
+    implementation(project(":core:core_network"))
+    implementation(project(":core:core_model"))
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
+
+}
+ksp {
+    arg("therouter.moduleName", ":ept_notify")
 }

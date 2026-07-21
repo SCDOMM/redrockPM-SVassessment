@@ -1,12 +1,11 @@
 package com.example.ept.notify.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.NoticeItem
+import com.example.core.model.official.NoticeItem
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await

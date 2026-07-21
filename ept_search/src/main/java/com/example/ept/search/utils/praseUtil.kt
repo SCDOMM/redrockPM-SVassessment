@@ -1,11 +1,12 @@
 package com.example.ept.search.utils
 
 import android.content.Context
-import android.content.SharedPreferences
-import com.example.core.model.*
 import com.example.core.network.RetrofitClient.gson
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
+import com.example.core.model.official.MetroData
+import com.example.core.model.official.SearchResponse
+import com.example.core.model.official.SearchResponseV2
 
 /**   
  * 包名称： com.example.ept.search.utils
@@ -23,7 +24,7 @@ data class SearchResultData(
     val userList: List<MetroData> = emptyList(),
     val query: String
 )
-fun parseSearchResponse(response: SearchResponse,query: String): SearchResultData {
+fun parseSearchResponse(response: SearchResponse, query: String): SearchResultData {
     val videoList = mutableListOf<MetroData>()
     val creatorList = mutableListOf<MetroData>()
     val articleList = mutableListOf<MetroData>()
