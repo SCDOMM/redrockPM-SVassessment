@@ -39,7 +39,23 @@ data class WorkCard(
     @SerializedName("tracking_data")
     val trackingData: Any? = null,
     @SerializedName("api_request")
-    val apiRequest: ApiRequest? = null
+    val apiRequest: ApiRequest? = null,
+    @SerializedName("last_item_id")
+    val lastItemId: String? = null,
+    @SerializedName("page_label")
+    val pageLabel: String? = null,
+    @SerializedName("page_params")
+    val pageParams: String? = null,
+    @SerializedName("material")
+    val material: String? = null,
+    @SerializedName("card_index")
+    val cardIndex: Int? = null,
+    @SerializedName("material_index")
+    val materialIndex: Int? = null,
+    @SerializedName("material_relative_index")
+    val materialRelativeIndex: Int? = null,
+    @SerializedName("data_source")
+    val dataSource: String? = null
 )
 
 data class WorkCardData(
@@ -142,11 +158,11 @@ data class WorkMetroData(
 
     val link: String? = null,
     @SerializedName("nick")
-val nick: String? = null,
-@SerializedName("avatar")
-val avatar: WorkAvatar? = null,
-@SerializedName("description")
-val description: String? = null
+    val nick: String? = null,
+    @SerializedName("avatar")
+    val avatar: WorkAvatar? = null,
+    @SerializedName("description")
+    val description: String? = null
 )
 
 data class WorkDuration(

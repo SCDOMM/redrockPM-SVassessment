@@ -1,6 +1,7 @@
 package com.example.ept.person.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,12 +48,15 @@ class AlbumFragment : Fragment() {
         }
         albumViewModel.liveData.observe(viewLifecycleOwner){ state ->
             when(state){
-                is AlbumState.FailedState -> Toast.makeText(view.context,state.msg, Toast.LENGTH_SHORT).show()
-                is AlbumState.InitState -> {
+                is AlbumState.FailedState -> {
+                    Toast.makeText(view.context, state.msg, Toast.LENGTH_SHORT).show()
+                    isLoading=false
+                }is AlbumState.InitState -> {
                     adapter.submitList(state.albumList)
                 }
                 is AlbumState.LoadingState -> {
-
+                    isLoading=false
+                    adapter.submitList(state.newAlbumData)
                 }
                 is AlbumState.RefreshState ->{
 

@@ -1,14 +1,13 @@
 package com.example.core.network.api
 
 import com.example.core.model.official.CallMetroListResponse
-import com.example.core.model.EyepetizerResponse
 import com.example.core.model.official.HomePageResponse
 import com.example.core.model.official.NoticeResponse
 import com.example.core.model.official.PreSearchResponse
-import com.example.core.model.RankListResponse
 import com.example.core.model.official.SearchResponse
 import com.example.core.model.official.SearchResponseV2
-import com.example.core.model.TabListResponse
+import com.example.core.model.official.CallAlbumCardListResponse
+import com.example.core.model.official.CallWorkMetroListResponse
 import com.example.core.model.official.UserCenterResponse
 import com.example.core.model.official.UserWorkResponse
 import com.example.core.model.official.WeeklyRankResponse
@@ -17,9 +16,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 /**
  * description ： api接口
@@ -27,16 +24,6 @@ import retrofit2.http.Url
  * date : 2026/7/14 19:57
  */
 interface KaiyanApi {
-    // ========== 首页相关 ==========
-    @GET("v5/index/tab/list")
-    fun getTabList(): Call<TabListResponse>
-
-    @GET("v5/index/tab/{tabId}")
-    fun getTabDetail(
-        @Path("tabId") tabId: String,
-        @Query("page") page: Int = 0
-    ): Call<EyepetizerResponse>
-
     @GET("v1/user/center/get_user_info")
     fun getUserInfo(
         @Query("uid") uid: Long,
@@ -56,120 +43,9 @@ interface KaiyanApi {
         @Query("token") token: String = ""
     ): Call<PreSearchResponse>
 
-    @GET
-    fun getTabDetailByUrl(@Url url: String): Call<EyepetizerResponse>
-
-    @GET("v7/index/tab/discovery")
-    fun getDiscovery(): Call<EyepetizerResponse>
-
-    @GET("v5/category/list")
-    fun getCategoryList(): Call<EyepetizerResponse>
-
-    @GET("v4/categories/all")
-    fun getAllCategories(): Call<EyepetizerResponse>
-
-    @GET("v5/index/tab/category/{categoryId}")
-    fun getCategoryDetail(
-        @Path("categoryId") categoryId: Int,
-        @Query("udid") udid: String = "435865baacfc49499632ea13c5a78f944c2f28aa"
-    ): Call<EyepetizerResponse>
-
-    // ========== 排行榜 ==========
-    @GET("v4/rankList")
-    fun getRankListTabs(): Call<RankListResponse>
-
-    @GET("v4/rankList/videos")
-    fun getRankList(
-        @Query("strategy") strategy: String = "historical"
-    ): Call<EyepetizerResponse>
-
-    @GET
-    fun getRankListByUrl(@Url url: String): Call<EyepetizerResponse>
-
-    // ========== 分类/标签相关 ==========
-    @GET("v6/tag/index")
-    fun getTagIndex(@Query("id") tagId: Int): Call<EyepetizerResponse>
-
-    @GET("v6/tag/dynamics")
-    fun getTagDynamics(
-        @Query("id") tagId: Int,
-        @Query("page") page: Int = 0,
-        @Query("udid") udid: String = "435865baacfc49499632ea13c5a78f944c2f28aa"
-    ): Call<EyepetizerResponse>
-
-    @GET("v1/tag/videos")
-    fun getTagVideos(
-        @Query("id") tagId: Int,
-        @Query("page") page: Int = 0
-    ): Call<EyepetizerResponse>
-
-    // ========== 专题相关 ==========
-    @GET("v3/specialTopics")
-    fun getSpecialTopics(): Call<EyepetizerResponse>
-
-    @GET("v3/lightTopics/internal/{topicId}")
-    fun getTopicDetail(@Path("topicId") topicId: Int): Call<EyepetizerResponse>
-
-    // ========== 社区相关 ==========
-    @GET("v7/community/tab/rec")
-    fun getCommunityRec(): Call<EyepetizerResponse>
-
-    @GET("v5/community/tab/list")
-    fun getCommunityTabList(): Call<EyepetizerResponse>
-
-    @GET("v6/community/tab/follow")
-    fun getFollowList(@Query("page") page: Int = 0): Call<EyepetizerResponse>
-
-    @GET("v5/community/tab/dynamicFeeds")
-    fun getDynamicFeeds(@Query("page") page: Int = 0): Call<EyepetizerResponse>
-
-    // ========== 通知相关 ==========
-    @GET("v3/messages/tabList")
-    fun getMessageTabList(): Call<EyepetizerResponse>
-
-    @GET("v3/messages")
-    fun getMessages(
-        @Query("start") start: Int = 0,
-        @Query("num") num: Int = 10
-    ): Call<EyepetizerResponse>
-
-    @GET("v7/tag/tabList")
-    fun getTagTabList(): Call<TabListResponse>
-
-    @GET("v7/topic/list")
-    fun getTopicList(@Query("page") page: Int = 0): Call<EyepetizerResponse>
-
-    // ========== 视频相关 ==========
-    @GET("v4/video/related")
-    fun getVideoRelated(@Query("id") videoId: Long): Call<EyepetizerResponse>
-
-    @GET("v2/replies/video")
-    fun getVideoReplies(
-        @Query("videoId") videoId: Long,
-        @Query("start") start: Int = 0,
-        @Query("num") num: Int = 10
-    ): Call<EyepetizerResponse>
-
-    @GET("v1/playUrl")
-    fun getPlayUrl(
-        @Query("vid") vid: Long,
-        @Query("resourceType") resourceType: String = "video",
-        @Query("editionType") editionType: String = "default",
-        @Query("source") source: String = "aliyun"
-    ): Call<EyepetizerResponse>
-
     @GET("v1/common/notice/get_push_list")
     fun getPushList(
         @Query("last_item_id") lastItemId: Int
-//        @Query("udid") udid: String = "e53bcd5aa95847c0b0bd31c80b7fc102",
-//        @Query("vc") vc: String = "7090000",
-//        @Query("vn") vn: String = "7.9.0",
-//        @Query("deviceModel") deviceModel: String = "V2364A",
-//        @Query("size") size: String = "1080X2185",
-//        @Query("first_channel") firstChannel: String = "huawei",
-//        @Query("last_channel") lastChannel: String = "huawei",
-//        @Query("system_version_code") systemVersionCode: String = "36",
-//        @Query("token") token: String = ""
     ): Call<NoticeResponse>
 
     @FormUrlEncoded
@@ -215,19 +91,40 @@ interface KaiyanApi {
     ): Call<HomePageResponse>
 
     @FormUrlEncoded
+    @POST("v1/card/card/call_card_list")
+    fun loadMoreAlbum(
+        @Field("last_item_id") lastItemId: Int,
+        @Field("card_list") cardList: String,
+        @Field("page_label") pageLabel: String = "user_center_album",
+        @Field("version") version: Int = 1
+    ): Call<CallAlbumCardListResponse>
+
+    @FormUrlEncoded
     @POST("v1/card/page/get_page")
     fun getWorkPage(
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
     ): Call<UserWorkResponse>
+    @FormUrlEncoded
+    @POST("v1/card/metro/call_metro_list_v2")
+    fun loadMoreWork(
+        @Field("card_index") cardIndex: Int,
+        @Field("material") material: String,
+        @Field("material_index") materialIndex: Int,
+        @Field("last_item_id") lastItemId: String,
+        @Field("material_relative_index") materialRelativeIndex: Int = 0,
+        @Field("page_label") pageLabel: String,
+        @Field("card") card: String,
+        @Field("data_source") dataSource: String = "home_user_work_list"
+    ): Call<CallWorkMetroListResponse>
 
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
     fun getMoreHomePage(
         @Field("page_label") pageLabel: String ,
         @Field("data_source") dataSource: String="",
-        @Field("material") material: String,        // JSON 字符串，从首次请求的 api_request 中获取
-        @Field("card") card: String,                // card JSON 字符串，从首次请求中获取
+        @Field("material") material: String,
+        @Field("card") card: String,            
         @Field("last_item_id") lastItemId: Int
     ): Call<CallMetroListResponse>
     @FormUrlEncoded
@@ -237,9 +134,4 @@ interface KaiyanApi {
         @Field("material") material: String,
         @Field("last_item_id") lastItemId: Int
     ): Call<CallMetroListResponse>
-    // ========== 日历相关 ==========
-    @GET("v7/roamingCalendar/index")
-    fun getCalendar(
-        @Query("date") date: String
-    ): Call<EyepetizerResponse>
 }

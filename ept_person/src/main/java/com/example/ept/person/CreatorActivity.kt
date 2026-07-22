@@ -63,10 +63,8 @@ class CreatorActivity : AppCompatActivity() {
         tlCreatorDefault = findViewById(R.id.tl_creator_default)
         creatorViewModel = ViewModelProvider(this)[CreatorViewModel::class.java]
 
-        creatorViewModel.refreshCreator(301175241)
-        initEvent()
+        creatorViewModel.initCreator(301040809)
         initViewModel()
-        initTabs()
         initRefresh()
     }
     fun initRefresh() {
@@ -76,38 +74,39 @@ class CreatorActivity : AppCompatActivity() {
         }
         srlCreatorDefault.setOnRefreshListener {
             srlCreatorDefault.isRefreshing = false
-        }
-        srlCreatorDefault.setOnRefreshListener {
-            creatorViewModel.refreshCreator(301860925)
+            creatorViewModel.initRefresh(301040809)
         }
     }
-    fun initEvent() {
-        fragmentList.add(object : FragmentInterface {
-            override fun back(): Fragment {
-                return MainPageFragment()
-            }
-        })
-        fragmentList.add(object : FragmentInterface {
-            override fun back(): Fragment {
-                return WorkFragment()
-            }
-        })
-        fragmentList.add(object : FragmentInterface {
-            override fun back(): Fragment {
-                return AlbumFragment()
-            }
-        })
-        val adapter = CreatorAdapter(fragmentList, this)
-        vp2CreatorDefault.adapter = adapter
 
-    }
     fun initViewModel(){
         creatorViewModel.liveData.observe(this) { state ->
             when (state) {
                 is CreatorState.FailedState -> {
                     Toast.makeText(this, state.msg, Toast.LENGTH_SHORT).show()
                 }
-                is CreatorState.RefreshState -> {
+                is CreatorState.InitState -> {
+                    initVP2(state.length)
+                    initTabs(state.length)
+                    Glide.with(ivCreatorBackground.context)
+                        .load(state.userInfo.cover)
+                        .error(R.drawable.eyepetater)
+                        .placeholder(R.drawable.eyepetater)
+                        .into(ivCreatorBackground)
+                    Glide.with(ivCreatorProfile.context)
+                        .load(state.userInfo.avatar?.url)
+                        .error(R.drawable.eyepetater)
+                        .placeholder(R.drawable.eyepetater)
+                        .into(ivCreatorProfile)
+                    tvCreatorName.text = state.userInfo.nick
+                    tvCreatorDesc.text = state.userInfo.description
+                    tvCreatorFans.text = "${state.userInfo.fans_count}粉丝"
+                    tvCreatorFollow.text = "${state.userInfo.follow_count}关注"
+                    tvCreatorBadge.text = "${state.userInfo.medal_count}勋章"
+                    tvCreatorPopular.text =
+                        "被收藏${state.userInfo.collected_count}次，被分享${state.userInfo.shared_count}次"
+                    srlCreatorDefault.isRefreshing=false
+                }
+                is CreatorState.RefreshState->{
                     Glide.with(ivCreatorBackground.context)
                         .load(state.userInfo.cover)
                         .error(R.drawable.eyepetater)
@@ -130,21 +129,88 @@ class CreatorActivity : AppCompatActivity() {
             }
         }
     }
+    fun initVP2(length: Int) {
+        when(length){
+            0->{
 
+            }
+            1->{
+                fragmentList.add(object : FragmentInterface {
+                    override fun back(): Fragment {
+                        return WorkFragment()
+                    }
+                })
+            }
+            2->{
+                fragmentList.add(object : FragmentInterface {
+                    override fun back(): Fragment {
+                        return MainPageFragment()
+                    }
+                })
+                fragmentList.add(object : FragmentInterface {
+                    override fun back(): Fragment {
+                        return WorkFragment()
+                    }
+                })
+            }
+            3->{
+                fragmentList.add(object : FragmentInterface {
+                    override fun back(): Fragment {
+                        return MainPageFragment()
+                    }
+                })
+                fragmentList.add(object : FragmentInterface {
+                    override fun back(): Fragment {
+                        return WorkFragment()
+                    }
+                })
+                fragmentList.add(object : FragmentInterface {
+                    override fun back(): Fragment {
+                        return AlbumFragment()
+                    }
+                })
+            }
 
-    fun initTabs() {
+        }
+        val adapter = CreatorAdapter(fragmentList, this)
+        vp2CreatorDefault.adapter = adapter
+    }
+    fun initTabs(length: Int) {
         TabLayoutMediator(tlCreatorDefault, vp2CreatorDefault) { p0, p1 ->
-            when (p1) {
-                0 -> {
-                    p0.text = "主页"
+            when(length){
+                0->{}
+                1->{
+                    when (p1) {
+                        0 -> {
+                            p0.text = "作品"
+                        }
+                    }
                 }
+                2->{
+                    when (p1) {
+                        0 -> {
+                            p0.text = "主页"
+                        }
 
-                1 -> {
-                    p0.text = "作品"
+                        1 -> {
+                            p0.text = "作品"
+                        }
+                    }
                 }
+                3->{
+                    when (p1) {
+                        0 -> {
+                            p0.text = "主页"
+                        }
 
-                2 -> {
-                    p0.text = "专辑"
+                        1 -> {
+                            p0.text = "作品"
+                        }
+
+                        2 -> {
+                            p0.text = "专辑"
+                        }
+                    }
                 }
             }
         }.attach()

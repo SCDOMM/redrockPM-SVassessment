@@ -1,11 +1,7 @@
 package com.example.core.network
 
-import com.example.core.model.Item
-import com.google.gson.GsonBuilder
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,7 +13,6 @@ import java.util.concurrent.TimeUnit
  * date : 2026/7/14 17:57
  */
 object RetrofitClient {
-//    private const val BASE_URL = "http://baobab.kaiyanapp.com/api/"
     private const val BASE_URL = "https://api.eyepetizer.net/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -62,21 +57,14 @@ object RetrofitClient {
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
-
-    val gson = GsonBuilder()
-        .registerTypeAdapter(Item::class.java, ItemDeserializer())
-        .create()
     val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     inline fun <reified T> create(): T = retrofit.create(T::class.java)
 
-    /**
-     * 解析playUrl的302重定向，获取真实视频地址
-     */
     suspend fun resolvePlayUrl(redirectUrl: String): String {
         return try {
             val client = okHttpClient.newBuilder()

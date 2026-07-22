@@ -42,8 +42,6 @@ class MainPageViewModel(application: Application) : AndroidViewModel(application
 
         }
     }
-
-
 }
 
 sealed class MainPageState() {

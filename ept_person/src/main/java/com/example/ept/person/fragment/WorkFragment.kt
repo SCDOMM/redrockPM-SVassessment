@@ -50,8 +50,14 @@ class WorkFragment : Fragment() {
             when(state){
                 is WorkState.FailedState -> Toast.makeText(view.context,state.msg,Toast.LENGTH_SHORT).show()
                 is WorkState.InitState -> adapter.submitList(state.workList)
-                is WorkState.LoadingState -> {}
-                is WorkState.RefreshState -> {}
+                is WorkState.LoadingState -> {
+                    isLoading=false
+                    adapter.submitList(state.newWorkList)
+                }
+                is WorkState.RefreshState -> {
+
+
+                }
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.example.core.model.official
 
+import com.google.gson.annotations.SerializedName
+
 /**   
  * 包名称： com.example.core.model.official
  * 类名称：AlbumData
@@ -21,4 +23,17 @@ data class AlbumVideoPreview(
     val title: String,
     val coverUrl: String,
     val duration: Int
+)
+data class CallAlbumCardListResponse(
+    val code: Int = 0,
+    val message: Any? = null,
+    val result: CallAlbumCardListResult? = null
+)
+data class CallAlbumCardListResult(
+    @SerializedName("item_list")
+    val itemList: List<SearchCard> = emptyList(),  // 复用 SearchCard
+    @SerializedName("item_count")
+    val itemCount: Int = 0,
+    @SerializedName("last_item_id")
+    val lastItemId: Int = 0
 )

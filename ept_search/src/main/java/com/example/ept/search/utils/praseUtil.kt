@@ -1,12 +1,12 @@
 package com.example.ept.search.utils
 
 import android.content.Context
-import com.example.core.network.RetrofitClient.gson
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
 import com.example.core.model.official.MetroData
 import com.example.core.model.official.SearchResponse
 import com.example.core.model.official.SearchResponseV2
+import com.therouter.router.gson
 
 /**   
  * 包名称： com.example.ept.search.utils

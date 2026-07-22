@@ -53,8 +53,6 @@ class AlbumAdapter : ListAdapter<AlbumData, AlbumAdapter.AlbumViewHolder>(AlbumD
             tvAlbumTitleItem.text = albumData.albumName
             tvAlbumDescItem.text = albumData.albumDescription
 
-
-
             llAlbumContainerItem.removeAllViews()
             val context = llAlbumContainerItem.context
             albumData.videos.forEach { video ->

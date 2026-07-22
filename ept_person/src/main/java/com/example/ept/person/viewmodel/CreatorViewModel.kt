@@ -38,7 +38,43 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
         RetrofitClient.create()
     }
 
-    fun refreshCreator(uid: Long) {
+    fun initCreator(uid: Long) {
+        viewModelScope.launch {
+            try {
+                val response = appService.getUserInfo(uid).await()
+                val result = response.result
+                _liveData.value = result?.let { CreatorState.InitState(it,
+                    result.nav_tabs?.nav_list?.size ?: 0
+                ) }
+
+                val mainPageTab = result?.nav_tabs?.nav_list?.firstOrNull {
+                    it.icon_type == "index"
+                }
+                if (mainPageTab != null) {
+                    _mainPageLiveData.value = mainPageTab
+                }
+
+                val workTab = result?.nav_tabs?.nav_list?.firstOrNull {
+                    it.icon_type == "work"
+                }
+                if (workTab != null) {
+                    _workLiveData.value = workTab
+                }
+
+                val albumTab = result?.nav_tabs?.nav_list?.firstOrNull {
+                    it.icon_type == "album"
+                }
+                if (albumTab!=null) {
+                    _albumLiveData.value = albumTab
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _liveData.value = CreatorState.FailedState(e.message.toString())
+            }
+        }
+    }
+    fun initRefresh(uid: Long) {
         viewModelScope.launch {
             try {
                 val response = appService.getUserInfo(uid).await()
@@ -66,11 +102,6 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
                     _albumLiveData.value = albumTab
                 }
 
-
-
-
-
-
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value = CreatorState.FailedState(e.message.toString())
@@ -78,10 +109,10 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-
 }
 
 sealed class CreatorState {
+    data class InitState(val userInfo: UserInfo,val length: Int) : CreatorState()
     data class RefreshState(val userInfo: UserInfo) : CreatorState()
     data class FailedState(val msg: String) : CreatorState()
 }
