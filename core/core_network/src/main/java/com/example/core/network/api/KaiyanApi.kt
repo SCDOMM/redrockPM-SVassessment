@@ -1,7 +1,7 @@
 package com.example.core.network.api
 
 import com.example.core.model.CallMetroListResponse
-import com.example.core.model.HomePageResponse
+import com.example.core.model.PageResponse
 import com.example.core.model.NoticeResponse
 import com.example.core.model.PreSearchResponse
 import com.example.core.model.SearchResponse
@@ -9,7 +9,6 @@ import com.example.core.model.SearchResponseV2
 import com.example.core.model.CallAlbumCardListResponse
 import com.example.core.model.CallWorkMetroListResponse
 import com.example.core.model.UserCenterResponse
-import com.example.core.model.UserWorkResponse
 import com.example.core.model.WeeklyRankResponse
 import retrofit2.Call
 import retrofit2.http.Field
@@ -88,7 +87,7 @@ interface KaiyanApi {
     fun getPage(
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
-    ): Call<HomePageResponse>
+    ): Call<PageResponse>
 
     @FormUrlEncoded
     @POST("v1/card/card/call_card_list")
@@ -104,7 +103,7 @@ interface KaiyanApi {
     fun getWorkPage(
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
-    ): Call<UserWorkResponse>
+    ): Call<PageResponse>
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
     fun loadMoreWork(

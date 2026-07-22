@@ -39,10 +39,10 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
                 val pageLabel = albumTab.page_label
                 val pageType = albumTab.page_type
                 val response = appService.getPage(pageLabel, pageType).await()
-                val cardList = response.result?.card_list!!
+                val cardList = response.result?.cardList!!
                 allAlbums = parseAlbumCards(cardList)
                 val callCard = cardList.firstOrNull { it.type == "call_card_list" }
-                val params = callCard?.card_data?.body?.api_request?.params
+                val params = callCard?.cardData?.body?.apiRequest?.params
                 lastItemId = (params?.get("last_item_id") as? Number)?.toInt() ?: 0
                 cardJSON = (params?.get("card_list") as? String) ?: ""
                 _liveData.value = AlbumState.InitState(allAlbums.toMutableList())

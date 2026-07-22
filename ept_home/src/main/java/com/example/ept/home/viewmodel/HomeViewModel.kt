@@ -42,8 +42,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val response = appService.getPage("recommend", "card").await()
                 allVideos = parseHomeVideos(response)
-                val callMetroCard = response.result?.card_list?.find { it.type == "call_metro_list" }
-                val params = callMetroCard?.card_data?.body?.api_request?.params
+                val callMetroCard = response.result?.cardList?.find { it.type == "call_metro_list" }
+                val params = callMetroCard?.cardData?.body?.apiRequest?.params
                 if (params != null) {
                     materialJSON = params.safeString("material")
                     cardJSON = params.safeString("card")

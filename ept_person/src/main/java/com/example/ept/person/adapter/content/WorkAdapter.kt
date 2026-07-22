@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.WorkMetroData
+import com.example.core.model.MetroData
 import com.example.ept.person.R
 import com.google.android.material.imageview.ShapeableImageView
 
@@ -28,7 +28,7 @@ private const val TYPE_VIDEO = 0
 private const val TYPE_GRAPHIC = 1
 private const val TYPE_UNKNOWN = 2
 
-class WorkAdapter: ListAdapter<WorkMetroData, RecyclerView.ViewHolder>(WorkDiffCallback) {
+class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallback) {
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         return when (item.resourceType) {
@@ -92,7 +92,7 @@ class WorkAdapter: ListAdapter<WorkMetroData, RecyclerView.ViewHolder>(WorkDiffC
 
         val ivVideoForwardItem: ImageView = itemView.findViewById(R.id.iv_video_forward_item)
         val tvVideoFoldItem: TextView = itemView.findViewById(R.id.tv_video_fold_item)
-        fun bindData(metroData: WorkMetroData) {
+        fun bindData(metroData: MetroData) {
             Glide.with(ivVideoCover.context)
                 .load(metroData.video?.cover?.url)
                 .error(R.drawable.eyepetater)
@@ -131,7 +131,7 @@ class WorkAdapter: ListAdapter<WorkMetroData, RecyclerView.ViewHolder>(WorkDiffC
         val tvGraphicFoldItem: TextView = itemView.findViewById(R.id.tv_graphic_fold_item)
         val rvGraphicCoverItem: RecyclerView = itemView.findViewById(R.id.rv_graphic_cover_item)
         val adapter= WorkGraphicAdapter()
-        fun bindData(metroData: WorkMetroData) {
+        fun bindData(metroData: MetroData) {
             Glide.with(ivGraphicAuthorProfileItem.context)
                 .load(metroData.author?.avatar?.url)
                 .error(R.drawable.eyepetater)
@@ -160,13 +160,13 @@ class WorkAdapter: ListAdapter<WorkMetroData, RecyclerView.ViewHolder>(WorkDiffC
     }
 }
 
-object WorkDiffCallback : DiffUtil.ItemCallback<WorkMetroData>() {
-    override fun areItemsTheSame(oldItem: WorkMetroData, newItem: WorkMetroData): Boolean {
+object WorkDiffCallback : DiffUtil.ItemCallback<MetroData>() {
+    override fun areItemsTheSame(oldItem: MetroData, newItem: MetroData): Boolean {
         return oldItem.resourceId != null && oldItem.resourceId == newItem.resourceId
                 || oldItem.itemId != null && oldItem.itemId == newItem.itemId
                 || oldItem.videoId != null && oldItem.videoId == newItem.videoId
     }
-    override fun areContentsTheSame(oldItem: WorkMetroData, newItem: WorkMetroData): Boolean {
+    override fun areContentsTheSame(oldItem: MetroData, newItem: MetroData): Boolean {
         return oldItem.liked == newItem.liked
                 && oldItem.collected == newItem.collected
                 && oldItem.consumption?.likeCount == newItem.consumption?.likeCount

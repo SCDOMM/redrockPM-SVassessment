@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.WorkMetroData
+import com.example.core.model.MetroData
 import com.example.ept.person.R
 import com.google.android.material.imageview.ShapeableImageView
 
@@ -21,7 +21,7 @@ import com.google.android.material.imageview.ShapeableImageView
  * 创建时间：2026-07-22 15:22
  *
  */
-class RecentAdapter : ListAdapter<WorkMetroData, RecentAdapter.RecentVideoViewHolder>(
+class RecentAdapter : ListAdapter<MetroData, RecentAdapter.RecentVideoViewHolder>(
     NewDiffCallback
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentVideoViewHolder {
@@ -39,7 +39,7 @@ class RecentAdapter : ListAdapter<WorkMetroData, RecentAdapter.RecentVideoViewHo
         val tvNewAuthorNameItemItem: TextView = itemView.findViewById(R.id.tv_new_author_name_item_item)
         val tvNewLabelItemItem: TextView = itemView.findViewById(R.id.tv_new_label_item_item)
         val tvNewDurationItemItem: TextView = itemView.findViewById(R.id.tv_new_duration_item_item)
-        fun bindData(data: WorkMetroData) {
+        fun bindData(data: MetroData) {
             Glide.with(ivNewCoverItemItem.context)
                 .load(data.cover?.url)
                 .error(R.drawable.eyepetater)
@@ -57,11 +57,11 @@ class RecentAdapter : ListAdapter<WorkMetroData, RecentAdapter.RecentVideoViewHo
         }
     }
 }
-object NewDiffCallback : DiffUtil.ItemCallback<WorkMetroData>() {
-    override fun areItemsTheSame(oldItem: WorkMetroData, newItem: WorkMetroData): Boolean {
+object NewDiffCallback : DiffUtil.ItemCallback<MetroData>() {
+    override fun areItemsTheSame(oldItem: MetroData, newItem: MetroData): Boolean {
         return oldItem.resourceId == newItem.resourceId
     }
-    override fun areContentsTheSame(oldItem: WorkMetroData, newItem: WorkMetroData): Boolean {
+    override fun areContentsTheSame(oldItem: MetroData, newItem: MetroData): Boolean {
         return oldItem == newItem
     }
 }

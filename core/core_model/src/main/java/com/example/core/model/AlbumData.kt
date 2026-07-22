@@ -31,7 +31,7 @@ data class CallAlbumCardListResponse(
 )
 data class CallAlbumCardListResult(
     @SerializedName("item_list")
-    val itemList: List<SearchCard> = emptyList(),  // 复用 SearchCard
+    val itemList: List<Card> = emptyList(),  // 复用 SearchCard
     @SerializedName("item_count")
     val itemCount: Int = 0,
     @SerializedName("last_item_id")

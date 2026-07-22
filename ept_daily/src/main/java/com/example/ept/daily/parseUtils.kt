@@ -1,6 +1,6 @@
 package com.example.ept.daily
 
-import com.example.core.model.HomePageResponse
+import com.example.core.model.PageResponse
 import com.example.core.model.MetroData
 
 /**   
@@ -11,11 +11,11 @@ import com.example.core.model.MetroData
  * 创建时间：2026-07-20 17:20
  *
  */
-fun parseDailyVideos(response: HomePageResponse): List<MetroData> {
+fun parseDailyVideos(response: PageResponse): List<MetroData> {
     val list = mutableListOf<MetroData>()
-    response.result?.card_list?.forEach { card ->
+    response.result?.cardList?.forEach { card ->
         if (card.type == "set_metro_list") {
-            card.card_data?.body?.metro_list?.forEach { metro ->
+            card.cardData?.body?.metroList?.forEach { metro ->
                 if (metro.type == "video") {
                     metro.metroData?.let { list.add(it) }
                 }

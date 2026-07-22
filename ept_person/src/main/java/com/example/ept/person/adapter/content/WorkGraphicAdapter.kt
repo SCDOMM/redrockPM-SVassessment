@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.WorkImage
+import com.example.core.model.Image
 import com.example.ept.person.R
 
 /**   
@@ -19,7 +19,7 @@ import com.example.ept.person.R
  * 创建时间：2026-07-22 09:50
  *
  */
-class WorkGraphicAdapter : ListAdapter<WorkImage, WorkGraphicAdapter.GraphicViewHolder>(WorkGraphicDiffCallback) {
+class WorkGraphicAdapter : ListAdapter<Image, WorkGraphicAdapter.GraphicViewHolder>(WorkGraphicDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -35,7 +35,7 @@ class WorkGraphicAdapter : ListAdapter<WorkImage, WorkGraphicAdapter.GraphicView
     }
     inner class GraphicViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivGraphicCoverItemItem: ImageView=itemView.findViewById(R.id.iv_graphic_cover_item_item)
-        fun bindData(workImage: WorkImage) {
+        fun bindData(workImage: Image) {
             Glide.with(ivGraphicCoverItemItem.context)
                 .load(workImage.cover?.url)
                 .error(R.drawable.eyepetater)
@@ -44,17 +44,17 @@ class WorkGraphicAdapter : ListAdapter<WorkImage, WorkGraphicAdapter.GraphicView
         }
     }
 }
-object WorkGraphicDiffCallback: DiffUtil.ItemCallback<WorkImage>(){
+object WorkGraphicDiffCallback: DiffUtil.ItemCallback<Image>(){
     override fun areItemsTheSame(
-        oldItem: WorkImage,
-        newItem: WorkImage
+        oldItem: Image,
+        newItem: Image
     ): Boolean {
         return oldItem.imageId==newItem.imageId
     }
 
     override fun areContentsTheSame(
-        oldItem: WorkImage,
-        newItem: WorkImage
+        oldItem: Image,
+        newItem: Image
     ): Boolean {
         return oldItem.cover?.url==newItem.cover?.url
     }

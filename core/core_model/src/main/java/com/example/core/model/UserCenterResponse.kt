@@ -18,7 +18,7 @@ data class UserCenterResponse(
 data class UserInfo(
     val uid: Long,
     val nick: String,
-    val avatar: AvatarInfo?,
+    val avatar: Avatar?,
     val description: String,
     val link: String,
     val type: String,                 // "pgc" / "ugc"
@@ -58,13 +58,6 @@ data class UserInfo(
     val location: String?,
     val organization_info: List<Any>?
 )
-
-data class AvatarInfo(
-    val url: String,
-    val img_info: ImageInfo?,
-    val shape: String?
-)
-
 data class NavTabs(
     val style: String,                // "detail"
     val nav_list: List<NavTab>,

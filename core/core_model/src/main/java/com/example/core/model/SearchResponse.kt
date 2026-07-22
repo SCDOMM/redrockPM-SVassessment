@@ -1,7 +1,8 @@
 package com.example.core.model
 
 import com.google.gson.annotations.SerializedName
-/**   
+
+/**
  * 包名称： com.example.core.model
  * 类名称：SearchResponse
  * 类描述：TODO
@@ -21,59 +22,74 @@ data class SearchResponse(
 data class SearchResult(
     val item_list: List<SearchCategory> = emptyList()
 )
+
 data class SearchCategory(
     val nav: SearchNav? = null,
-    val page_info: SearchPageInfo? = null,
-    val card_list: List<SearchCard> = emptyList()
+    val page_info: PageInfo? = null,
+    val card_list: List<Card> = emptyList()
 )
+
 data class SearchResponseV2(    //用于搜索的上拉加载
     val code: Int = 0,
     val message: Any? = null,
     val result: SearchResultV2? = null
 )
+
 data class SearchResultV2(
     val item_list: List<MetroItem> = emptyList(),
     val item_count: Int? = null,
     val last_item_id: Int? = null
 )
+
 data class SearchNav(
     val title: String? = null,
     val type: String? = null,          // "video" / "pgc" / "graphic" / "topic" / "ugc"
     val tracking_data: Any? = null
 )
 
-data class SearchPageInfo(
-    val title: String? = null,
-    val tracking_data: Any? = null
-)
 data class PreSearchResponse(
     val code: Int = 0,
     val message: Any? = null,
     val result: PreSearchResult? = null
 )
+
 data class PreSearchResult(
     val item_list: List<String> = emptyList(),   // 推荐搜索词列表
     val item_count: Int = 0                       // 数量
 )
-data class SearchCard(
-    val card_id: Long = 0,
-    val card_unique_id: String? = null,
+
+data class Card(
+    @SerializedName("card_id") val cardId: Long = 0,
+    @SerializedName("card_unique_id") val cardUniqueId: String? = null,
     val type: String? = null,             // "set_metro_list" / "call_metro_list"
     val style: Any? = null,
     val interaction: Any? = null,
-    val card_data: MetroCardData? = null,
-    val tracking_data: Any? = null,
-    val api_request: ApiRequest? = null
+    @SerializedName("card_data") val cardData: CardData? = null,
+    @SerializedName("api_request") val apiRequest: ApiRequest? = null,
+    @SerializedName("tracking_data") val trackingData: Any? = null,
+
+    // 以下字段仅在“作品页”等场景出现
+    @SerializedName("last_item_id") val lastItemId: String? = null,
+    @SerializedName("page_label") val pageLabel: String? = null,
+    @SerializedName("page_params") val pageParams: String? = null,
+    @SerializedName("material") val material: String? = null,
+    @SerializedName("card_index") val cardIndex: Int? = null,
+    @SerializedName("material_index") val materialIndex: Int? = null,
+    @SerializedName("material_relative_index") val materialRelativeIndex: Int? = null,
+    @SerializedName("data_source") val dataSource: String? = null,
 )
+
 data class ApiRequest(
     val url: String = "",
     val params: Map<String, Any?>? = null
 )
-data class MetroCardData(
+
+data class CardData(
     val header: CardHeaderFooter? = null,
     val body: MetroBody? = null,
     val footer: CardHeaderFooter? = null
 )
+
 data class CardHeaderFooter(
     val style: Any? = null,
     val left: List<MetroItem>? = emptyList(),
@@ -82,28 +98,27 @@ data class CardHeaderFooter(
 )
 
 data class MetroBody(
-    val metro_list: List<MetroItem> = emptyList(),
-    val api_request: ApiRequest? = null
+    @SerializedName("metro_list") val metroList: List<MetroItem> = emptyList(),
+    @SerializedName("api_request") val apiRequest: ApiRequest? = null
 )
 
 data class MetroItem(
-    @SerializedName("metro_id")
-    val metroId: Long = 0,
-    @SerializedName("metro_unique_id")
-    val metroUniqueId: String? = null,
-    val type: String? = null,          // "video" / "user" / "image" / "topic"
+    @SerializedName("metro_id") val metroId: Long = 0,
+    @SerializedName("metro_unique_id") val metroUniqueId: String? = null,
+    val type: String? = null,          // "video" / "item" / "text" / "user" / "link"
     val style: Any? = null,
-    @SerializedName("metro_data")
-    val metroData: MetroData? = null,
-    val tracking_data: Any? = null,
+    @SerializedName("metro_data") val metroData: MetroData? = null,
+    @SerializedName("tracking_data") val trackingData: Any? = null,
     val link: String? = null,
-    val tracking_params: Any? = null
+    @SerializedName("tracking_params") val trackingParams: Any? = null,
+    // 周榜专用
+    @SerializedName("show_duration") val showDuration: Int? = null
 )
+
 data class MetroData(
-    // ========== 通用字段 ==========
     val uid: Long? = null,
     val nick: String? = null,
-    val avatar: SearchAvatar? = null,
+    val avatar: Avatar? = null,
     val description: String? = null,
     @SerializedName("followed")
     val isFollowed: Boolean? = null,
@@ -113,11 +128,11 @@ data class MetroData(
     val fansCount: Int? = null,
     val link: String? = null,
     val type: String? = null,          // "pgc" / "ugc"
-    val resource_id: String? = null,
+    val resourceId: String? = null,
     @SerializedName("resource_type")
-    val resource_type: String? = null, // "pgc_video" / "ugc_picture" / "collection"
-
-    // ========== 视频特有字段 ==========
+    val resourceType: String? = null, // "pgc_video" / "ugc_picture" / "collection"
+    @SerializedName("text")
+    val text: String? = null,
     @SerializedName("video_id")
     val videoId: String? = null,
     val title: String? = null,
@@ -130,12 +145,12 @@ data class MetroData(
     val previewUrl: String? = null,
     @SerializedName("recommend_level")
     val recommendLevel: String? = null,
-    val tags: List<SearchTag>? = null,
+    val tags: List<Tag>? = null,
     val cover: CoverInfo? = null,
-    val author: SearchAuthor? = null,
+    val author: Author? = null,
     @SerializedName("hot_value")
     val hotValue: Int? = null,
-    val consumption: SearchConsumption? = null,
+    val consumption: Consumption? = null,
     val liked: Boolean? = null,
     val collected: Boolean? = null,
 
@@ -145,8 +160,8 @@ data class MetroData(
     val publishTime: String? = null,
     @SerializedName("raw_publish_time")
     val rawPublishTime: String? = null,
-    val location: SearchLocation? = null,
-    val topics: List<SimpleTopic>? = null,
+    val location: Location? = null,
+    val topics: List<Topic>? = null,
     @SerializedName("image_count")
     val imageCount: Int? = null,
     @SerializedName("private_msg_link")
@@ -157,7 +172,29 @@ data class MetroData(
     val topicId: String? = null,
     val labels: List<Any>? = null,
     val status: String? = null,
-)
+
+    @SerializedName("item_id")
+    val itemId: String?=null,
+    @SerializedName("images")
+    val images: List<Image>?=null,
+    @SerializedName("video")
+    val video: VideoDetail?=null,
+    @SerializedName("is_mine")
+    val isMine: Boolean?=null,
+    @SerializedName("show_lock_icon")
+    val showLockIcon: Boolean?=null,
+    @SerializedName("show_follow_btn")
+    val showFollowBtn: Boolean?=null,
+    @SerializedName("show_more_btn")
+    val showMoreBtn: Boolean?=null,
+    @SerializedName("more_option")
+    val moreOption: List<MoreOption>?=null,
+    @SerializedName("real_location")
+    val realLocation: String?=null,
+    @SerializedName("comment_extra_tracking_fields")
+    val commentExtraTrackingFields: Map<String, String>?=null
+    )
+
 data class DurationInfo(
     val value: Int = 0,
     val text: String = ""
@@ -175,7 +212,7 @@ data class PlayCtrl(
     val needWifiPreload: Boolean? = false
 )
 
-data class SearchTag(
+data class Tag(
     val id: Int = 0,
     val title: String = "",
     val link: String? = null
@@ -193,10 +230,10 @@ data class ImageInfo(
     val scale: Double = 0.0
 )
 
-data class SearchAuthor(
+data class Author(
     val uid: Long = 0,
     val nick: String = "",
-    val avatar: SearchAvatar? = null,
+    val avatar: Avatar? = null,
     val description: String? = null,
     val link: String? = null,
     val type: String? = null,
@@ -207,14 +244,14 @@ data class SearchAuthor(
     val fansCount: Int? = null
 )
 
-data class SearchAvatar(
+data class Avatar(
     val url: String = "",
     @SerializedName("img_info")
     val imgInfo: ImageInfo? = null,
     val shape: String? = null
 )
 
-data class SearchConsumption(
+data class Consumption(
     @SerializedName("like_count")
     val likeCount: Int = 0,
     @SerializedName("collection_count")
@@ -227,14 +264,42 @@ data class SearchConsumption(
     val playCount: Int = 0
 )
 
-data class SearchLocation(
+data class Location(
     val area: String? = null,
     val city: String? = null,
     val longitude: String? = "0.0000000",
     val latitude: String? = "0.0000000"
 )
-data class SimpleTopic(
+
+data class Topic(
     val id: Long = 0,
     val title: String = "",
     val link: String? = null
+)
+data class Image(
+    @SerializedName("image_id")
+    val imageId: String? = null,
+    val cover: CoverInfo? = null
+)
+data class VideoDetail(
+    @SerializedName("video_id")
+    val videoId: String? = null,
+    val title: String? = null,
+    val duration: DurationInfo? = null,
+    @SerializedName("play_ctrl")
+    val playCtrl: PlayCtrl? = null,
+    @SerializedName("play_url")
+    val playUrl: String? = null,
+    @SerializedName("preview_url")
+    val previewUrl: String? = null,
+    @SerializedName("recommend_level")
+    val recommendLevel: String? = null,
+    val tags: List<Tag>? = null,
+    val cover: CoverInfo? = null,
+    val author: Author? = null
+)
+
+data class MoreOption(
+    val title: String = "",
+    val type: String = ""                // "report_item"
 )

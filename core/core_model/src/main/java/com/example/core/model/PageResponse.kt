@@ -10,16 +10,19 @@ import com.google.gson.annotations.SerializedName
  * 创建时间：2026-07-20 15:53
  *
  */
-data class HomePageResponse(
+data class PageResponse(
     val code: Int = 0,
     val message: Any? = null,
-    val result: HomePageResult? = null
+    val result: PageResult? = null
 )
-data class HomePageResult(
-    val page_info: PageInfo? = null,
-    val card_list: List<SearchCard> = emptyList()
+data class PageResult(
+    @SerializedName("page_info")
+    val pageInfo: PageInfo? = null,
+    @SerializedName("card_list")
+    val cardList: List<Card> = emptyList()
 )
 data class PageInfo(
+    @SerializedName("page_id")
     val page_id: Long? = null,
     val title: String? = null,
     val enable_share: Boolean? = null,
@@ -44,7 +47,7 @@ data class CallWorkMetroListResponse(
 )
 data class CallWorkMetroListResult(
     @SerializedName("item_list")
-    val itemList: List<WorkMetroItem> = emptyList(),
+    val itemList: List<MetroItem> = emptyList(),
     @SerializedName("item_count")
     val itemCount: Int = 0,
     @SerializedName("last_item_id")

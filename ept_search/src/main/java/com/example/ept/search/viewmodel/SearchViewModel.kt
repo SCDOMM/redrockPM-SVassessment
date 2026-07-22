@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.WeeklyRankMetroData
+import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await
@@ -25,8 +25,8 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private var _liveData = MutableLiveData<SearchState>()
     val liveData: LiveData<SearchState> get() = _liveData
     //视频周榜
-    private var _rankingLiveData = MutableLiveData<List<WeeklyRankMetroData>>()
-    val rankingLiveData: LiveData<List<WeeklyRankMetroData>> get() = _rankingLiveData
+    private var _rankingLiveData = MutableLiveData<List<MetroData>>()
+    val rankingLiveData: LiveData<List<MetroData>> get() = _rankingLiveData
     //搜索历史
     private var _historyLiveData = MutableLiveData<String>()
     val historyLiveData: LiveData<String> get() = _historyLiveData
@@ -86,7 +86,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             try {
                 val response = appService.getWeeklyRank().await()
-                val videoList = response.result?.card_list
+                val videoList = response.result?.cardList
                     ?.firstOrNull()
                     ?.cardData
                     ?.body

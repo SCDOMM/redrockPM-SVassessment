@@ -27,7 +27,7 @@ class ResultPgcFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        view = inflater.inflate(R.layout.fragment_ugc, container, false)
+        view = inflater.inflate(R.layout.fragment_pgc, container, false)
         rvPgcDefault = view.findViewById(R.id.rv_pgc_default)
         searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         pgcViewModel = ViewModelProvider(this)[ResultPgcViewModel::class.java]

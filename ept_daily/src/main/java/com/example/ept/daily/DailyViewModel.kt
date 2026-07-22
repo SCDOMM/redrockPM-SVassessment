@@ -41,8 +41,8 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val response = appService.getPage("daily_issue", "card").await()
                 allVideos = parseDailyVideos(response)
-                val callMetroCard = response.result?.card_list?.find { it.type == "call_metro_list" }
-                val params = callMetroCard?.card_data?.body?.api_request?.params
+                val callMetroCard = response.result?.cardList?.find { it.type == "call_metro_list" }
+                val params = callMetroCard?.cardData?.body?.apiRequest?.params
                 if (params != null) {
                     materialJSON = params.safeString("material")
                     lastItemId = params.safeInt("last_item_id")

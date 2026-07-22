@@ -3,9 +3,9 @@ package com.example.ept.person.utils
 import com.example.core.model.AlbumData
 import com.example.core.model.AlbumVideoPreview
 import com.example.core.model.MetroItem
-import com.example.core.model.SearchCard
-import com.example.core.model.UserWorkResponse
-import com.example.core.model.WorkMetroData
+import com.example.core.model.Card
+import com.example.core.model.PageResponse
+import com.example.core.model.MetroData
 
 /**   
  * 包名称： com.example.ept.person.utils
@@ -15,14 +15,14 @@ import com.example.core.model.WorkMetroData
  * 创建时间：2026-07-21 17:07
  *
  */
-fun parseAlbumCards(cardList: List<SearchCard>): List<AlbumData> {
+fun parseAlbumCards(cardList: List<Card>): List<AlbumData> {
     return cardList
         .filter { it.type == "set_slide_metro_list" }
         .map { card ->
-            val albumMeta = card.card_data?.footer?.left
+            val albumMeta = card.cardData?.footer?.left
                 ?.firstOrNull { it is MetroItem && (it as MetroItem).type == "user" }
                 ?.let { it as MetroItem }?.metroData
-            val videoPreviews = card.card_data?.body?.metro_list
+            val videoPreviews = card.cardData?.body?.metroList
                 ?.filter { it.type == "video" }
                 ?.map { video ->
                     AlbumVideoPreview(
@@ -41,8 +41,8 @@ fun parseAlbumCards(cardList: List<SearchCard>): List<AlbumData> {
             )
         }
 }
-fun parseWorkDataList(response: UserWorkResponse): List<WorkMetroData> {
-    val result = mutableListOf<WorkMetroData>()
+fun parseWorkDataList(response: PageResponse): List<MetroData> {
+    val result = mutableListOf<MetroData>()
     response.result?.cardList?.forEach { card ->
         val metroList = card.cardData?.body?.metroList ?: return@forEach
         for (metroItem in metroList) {
@@ -63,13 +63,13 @@ fun parseWorkDataList(response: UserWorkResponse): List<WorkMetroData> {
 sealed class UserHomeItem {
     data class Title(val text: String, val moreLink: String? = null) : UserHomeItem()
 
-    data class SlideVideoGroup(val videoItems: List<WorkMetroData>) : UserHomeItem()
+    data class SlideVideoGroup(val videoItems: List<MetroData>) : UserHomeItem()
 
-    data class SingleContent(val data: WorkMetroData) : UserHomeItem()
+    data class SingleContent(val data: MetroData) : UserHomeItem()
 
     data class AlbumCard(val albumData: AlbumData, val videoPreviews: List<AlbumVideoPreview>) : UserHomeItem()
 }
-fun parseCardForAdapter(response: UserWorkResponse): List<UserHomeItem> {
+fun parseCardForAdapter(response: PageResponse): List<UserHomeItem> {
     val result = mutableListOf<UserHomeItem>()
     val cards = response.result?.cardList ?: return result
     var i = 0

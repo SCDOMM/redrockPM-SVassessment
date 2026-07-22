@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.NavTab
-import com.example.core.model.WorkMetroData
+import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await
@@ -32,7 +32,7 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
     private val appService: KaiyanApi by lazy {
         RetrofitClient.create()
     }
-    private var allWorks:List<WorkMetroData> = emptyList()
+    private var allWorks:List<MetroData> = emptyList()
 
     fun initLiveData(workTab: NavTab) {
         viewModelScope.launch {
@@ -85,8 +85,8 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 sealed class WorkState{
-    data class InitState(val workList: MutableList<WorkMetroData>) : WorkState()
-    data class RefreshState(val workList: MutableList<WorkMetroData>) : WorkState()
-    data class LoadingState(val newWorkList: MutableList<WorkMetroData>) : WorkState()
+    data class InitState(val workList: MutableList<MetroData>) : WorkState()
+    data class RefreshState(val workList: MutableList<MetroData>) : WorkState()
+    data class LoadingState(val newWorkList: MutableList<MetroData>) : WorkState()
     data class FailedState(val msg: String) : WorkState()
 }
