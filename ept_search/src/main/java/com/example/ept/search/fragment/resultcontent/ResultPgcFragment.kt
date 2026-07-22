@@ -10,59 +10,59 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.search.R
-import com.example.ept.search.adapter.resultcontent.ResultCreatorsAdapter
+import com.example.ept.search.adapter.resultcontent.ResultPgcAdapter
 import com.example.ept.search.viewmodel.SearchViewModel
-import com.example.ept.search.viewmodel.resultcontent.CreatorsState
-import com.example.ept.search.viewmodel.resultcontent.ResultCreatorsViewModel
+import com.example.ept.search.viewmodel.resultcontent.PgcState
+import com.example.ept.search.viewmodel.resultcontent.ResultPgcViewModel
 
-class ResultCreatorsFragment : Fragment() {
+class ResultPgcFragment : Fragment() {
 
-    private lateinit var rvResultCreators: RecyclerView
+    private lateinit var rvPgcDefault: RecyclerView
     private lateinit var view: View
-    private lateinit var adapter: ResultCreatorsAdapter
+    private lateinit var adapter: ResultPgcAdapter
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var viewModel: ResultCreatorsViewModel
+    private lateinit var pgcViewModel: ResultPgcViewModel
     private var isLoading = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        view = inflater.inflate(R.layout.fragment_creators, container, false)
-        rvResultCreators = view.findViewById(R.id.rv_result_creators)
+        view = inflater.inflate(R.layout.fragment_ugc, container, false)
+        rvPgcDefault = view.findViewById(R.id.rv_pgc_default)
         searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        viewModel = ViewModelProvider(this)[ResultCreatorsViewModel::class.java]
+        pgcViewModel = ViewModelProvider(this)[ResultPgcViewModel::class.java]
         initEvent()
         return view
     }
 
     fun initEvent() {
-        adapter = ResultCreatorsAdapter()
-        rvResultCreators.layoutManager = LinearLayoutManager(view.context)
-        rvResultCreators.adapter = adapter
+        adapter = ResultPgcAdapter()
+        rvPgcDefault.layoutManager = LinearLayoutManager(view.context)
+        rvPgcDefault.adapter = adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner) { resultData ->
-            viewModel.initLiveData(resultData.creatorList.toMutableList(), resultData.query)
+            pgcViewModel.initLiveData(resultData.pgcList.toMutableList(), resultData.query)
         }
-        viewModel.liveData.observe(viewLifecycleOwner) { data ->
+        pgcViewModel.liveData.observe(viewLifecycleOwner) { data ->
             when (data) {
-                is CreatorsState.InitState -> {
-                    adapter.submitList(data.creatorList)
+                is PgcState.InitState -> {
+                    adapter.submitList(data.pgcList)
                 }
 
-                is CreatorsState.LoadingMoreState -> {
+                is PgcState.LoadingMoreState -> {
                     isLoading = false
-                    adapter.submitList(data.newCreatorList)
+                    adapter.submitList(data.newPgcList)
                 }
 
-                is CreatorsState.RefreshState -> {
+                is PgcState.RefreshState -> {
 
                 }
 
-                is CreatorsState.ErrorState -> {
+                is PgcState.ErrorState -> {
                     Toast.makeText(view.context,data.errorMsg, Toast.LENGTH_SHORT).show()
                 }
             }
         }
-        rvResultCreators.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvPgcDefault.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (isLoading) return
@@ -74,7 +74,7 @@ class ResultCreatorsFragment : Fragment() {
                 val remainingItems = totalCount - lastVisible - 1
                 if (remainingItems <= preloadThreshold) {
                     isLoading = true
-                    viewModel.loadMore()
+                    pgcViewModel.loadMore()
                 }
             }
         })

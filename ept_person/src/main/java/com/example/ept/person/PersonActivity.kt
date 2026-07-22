@@ -46,7 +46,7 @@ class PersonActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_creator)
+        setContentView(R.layout.activity_person)
         aplCreatorDefault = findViewById(R.id.apl_creator_default)
         ivCreatorBackground = findViewById(R.id.iv_creator_background)
         ivCreatorProfile = findViewById(R.id.iv_creator_profile)

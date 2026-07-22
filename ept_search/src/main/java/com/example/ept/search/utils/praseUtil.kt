@@ -18,10 +18,10 @@ import com.therouter.router.gson
  */
 data class SearchResultData(
     val videoList: List<MetroData> = emptyList(),
-    val creatorList: List<MetroData> = emptyList(),
-    val articleList: List<MetroData> = emptyList(),
+    val pgcList: List<MetroData> = emptyList(),
+    val graphicList: List<MetroData> = emptyList(),
     val topicList: List<MetroData> = emptyList(),
-    val userList: List<MetroData> = emptyList(),
+    val ugcList: List<MetroData> = emptyList(),
     val query: String
 )
 fun parseSearchResponse(response: SearchResponse, query: String): SearchResultData {
@@ -45,10 +45,10 @@ fun parseSearchResponse(response: SearchResponse, query: String): SearchResultDa
     }
     return SearchResultData(
         videoList = videoList,
-        creatorList = creatorList,
-        articleList = articleList,
+        pgcList = creatorList,
+        graphicList = articleList,
         topicList = topicList,
-        userList = userList,
+        ugcList = userList,
         query
     )
 }
@@ -75,10 +75,10 @@ fun parseSearchResponseV2(response: SearchResponseV2): SearchResultData {
     }
     return SearchResultData(
         videoList = videoList,
-        creatorList = creatorList,
-        articleList = articleList,
+        pgcList = creatorList,
+        graphicList = articleList,
         topicList = topicList,
-        userList = userList,
+        ugcList = userList,
         ""
     )
 }

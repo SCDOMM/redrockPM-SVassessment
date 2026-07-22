@@ -14,51 +14,51 @@ import com.example.ept.search.R
 
 /**   
  * 包名称： com.example.ept.search.adapter
- * 类名称：ResultCreatorsAdapter
+ * 类名称：ResultPgcAdapter
  * 类描述：TODO
  * 创建人：韦西波
  * 创建时间：2026-07-16 15:01
  *
  */
-class ResultCreatorsAdapter :
-    ListAdapter<MetroData, ResultCreatorsAdapter.CreatorViewHolder>(CreatorDiffCallback) {
+class ResultPgcAdapter :
+    ListAdapter<MetroData, ResultPgcAdapter.PgcViewHolder>(PgcDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CreatorViewHolder {
+    ): PgcViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.itemview_creators, parent, false)
-        return CreatorViewHolder(view)
+            LayoutInflater.from(parent.context).inflate(R.layout.itemview_pgc, parent, false)
+        return PgcViewHolder(view)
     }
 
     override fun onBindViewHolder(
-        holder: CreatorViewHolder,
+        holder: PgcViewHolder,
         position: Int
     ) {
         holder.bindData(getItem(position))
     }
 
-    inner class CreatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val ivResultCreatorCoverItem: ImageView =
-            itemView.findViewById(R.id.iv_result_creators_cover_item)
-        val tvResultCreatorTitleItem: TextView =
-            itemView.findViewById(R.id.tv_result_creators_name_item)
-        val tvResultCreatorDescItem: TextView =
-            itemView.findViewById(R.id.tv_result_creators_desc_item)
-        val ivResultCreatorAddItem: ImageView = itemView.findViewById(R.id.iv_result_creators_add)
+    inner class PgcViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val ivPgcProfileItem: ImageView =
+            itemView.findViewById(R.id.iv_pgc_profile_item)
+        val tvPgcNameItem: TextView =
+            itemView.findViewById(R.id.tv_pgc_name_item)
+        val tvPgcDescItem: TextView =
+            itemView.findViewById(R.id.tv_pgc_desc_item)
+        val ivPgcAddItem: ImageView = itemView.findViewById(R.id.iv_pgc_add_item)
         fun bindData(metroData: MetroData) {
-            Glide.with(ivResultCreatorCoverItem.context)
+            Glide.with(ivPgcProfileItem.context)
                 .load(metroData.avatar?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
-                .into(ivResultCreatorCoverItem)
-            tvResultCreatorTitleItem.text = metroData.nick
-            tvResultCreatorDescItem.text = metroData.description
+                .into(ivPgcProfileItem)
+            tvPgcNameItem.text = metroData.nick
+            tvPgcDescItem.text = metroData.description
         }
     }
 }
 
-object CreatorDiffCallback : DiffUtil.ItemCallback<MetroData>() {
+object PgcDiffCallback : DiffUtil.ItemCallback<MetroData>() {
     override fun areItemsTheSame(p0: MetroData, p1: MetroData): Boolean {
         return p0.uid == p1.uid
     }

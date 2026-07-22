@@ -39,24 +39,24 @@ class ResultTopicsAdapter :
     }
 
     inner class TopicsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val ivResultTopicsCoverItem: ImageView =
-            itemView.findViewById(R.id.iv_result_topics_cover_item)
-        val tvResultTopicsTitleItem: TextView =
-            itemView.findViewById(R.id.tv_result_topics_title_item)
-        val tvResultTopicsDescItem: TextView =
-            itemView.findViewById(R.id.tv_result_topics_desc_item)
-        val tvResultTopicsInteractItem: TextView =
-            itemView.findViewById(R.id.tv_result_topics_interact_item)
+        val ivTopicsCoverItem: ImageView =
+            itemView.findViewById(R.id.iv_topics_cover_item)
+        val tvTopicsTitleItem: TextView =
+            itemView.findViewById(R.id.tv_topics_title_item)
+        val tvTopicsDescItem: TextView =
+            itemView.findViewById(R.id.tv_topics_desc_item)
+        val tvTopicsInteractItem: TextView =
+            itemView.findViewById(R.id.tv_topics_interact_item)
 
         fun bindData(metroData: MetroData) {
-            Glide.with(ivResultTopicsCoverItem.context)
+            Glide.with(ivTopicsCoverItem.context)
                 .load(metroData.cover?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
-                .into(ivResultTopicsCoverItem)
-            tvResultTopicsTitleItem.text = metroData.title
-            tvResultTopicsDescItem.text = metroData.description
-            tvResultTopicsInteractItem.text = metroData.tags?.firstOrNull()?.title
+                .into(ivTopicsCoverItem)
+            tvTopicsTitleItem.text = metroData.title
+            tvTopicsDescItem.text = metroData.description
+            tvTopicsInteractItem.text = metroData.tags?.firstOrNull()?.title
         }
     }
 

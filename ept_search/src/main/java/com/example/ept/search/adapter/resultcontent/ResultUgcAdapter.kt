@@ -14,53 +14,53 @@ import com.example.ept.search.R
 
 /**   
  * 包名称： com.example.ept.search.adapter
- * 类名称：ResultUsersFragment
+ * 类名称：ResultUgcFragment
  * 类描述：TODO
  * 创建人：韦西波
  * 创建时间：2026-07-16 15:01
  *
  */
-class ResultUsersAdapter :
-    ListAdapter<MetroData, ResultUsersAdapter.UsersViewHolder>(UsersDiffCallback) {
+class ResultUgcAdapter :
+    ListAdapter<MetroData, ResultUgcAdapter.UgcViewHolder>(UgcDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): UsersViewHolder {
+    ): UgcViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.itemview_users, parent, false)
-        return UsersViewHolder(view)
+            LayoutInflater.from(parent.context).inflate(R.layout.itemview_ugc, parent, false)
+        return UgcViewHolder(view)
     }
 
     override fun onBindViewHolder(
-        holder: UsersViewHolder,
+        holder: UgcViewHolder,
         position: Int
     ) {
         holder.bindData(getItem(position))
     }
 
-    inner class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val ivResultUsersCoverItem: ImageView =
-            itemView.findViewById(R.id.iv_result_users_cover_item)
-        val tvResultUsersNameItem: TextView =
-            itemView.findViewById(R.id.tv_result_users_name_item)
-        val tvResultUsersDescItem: TextView =
-            itemView.findViewById(R.id.tv_result_users_desc_item)
+    inner class UgcViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val ivUgcProfileItem: ImageView =
+            itemView.findViewById(R.id.iv_ugc_profile_item)
+        val tvUgcNameItem: TextView =
+            itemView.findViewById(R.id.tv_ugc_name_item)
+        val tvUgcDescItem: TextView =
+            itemView.findViewById(R.id.tv_ugc_desc_item)
 
         fun bindData(metroData: MetroData) {
-            Glide.with(ivResultUsersCoverItem.context)
+            Glide.with(ivUgcProfileItem.context)
                 .load(metroData.avatar?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
-                .into(ivResultUsersCoverItem)
-            tvResultUsersNameItem.text = metroData.nick
-            tvResultUsersDescItem.text = metroData.description
+                .into(ivUgcProfileItem)
+            tvUgcNameItem.text = metroData.nick
+            tvUgcDescItem.text = metroData.description
         }
 
     }
 
 }
 
-object UsersDiffCallback : DiffUtil.ItemCallback<MetroData>() {
+object UgcDiffCallback : DiffUtil.ItemCallback<MetroData>() {
     override fun areItemsTheSame(p0: MetroData, p1: MetroData): Boolean {
         return p0.uid == p1.uid
     }

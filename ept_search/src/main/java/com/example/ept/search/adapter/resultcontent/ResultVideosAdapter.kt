@@ -40,26 +40,26 @@ class ResultVideosAdapter :
     }
 
     inner class VideosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val ivResultVideosCoverItem: ImageView =
-            itemView.findViewById(R.id.iv_result_videos_cover_item)
-        val tvResultVideosTitleItem: TextView =
-            itemView.findViewById(R.id.tv_result_videos_title_item)
-        val tvResultVideosDurationItem: TextView =
-            itemView.findViewById(R.id.tv_result_videos_duration_item)
-        val tvResultVideosLabelItem: TextView =
-            itemView.findViewById(R.id.tv_result_videos_label_item)
+        val ivVideosCoverItem: ImageView =
+            itemView.findViewById(R.id.iv_videos_cover_item)
+        val tvVideosTitleItem: TextView =
+            itemView.findViewById(R.id.tv_videos_title_item)
+        val tvVideosDurationItem: TextView =
+            itemView.findViewById(R.id.tv_videos_duration_item)
+        val tvVideosLabelItem: TextView =
+            itemView.findViewById(R.id.tv_videos_label_item)
 
         fun bindData(metroData: MetroData) {
-            Glide.with(ivResultVideosCoverItem.context)
+            Glide.with(ivVideosCoverItem.context)
                 .load(metroData.cover?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
-                .into(ivResultVideosCoverItem)
-            tvResultVideosTitleItem.text = metroData.title
+                .into(ivVideosCoverItem)
+            tvVideosTitleItem.text = metroData.title
             val label = metroData.tags?.firstOrNull()?.title?.removePrefix("#")
-            tvResultVideosLabelItem.text = "#$label"
+            tvVideosLabelItem.text = "#$label"
             val duration = DateUtils.formatElapsedTime(metroData.duration?.value?.toLong()!!)
-            tvResultVideosDurationItem.text = "▶$duration"
+            tvVideosDurationItem.text = "▶$duration"
         }
     }
 }

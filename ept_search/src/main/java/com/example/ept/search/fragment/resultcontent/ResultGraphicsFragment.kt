@@ -10,51 +10,51 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.search.R
-import com.example.ept.search.adapter.resultcontent.ResultArticlesAdapter
+import com.example.ept.search.adapter.resultcontent.ResultGraphicsAdapter
 import com.example.ept.search.viewmodel.SearchViewModel
-import com.example.ept.search.viewmodel.resultcontent.ArticlesState
-import com.example.ept.search.viewmodel.resultcontent.ResultArticlesViewModel
+import com.example.ept.search.viewmodel.resultcontent.GraphicsState
+import com.example.ept.search.viewmodel.resultcontent.ResultGraphicsViewModel
 
-class ResultArticlesFragment : Fragment() {
-    private lateinit var rvResultArticles: RecyclerView
+class ResultGraphicsFragment : Fragment() {
+    private lateinit var rvGraphicsDefault: RecyclerView
     private lateinit var view: View
-    private lateinit var adapter: ResultArticlesAdapter
+    private lateinit var adapter: ResultGraphicsAdapter
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var articlesViewModel: ResultArticlesViewModel
+    private lateinit var graphicsViewModel: ResultGraphicsViewModel
     private var isLoading=false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        view=inflater.inflate(R.layout.fragment_articles, container, false)
-        rvResultArticles=view.findViewById(R.id.rv_result_articles)
+        view=inflater.inflate(R.layout.fragment_graphics, container, false)
+        rvGraphicsDefault=view.findViewById(R.id.rv_graphics_default)
         searchViewModel= ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        articlesViewModel= ViewModelProvider(this)[ResultArticlesViewModel::class.java]
+        graphicsViewModel= ViewModelProvider(this)[ResultGraphicsViewModel::class.java]
         initEvent()
         initAdd()
         return view
     }
     fun initEvent(){
-        adapter= ResultArticlesAdapter()
-        rvResultArticles.layoutManager = LinearLayoutManager(requireContext())
-        rvResultArticles.adapter=adapter
+        adapter= ResultGraphicsAdapter()
+        rvGraphicsDefault.layoutManager = LinearLayoutManager(requireContext())
+        rvGraphicsDefault.adapter=adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->
-            articlesViewModel.initLiveData(resultData.articleList.toMutableList(),resultData.query)
+            graphicsViewModel.initLiveData(resultData.graphicList.toMutableList(),resultData.query)
         }
-        articlesViewModel.liveData.observe(viewLifecycleOwner){data ->
+        graphicsViewModel.liveData.observe(viewLifecycleOwner){ data ->
            when(data){
-               is ArticlesState.InitState ->{
-                   adapter.submitList(data.articleList)
+               is GraphicsState.InitState ->{
+                   adapter.submitList(data.graphicList)
                }
-               is ArticlesState.LoadingMoreState->{
+               is GraphicsState.LoadingMoreState->{
                    isLoading=false
-                   adapter.submitList(data.newArticleList)
+                   adapter.submitList(data.newGraphicList)
                }
-               is ArticlesState.RefreshState->{
+               is GraphicsState.RefreshState->{
 
                }
-               is ArticlesState.ErrorState->{
+               is GraphicsState.ErrorState->{
                    Toast.makeText(
                        requireContext(),
                        "错误！" + data.errorMsg,
@@ -66,7 +66,7 @@ class ResultArticlesFragment : Fragment() {
 
     }
     fun initAdd(){
-        rvResultArticles.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvGraphicsDefault.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (isLoading) return
@@ -78,7 +78,7 @@ class ResultArticlesFragment : Fragment() {
                 val remainingItems = totalCount - lastVisible - 1
                 if (remainingItems <= preloadThreshold) {
                     isLoading = true
-                    articlesViewModel.loadMore()
+                    graphicsViewModel.loadMore()
                 }
             }
         })

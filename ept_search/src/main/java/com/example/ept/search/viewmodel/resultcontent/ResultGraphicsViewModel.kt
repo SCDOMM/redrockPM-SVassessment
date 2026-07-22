@@ -14,26 +14,26 @@ import kotlinx.coroutines.launch
 
 /**   
  * 包名称： com.example.ept.search.viewModel
- * 类名称：ResultArticlesViewModel
+ * 类名称：ResultGraphicsViewModel
  * 类描述：TODO
  * 创建人：韦西波
  * 创建时间：2026-07-17 21:56
  *
  */
-class ResultArticlesViewModel(application: Application) : AndroidViewModel(application) {
-    private var _liveData = MutableLiveData<ArticlesState>()
-    val liveData: LiveData<ArticlesState> get() = _liveData
-    private var allArticles: List<MetroData> = emptyList()
+class ResultGraphicsViewModel(application: Application) : AndroidViewModel(application) {
+    private var _liveData = MutableLiveData<GraphicsState>()
+    val liveData: LiveData<GraphicsState> get() = _liveData
+    private var allGraphics: List<MetroData> = emptyList()
     private var lastItemId = 2
     private var query = ""
     private val appService: KaiyanApi by lazy {
         RetrofitClient.create()
     }
 
-    fun initLiveData(allArticles: MutableList<MetroData>, query: String) {
-        this.allArticles = allArticles
+    fun initLiveData(allGraphics: MutableList<MetroData>, query: String) {
+        this.allGraphics = allGraphics
         this.query = query
-        _liveData.value = ArticlesState.InitState(allArticles)
+        _liveData.value = GraphicsState.InitState(allGraphics)
     }
 
     fun loadMore() {
@@ -42,19 +42,19 @@ class ResultArticlesViewModel(application: Application) : AndroidViewModel(appli
                 val response = appService.searchLoad(query, "graphic", lastItemId, 10).await()
                 val loadResult = parseSearchResponseV2(response)
                 lastItemId = response.result?.last_item_id ?: 0
-                allArticles = allArticles + loadResult.articleList
-                _liveData.value = ArticlesState.LoadingMoreState(allArticles.toMutableList())
+                allGraphics = allGraphics + loadResult.graphicList
+                _liveData.value = GraphicsState.LoadingMoreState(allGraphics.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
-                _liveData.value = ArticlesState.ErrorState(e.message.toString())
+                _liveData.value = GraphicsState.ErrorState(e.message.toString())
             }
         }
     }
 }
 
-sealed class ArticlesState {
-    data class InitState(val articleList: MutableList<MetroData>) : ArticlesState()
-    data class RefreshState(val articleList: MutableList<MetroData>) : ArticlesState()
-    data class LoadingMoreState(val newArticleList: MutableList<MetroData>) : ArticlesState()
-    data class ErrorState(val errorMsg: String) : ArticlesState()
+sealed class GraphicsState {
+    data class InitState(val graphicList: MutableList<MetroData>) : GraphicsState()
+    data class RefreshState(val graphicList: MutableList<MetroData>) : GraphicsState()
+    data class LoadingMoreState(val newGraphicList: MutableList<MetroData>) : GraphicsState()
+    data class ErrorState(val errorMsg: String) : GraphicsState()
 }

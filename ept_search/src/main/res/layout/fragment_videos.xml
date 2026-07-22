@@ -6,11 +6,11 @@
     tools:context=".fragment.resultcontent.ResultVideosFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/srl_result_videos"
+        android:id="@+id/srl_videos_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_result_videos"
+            android:id="@+id/rv_videos_default"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

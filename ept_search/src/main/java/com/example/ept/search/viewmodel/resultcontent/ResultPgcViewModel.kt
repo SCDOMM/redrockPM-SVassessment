@@ -14,26 +14,26 @@ import kotlinx.coroutines.launch
 
 /**   
  * 包名称： com.example.ept.search.viewModel
- * 类名称：ResultCreatorsFragment
+ * 类名称：ResultPgcFragment
  * 类描述：TODO
  * 创建人：韦西波
  * 创建时间：2026-07-17 21:56
  *
  */
-class ResultCreatorsViewModel  (application: Application) : AndroidViewModel(application) {
-    private var _liveData = MutableLiveData<CreatorsState>()
-    val liveData: LiveData<CreatorsState> get() = _liveData
+class ResultPgcViewModel  (application: Application) : AndroidViewModel(application) {
+    private var _liveData = MutableLiveData<PgcState>()
+    val liveData: LiveData<PgcState> get() = _liveData
 
     private var lastItemId=2
-    private var allCreators: List<MetroData> =emptyList()
+    private var allPgc: List<MetroData> =emptyList()
     private var query=""
     private val appService: KaiyanApi by lazy {
         RetrofitClient.create()
     }
-    fun initLiveData(allCreators: MutableList<MetroData>,query: String){
-        this.allCreators=allCreators
+    fun initLiveData(allPgc: MutableList<MetroData>, query: String){
+        this.allPgc=allPgc
         this.query=query
-        _liveData.value= CreatorsState.InitState(allCreators)
+        _liveData.value= PgcState.InitState(allPgc)
     }
     fun loadMore(){
         viewModelScope.launch {
@@ -41,18 +41,18 @@ class ResultCreatorsViewModel  (application: Application) : AndroidViewModel(app
                 val response = appService.searchLoad(query, "pgc", lastItemId, 10).await()
                 val loadResult = parseSearchResponseV2(response)
                 lastItemId = response.result?.last_item_id ?: 0
-                allCreators=allCreators+loadResult.creatorList
-                _liveData.value= CreatorsState.LoadingMoreState(allCreators.toMutableList())
+                allPgc=allPgc+loadResult.pgcList
+                _liveData.value= PgcState.LoadingMoreState(allPgc.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
-                _liveData.value= CreatorsState.ErrorState(e.message.toString())
+                _liveData.value= PgcState.ErrorState(e.message.toString())
             }
         }
     }
 }
-sealed class CreatorsState{
-    data class InitState(val creatorList: MutableList<MetroData>): CreatorsState()
-    data class RefreshState(val creatorList:MutableList<MetroData>): CreatorsState()
-    data class LoadingMoreState( val newCreatorList: MutableList<MetroData>): CreatorsState()
-    data class ErrorState(val errorMsg: String): CreatorsState()
+sealed class PgcState{
+    data class InitState(val pgcList: MutableList<MetroData>): PgcState()
+    data class RefreshState(val pgcList:MutableList<MetroData>): PgcState()
+    data class LoadingMoreState( val newPgcList: MutableList<MetroData>): PgcState()
+    data class ErrorState(val errorMsg: String): PgcState()
 }

@@ -3,16 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="20dp"
-    android:layout_marginVertical="5dp"
+    android:layout_margin="10dp"
     >
 
     <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/cv_result_users_item"
+        android:id="@+id/cv_graphics_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
-        app:layout_constraintDimensionRatio="W,5:16"
+        app:layout_constraintDimensionRatio="W,3:8"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,59 +25,66 @@
             >
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_result_users_cover_item"
+                android:id="@+id/iv_graphics_cover_item"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/eyepetater"
-                android:layout_marginVertical="10dp"
-                android:padding="2dp"
-                app:strokeWidth="2dp"
                 app:layout_constraintDimensionRatio="W,1:1"
-                app:shapeAppearanceOverlay="@style/round"
+                app:shapeAppearanceOverlay="@style/roundedCorner"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
             <TextView
-                android:id="@+id/tv_result_users_name_item"
+                android:id="@+id/tv_graphics_title_item"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="25dp"
                 android:layout_marginTop="10dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="标题测试"
                 android:textColor="#1A1A1A"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/iv_result_users_cover_item"
-                app:layout_constraintTop_toTopOf="@id/iv_result_users_cover_item"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_graphics_cover_item"
+                app:layout_constraintTop_toTopOf="@id/iv_graphics_cover_item"
                 />
             <TextView
-                android:id="@+id/tv_result_users_desc_item"
+                android:id="@+id/tv_graphics_interact_item"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="描述测试"
+                android:layout_marginBottom="10dp"
                 android:textSize="10sp"
-                app:layout_constraintStart_toEndOf="@id/iv_result_users_cover_item"
-                app:layout_constraintBottom_toBottomOf="@id/iv_result_users_cover_item"
-                app:layout_constraintEnd_toStartOf="@id/iv_result_users_add"
+                android:text="114人点赞|514人收藏"
+                app:layout_constraintBottom_toBottomOf="@id/iv_graphics_cover_item"
+                app:layout_constraintStart_toStartOf="@id/tv_graphics_title_item"
+                />
+            <TextView
+                android:id="@+id/tv_graphics_desc_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:maxLines="1"
+                android:textSize="16sp"
+                android:textColor="#1A1A1A"
+                android:text="下北泽|田所浩二画"
+                app:layout_constraintBottom_toTopOf="@id/tv_graphics_interact_item"
+                app:layout_constraintStart_toStartOf="@id/tv_graphics_title_item"
+                app:layout_constraintEnd_toEndOf="parent"
                 />
             <ImageView
-                android:id="@+id/iv_result_users_add"
+                android:id="@+id/iv_graphics_stack_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_search_add"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/iv_result_users_cover_item"
-                app:layout_constraintBottom_toBottomOf="@id/iv_result_users_cover_item"
+                android:src="@drawable/ic_search_stack"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="@id/iv_graphics_cover_item"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ept.search.R
 import com.example.ept.search.adapter.ResultAdapter
-import com.example.ept.search.fragment.resultcontent.ResultArticlesFragment
-import com.example.ept.search.fragment.resultcontent.ResultCreatorsFragment
+import com.example.ept.search.fragment.resultcontent.ResultGraphicsFragment
+import com.example.ept.search.fragment.resultcontent.ResultPgcFragment
 import com.example.ept.search.fragment.resultcontent.ResultTopicsFragment
-import com.example.ept.search.fragment.resultcontent.ResultUsersFragment
+import com.example.ept.search.fragment.resultcontent.ResultUgcFragment
 import com.example.ept.search.fragment.resultcontent.ResultVideosFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -42,12 +41,12 @@ class ResultFragment : Fragment() {
         })
         fragmentList.add(object : FragmentInterface {
             override fun back(): Fragment {
-                return ResultCreatorsFragment()
+                return ResultPgcFragment()
             }
         })
         fragmentList.add(object : FragmentInterface {
             override fun back(): Fragment {
-                return ResultArticlesFragment()
+                return ResultGraphicsFragment()
             }
         })
         fragmentList.add(object : FragmentInterface {
@@ -57,7 +56,7 @@ class ResultFragment : Fragment() {
         })
         fragmentList.add(object : FragmentInterface {
             override fun back(): Fragment {
-                return ResultUsersFragment()
+                return ResultUgcFragment()
             }
         })
         val adapter = ResultAdapter(fragmentList, this)

@@ -21,16 +21,16 @@ class ResultTopicsFragment : Fragment() {
     private lateinit var view: View
     private lateinit var adapter: ResultTopicsAdapter
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var viewModel: ResultTopicsViewModel
+    private lateinit var topicsViewModel: ResultTopicsViewModel
     private var isLoading=false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         view= inflater.inflate(R.layout.fragment_topics, container, false)
-        rvResultTopics=view.findViewById(R.id.rv_result_topics)
+        rvResultTopics=view.findViewById(R.id.rv_topics_default)
         searchViewModel= ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        viewModel= ViewModelProvider(this)[ResultTopicsViewModel::class.java]
+        topicsViewModel= ViewModelProvider(this)[ResultTopicsViewModel::class.java]
         initEvent()
         return view
     }
@@ -40,9 +40,9 @@ class ResultTopicsFragment : Fragment() {
         rvResultTopics.adapter=adapter
 
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->
-            viewModel.initLiveData(resultData.topicList.toMutableList(),resultData.query)
+            topicsViewModel.initLiveData(resultData.topicList.toMutableList(),resultData.query)
         }
-        viewModel.liveData.observe(viewLifecycleOwner){data->
+        topicsViewModel.liveData.observe(viewLifecycleOwner){ data->
             when(data){
                 is TopicsState.ErrorState -> Toast.makeText(view.context,data.errorMsg, Toast.LENGTH_SHORT).show()
                 is TopicsState.InitState ->adapter.submitList(data.topicData)
@@ -65,7 +65,7 @@ class ResultTopicsFragment : Fragment() {
                 val remainingItems = totalCount - lastVisible - 1
                 if (remainingItems <= preloadThreshold) {
                     isLoading = true
-                    viewModel.loadMore()
+                    topicsViewModel.loadMore()
                 }
             }
         })

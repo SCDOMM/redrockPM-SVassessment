@@ -21,16 +21,16 @@ class ResultVideosFragment : Fragment() {
     private lateinit var view: View
     private lateinit var adapter: ResultVideosAdapter
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var viewModel: ResultVideosViewModel
+    private lateinit var videosViewModel: ResultVideosViewModel
     private var isLoading=false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         view=inflater.inflate(R.layout.fragment_videos, container, false)
-        rvResultVideos=view.findViewById(R.id.rv_result_videos)
+        rvResultVideos=view.findViewById(R.id.rv_videos_default)
         searchViewModel= ViewModelProvider(requireActivity())[SearchViewModel::class.java]
-        viewModel= ViewModelProvider(this)[ResultVideosViewModel::class.java]
+        videosViewModel= ViewModelProvider(this)[ResultVideosViewModel::class.java]
         initEvent()
         return view
     }
@@ -39,9 +39,9 @@ class ResultVideosFragment : Fragment() {
         rvResultVideos.layoutManager = LinearLayoutManager(view.context)
         rvResultVideos.adapter=adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->
-            viewModel.initLiveData(resultData.videoList.toMutableList(),resultData.query)
+            videosViewModel.initLiveData(resultData.videoList.toMutableList(),resultData.query)
         }
-        viewModel.liveData.observe(viewLifecycleOwner){ data->
+        videosViewModel.liveData.observe(viewLifecycleOwner){ data->
             when(data){
                 is VideosState.ErrorState -> Toast.makeText(view.context,data.errorMsg, Toast.LENGTH_SHORT).show()
                 is VideosState.InitState ->adapter.submitList(data.videoList)
@@ -64,7 +64,7 @@ class ResultVideosFragment : Fragment() {
                 val remainingItems = totalCount - lastVisible - 1
                 if (remainingItems <= preloadThreshold) {
                     isLoading = true
-                    viewModel.loadMore()
+                    videosViewModel.loadMore()
                 }
             }
         })
