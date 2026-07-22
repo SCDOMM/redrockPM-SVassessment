@@ -41,7 +41,6 @@ class ResultArticlesFragment : Fragment() {
         rvResultArticles.adapter=adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->
             articlesViewModel.initLiveData(resultData.articleList.toMutableList(),resultData.query)
-
         }
         articlesViewModel.liveData.observe(viewLifecycleOwner){data ->
            when(data){

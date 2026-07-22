@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".pgc.fragment.AlbumFragment">
+    tools:context=".fragment.AlbumFragment">
     <TextView
         android:id="@+id/tv_album_title"
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_album_title"
         />
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_creator_recent"
+        android:id="@+id/rv_album_default"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/divider_album_default"

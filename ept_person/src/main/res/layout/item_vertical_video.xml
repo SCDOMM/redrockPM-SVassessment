@@ -143,11 +143,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_fold_item" />
             <ImageView
+                android:id="@+id/iv_video_topic_item"
+                android:src="@drawable/ic_person_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                />
+            <TextView
+                android:id="@+id/tv_video_topic_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="#话题"
+                android:textColor="#808080"
+                android:textSize="13sp"
+                app:layout_constraintStart_toEndOf="@id/iv_video_topic_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item" />
+
+
+
+
+            <ImageView
                 android:id="@+id/iv_video_like_item"
                 android:src="@drawable/ic_person_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
 
                 app:layout_constraintStart_toStartOf="parent"
                 />
@@ -158,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
                 app:layout_constraintStart_toEndOf="@id/iv_video_like_item"
                 />
             <ImageView
@@ -167,7 +190,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
                 app:layout_constraintStart_toEndOf="@id/tv_video_like_item"
                 />
             <TextView
@@ -177,7 +200,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
                 app:layout_constraintStart_toEndOf="@id/iv_video_favor_item"
                 />
             <ImageView
@@ -186,7 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
                 app:layout_constraintStart_toEndOf="@id/tv_video_favor_item"
                 />
             <TextView
@@ -204,7 +227,7 @@
                 android:src="@drawable/ic_person_forward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
                 app:layout_constraintEnd_toEndOf="parent"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>

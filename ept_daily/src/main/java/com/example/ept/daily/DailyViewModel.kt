@@ -65,7 +65,6 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
                     lastItemId
                 ).await()
                 lastItemId = response.result?.last_item_id ?: 0
-                response.result?.item_list ?: emptyList()
 
                 val newVideos: List<MetroData> = response.result?.item_list
                     ?.mapNotNull { it.metroData }

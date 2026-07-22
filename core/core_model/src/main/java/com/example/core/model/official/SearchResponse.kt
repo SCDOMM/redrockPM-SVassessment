@@ -76,9 +76,9 @@ data class MetroCardData(
 )
 data class CardHeaderFooter(
     val style: Any? = null,
-    val left: List<Any>? = emptyList(),
-    val center: List<Any>? = emptyList(),
-    val right: List<Any>? = emptyList()
+    val left: List<MetroItem>? = emptyList(),
+    val center: List<MetroItem>? = emptyList(),
+    val right: List<MetroItem>? = emptyList()
 )
 
 data class MetroBody(
@@ -114,6 +114,7 @@ data class MetroData(
     val link: String? = null,
     val type: String? = null,          // "pgc" / "ugc"
     val resource_id: String? = null,
+    @SerializedName("resource_type")
     val resource_type: String? = null, // "pgc_video" / "ugc_picture" / "collection"
 
     // ========== 视频特有字段 ==========
@@ -138,7 +139,6 @@ data class MetroData(
     val liked: Boolean? = null,
     val collected: Boolean? = null,
 
-    // ========== 图文（ugc_picture）特有字段 ==========
     @SerializedName("image_id")
     val imageId: Long? = null,
     @SerializedName("publish_time")
@@ -156,9 +156,8 @@ data class MetroData(
     @SerializedName("topic_id")
     val topicId: String? = null,
     val labels: List<Any>? = null,
-    val status: String? = null
+    val status: String? = null,
 )
-
 data class DurationInfo(
     val value: Int = 0,
     val text: String = ""

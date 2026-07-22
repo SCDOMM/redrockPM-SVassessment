@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="10dp"
-    tools:context=".pgc.CreatorActivity">
+    tools:context=".CreatorActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/cl_creator_default"
@@ -16,14 +16,16 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/apl_creator_default"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:liftOnScroll="true"
+            >
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/ctl_creator_default"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
+                app:contentScrim="#FFFFFF"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,6 +57,7 @@
                                 android:layout_height="60dp"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/eyepetater"
+                                android:layout_marginTop="-10dp"
                                 app:shapeAppearanceOverlay="@style/round"
                                 app:strokeWidth="2dp"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +79,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="10dp"
                                 android:text="24岁，是创作者"
-                                android:textSize="10dp"
+                                android:textSize="13dp"
                                 android:maxLines="3"
                                 android:ellipsize="end"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +100,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="114粉丝"
-                                android:textSize="10sp"
+                                android:layout_marginVertical="10dp"
+                                android:textSize="13sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tv_creator_desc" />
 
@@ -105,9 +109,10 @@
                                 android:id="@+id/tv_creator_follow"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginVertical="10dp"
                                 android:layout_marginStart="10dp"
                                 android:text="514关注"
-                                android:textSize="10sp"
+                                android:textSize="13sp"
                                 app:layout_constraintStart_toEndOf="@id/tv_creator_fans"
                                 app:layout_constraintTop_toBottomOf="@id/tv_creator_desc" />
 
@@ -115,9 +120,10 @@
                                 android:id="@+id/tv_creator_badge"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginVertical="10dp"
                                 android:layout_marginStart="10dp"
                                 android:text="1919810勋章"
-                                android:textSize="10sp"
+                                android:textSize="13sp"
                                 app:layout_constraintStart_toEndOf="@id/tv_creator_follow"
                                 app:layout_constraintTop_toBottomOf="@id/tv_creator_desc" />
 
@@ -125,8 +131,9 @@
                                 android:id="@+id/tv_creator_popular"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginVertical="10dp"
                                 android:text="被收藏1919次 · 被分享810次"
-                                android:textSize="10sp"
+                                android:textSize="11sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tv_creator_fans" />
 

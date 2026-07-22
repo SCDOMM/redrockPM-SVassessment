@@ -8,14 +8,15 @@
         android:id="@+id/cl_album_default_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="W,2:3"
+        app:layout_constraintDimensionRatio="W,5:7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <HorizontalScrollView
+        <com.example.ept.person.MyHorizontalScrollView
             android:id="@+id/hs_album_default_item"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:scrollbars="none"
             app:layout_constraintDimensionRatio="W,9:16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -25,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
             </LinearLayout>
-        </HorizontalScrollView>
+        </com.example.ept.person.MyHorizontalScrollView>
 
         <ImageView
             android:id="@+id/iv_album_cover_item"

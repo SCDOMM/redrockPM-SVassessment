@@ -9,6 +9,8 @@ import com.example.core.model.RankListResponse
 import com.example.core.model.official.SearchResponse
 import com.example.core.model.official.SearchResponseV2
 import com.example.core.model.TabListResponse
+import com.example.core.model.official.UserCenterResponse
+import com.example.core.model.official.UserWorkResponse
 import com.example.core.model.official.WeeklyRankResponse
 import retrofit2.Call
 import retrofit2.http.Field
@@ -34,6 +36,12 @@ interface KaiyanApi {
         @Path("tabId") tabId: String,
         @Query("page") page: Int = 0
     ): Call<EyepetizerResponse>
+
+    @GET("v1/user/center/get_user_info")
+    fun getUserInfo(
+        @Query("uid") uid: Long,
+        @Query("user_type") userType: String = ""
+    ): Call<UserCenterResponse>
 
     @GET("v1/recommend/search/get_hot_queries")
     fun getHotQueries(
@@ -205,6 +213,14 @@ interface KaiyanApi {
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
     ): Call<HomePageResponse>
+
+    @FormUrlEncoded
+    @POST("v1/card/page/get_page")
+    fun getWorkPage(
+        @Field("page_label") pageLabel: String,
+        @Field("page_type") pageType: String = "card",
+    ): Call<UserWorkResponse>
+
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
     fun getMoreHomePage(

@@ -23,18 +23,16 @@ object RetrofitClient {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
-    private val  cookieInterceptor = Interceptor { chain ->
+    private val cookieInterceptor = Interceptor { chain ->
         val original = chain.request()
         val newRequest = original.newBuilder()
-            // 1. 固定头部
             .header("x-api-key", "0530ee4341324ce2b26c23fcece80ea2")
             .header("X-THEFAIR-APPID", "ahpagrcrf2p7m6rg")
-            .header("X-THEFAIR-AUTH", "uHkwPEjMsV9UKJZpLT1nWjdmiBnNMr9FTqll6Foa5WUQ9sidzNXqwNpRx2t4Xb5IbX4zkYvaTVIb2HuP1My7l0fh0u8bMwrUQOxd6B6yPTzdRsw2QA0n1uCOyqO8vyFBZQPjLgvyf7RjVplheFSbAhvMrDeyHejkkFHWSQgpHTTjb9+to9Z9yzDqJ6dqbuKbe0d6m3GtIY4/nAiPZt9dYSgHqeUlMAMEo4f8a8qqf/JUcW2MjClRorBdh39I1ZSTJVR5Hz7QRvkARvC5PSxJtw==")
+            .header("X-THEFAIR-AUTH", "uHkwPEjMsV9UKJZpLT1nWjdmiBnNMr9FTqll6Foa5WUQ9sidzNXqwNpRx2t4Xb5IbX4zkYvaTVIb2HuP1My7l0fh0u8bMwrUQOxd6B6yPTzdRsw2QA0n1uCOyqO8vyFBZQPjLgvyf7RjVplheFSbAhvMrDeyHejkkFHWSQgpHTTjb9+to9Z9yzDqJ6dqbuKbe0d6m3GtIY4/nAiPZt9dYSgHqeUlMAMEo4f8a8qqf/JD2kSAPl2a8JPPgTi0egnoOSpi+tHf8dVnZSl8zd0y1A==")
             .header("X-THEFAIR-CID", "12a50409f39708370d69ee9951505c2c")
             .header("X-THEFAIR-UA", "EYEPETIZER/7090000 (V2410A;android;15;zh_CN;android;7.9.0;cn-bj;huawei;12a50409f39708370d69ee9951505c2c;NONE;1080*2163) native/1.0")
             .header("User-Agent", "EYEPETIZER/7090000 (V2410A;android;15;zh_CN;android;7.9.0;cn-bj;huawei;12a50409f39708370d69ee9951505c2c;NONE;1080*2163) native/1.0")
-            // 2. Cookie（注意：如果原本请求已带Cookie，会覆盖，所以需要手动构建完整的Cookie字符串）
-            .header("Cookie", "ky_udid=58d1cf919db5480fbf33d4e306642a4e;ky_auth=;APPID=ahpagrcrf2p7m6rg;PHPSESSID=fb950631740ecf259abd1519ed26d1c3")
+            .header("Cookie", "ky_udid=58d1cf919db5480fbf33d4e306642a4e;ky_auth=;APPID=ahpagrcrf2p7m6rg;PHPSESSID=a8ee7bee9cce9d3c1f8bdb0602d17781")
             .build()
         chain.proceed(newRequest)
     }
