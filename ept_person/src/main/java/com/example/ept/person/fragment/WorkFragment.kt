@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.person.R
-import com.example.ept.person.adapter.WorkAdapter
+import com.example.ept.person.adapter.content.WorkAdapter
 import com.example.ept.person.viewmodel.CreatorViewModel
 import com.example.ept.person.viewmodel.WorkState
 import com.example.ept.person.viewmodel.WorkViewModel

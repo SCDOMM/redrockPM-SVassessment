@@ -1,18 +1,16 @@
 package com.example.ept.person.utils
 
-import com.example.core.model.official.AlbumData
-import com.example.core.model.official.AlbumVideoPreview
-import com.example.core.model.official.MetroItem
-import com.example.core.model.official.SearchCard
-import com.example.core.model.official.UserWorkResponse
-import com.example.core.model.official.WorkCover
-import com.example.core.model.official.WorkDuration
-import com.example.core.model.official.WorkMetroData
+import com.example.core.model.AlbumData
+import com.example.core.model.AlbumVideoPreview
+import com.example.core.model.MetroItem
+import com.example.core.model.SearchCard
+import com.example.core.model.UserWorkResponse
+import com.example.core.model.WorkMetroData
 
 /**   
  * 包名称： com.example.ept.person.utils
  * 类名称：parseUtils
- * 类描述：TODO
+ * 类描述：解析API返回的数据
  * 创建人：韦西波
  * 创建时间：2026-07-21 17:07
  *
@@ -80,7 +78,6 @@ fun parseCardForAdapter(response: UserWorkResponse): List<UserHomeItem> {
         when (card.type) {
             "set_metro_list" -> {
                 val headerLefts = card.cardData?.header?.left
-                // ----- 标题行（如 "最近更新"、"最受欢迎"、"专辑 3"）-----
                 if (!headerLefts.isNullOrEmpty() && headerLefts.firstOrNull()?.type == "text") {
                     val title = headerLefts.first()?.metroData?.text ?: ""
                     val moreLink = card.cardData?.header?.right?.firstOrNull()?.metroData?.link
@@ -88,7 +85,6 @@ fun parseCardForAdapter(response: UserWorkResponse): List<UserHomeItem> {
                     i++
                     continue
                 }
-                // ----- 最受欢迎列表（body 中 item 类型）拆成单个 item -----
                 val bodyItems = card.cardData?.body?.metroList
                 if (!bodyItems.isNullOrEmpty() && bodyItems.firstOrNull()?.type == "item") {
                     for (metroItem in bodyItems) {
@@ -109,7 +105,6 @@ fun parseCardForAdapter(response: UserWorkResponse): List<UserHomeItem> {
 
             "set_slide_metro_list" -> {
                 val hasFooter = !card.cardData?.footer?.left.isNullOrEmpty()
-                // ----- 最近更新横向滑动（无 footer）-----
                 if (!hasFooter) {
                     val videoItems = card.cardData?.body?.metroList?.mapNotNull { item ->
                         item.metroData?.takeIf { d ->
@@ -122,7 +117,6 @@ fun parseCardForAdapter(response: UserWorkResponse): List<UserHomeItem> {
                     i++
                     continue
                 }
-                // ----- 专辑卡片（有 footer）-----
                 val albumInfo = card.cardData?.footer?.left
                     ?.firstOrNull { it.type == "user" }?.metroData ?: run { i++; continue }
                 val videoPreviews = card.cardData?.body?.metroList?.mapNotNull { item ->
@@ -134,7 +128,6 @@ fun parseCardForAdapter(response: UserWorkResponse): List<UserHomeItem> {
                         duration = md.duration?.value ?: 0
                     )
                 } ?: emptyList()
-// ★ 正确使用 albumInfo 自身的字段
                 val album = AlbumData(
                     albumName = albumInfo.nick ?: "未知专辑",
                     albumDescription = albumInfo.description ?: "",

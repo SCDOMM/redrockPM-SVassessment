@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="10dp"
-    tools:context=".CreatorActivity">
+    tools:context=".PersonActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/cl_creator_default"

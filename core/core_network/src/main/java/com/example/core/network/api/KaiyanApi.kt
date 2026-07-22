@@ -1,16 +1,16 @@
 package com.example.core.network.api
 
-import com.example.core.model.official.CallMetroListResponse
-import com.example.core.model.official.HomePageResponse
-import com.example.core.model.official.NoticeResponse
-import com.example.core.model.official.PreSearchResponse
-import com.example.core.model.official.SearchResponse
-import com.example.core.model.official.SearchResponseV2
-import com.example.core.model.official.CallAlbumCardListResponse
-import com.example.core.model.official.CallWorkMetroListResponse
-import com.example.core.model.official.UserCenterResponse
-import com.example.core.model.official.UserWorkResponse
-import com.example.core.model.official.WeeklyRankResponse
+import com.example.core.model.CallMetroListResponse
+import com.example.core.model.HomePageResponse
+import com.example.core.model.NoticeResponse
+import com.example.core.model.PreSearchResponse
+import com.example.core.model.SearchResponse
+import com.example.core.model.SearchResponseV2
+import com.example.core.model.CallAlbumCardListResponse
+import com.example.core.model.CallWorkMetroListResponse
+import com.example.core.model.UserCenterResponse
+import com.example.core.model.UserWorkResponse
+import com.example.core.model.WeeklyRankResponse
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -124,7 +124,7 @@ interface KaiyanApi {
         @Field("page_label") pageLabel: String ,
         @Field("data_source") dataSource: String="",
         @Field("material") material: String,
-        @Field("card") card: String,            
+        @Field("card") card: String,
         @Field("last_item_id") lastItemId: Int
     ): Call<CallMetroListResponse>
     @FormUrlEncoded

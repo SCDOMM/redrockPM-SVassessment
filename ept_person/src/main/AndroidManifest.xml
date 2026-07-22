@@ -12,7 +12,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity
-            android:name=".CreatorActivity"
+            android:name=".PersonActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"

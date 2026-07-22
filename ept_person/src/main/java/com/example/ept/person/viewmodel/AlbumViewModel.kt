@@ -1,14 +1,12 @@
 package com.example.ept.person.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.official.AlbumData
-import com.example.core.model.official.NavTab
-import com.example.core.model.official.SearchCard
+import com.example.core.model.AlbumData
+import com.example.core.model.NavTab
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await
@@ -16,9 +14,9 @@ import com.example.ept.person.utils.parseAlbumCards
 import kotlinx.coroutines.launch
 
 /**
- * 包名称： com.example.ept.person.pgc.viewmodel
+ * 包名称： com.example.ept.person.viewmodel
  * 类名称：AlbumViewModel
- * 类描述：TODO
+ * 类描述：专辑的VM
  * 创建人：韦西波
  * 创建时间：2026-07-21 16:24
  *
@@ -46,7 +44,6 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
                 val callCard = cardList.firstOrNull { it.type == "call_card_list" }
                 val params = callCard?.card_data?.body?.api_request?.params
                 lastItemId = (params?.get("last_item_id") as? Number)?.toInt() ?: 0
-                // 提取固定卡片模板字符串
                 cardJSON = (params?.get("card_list") as? String) ?: ""
                 _liveData.value = AlbumState.InitState(allAlbums.toMutableList())
             } catch (e: Exception) {
@@ -58,7 +55,6 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
     fun loadMore() {
         viewModelScope.launch {
             try {
-                // 直接使用固定的模板字符串，不再序列化 currentAlbumCards
                 val cardListJson = cardJSON
                 val response = appService.loadMoreAlbum(
                     lastItemId = lastItemId,
@@ -84,7 +80,7 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
     }
 }
 
-sealed class AlbumState() {
+sealed class AlbumState {
     data class InitState(val albumList: MutableList<AlbumData>) : AlbumState()
     data class RefreshState(val albumData: MutableList<AlbumData>) : AlbumState()
     data class LoadingState(val newAlbumData: MutableList<AlbumData>) : AlbumState()

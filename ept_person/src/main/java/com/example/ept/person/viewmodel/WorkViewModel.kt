@@ -6,15 +6,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.official.MetroData
-import com.example.core.model.official.NavTab
-import com.example.core.model.official.WorkMetroData
+import com.example.core.model.NavTab
+import com.example.core.model.WorkMetroData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await
 import com.example.ept.person.utils.parseWorkDataList
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import kotlinx.coroutines.launch
 
 /**   

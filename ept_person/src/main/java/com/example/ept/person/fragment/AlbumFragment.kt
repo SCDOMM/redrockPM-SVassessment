@@ -1,7 +1,6 @@
 package com.example.ept.person.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.person.R
-import com.example.ept.person.adapter.AlbumAdapter
+import com.example.ept.person.adapter.content.AlbumAdapter
 import com.example.ept.person.viewmodel.AlbumState
 import com.example.ept.person.viewmodel.AlbumViewModel
 import com.example.ept.person.viewmodel.CreatorViewModel
@@ -83,9 +82,4 @@ class AlbumFragment : Fragment() {
             }
         })
     }
-
-
-
-
-
 }

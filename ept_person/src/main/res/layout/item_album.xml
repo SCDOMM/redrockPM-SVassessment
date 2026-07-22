@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.ept.person.MyHorizontalScrollView
+        <com.example.ept.person.AlbumHorizontalScrollView
             android:id="@+id/hs_album_default_item"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
             </LinearLayout>
-        </com.example.ept.person.MyHorizontalScrollView>
+        </com.example.ept.person.AlbumHorizontalScrollView>
 
         <ImageView
             android:id="@+id/iv_album_cover_item"

@@ -1,7 +1,7 @@
 package com.example.ept.home.utils
 
-import com.example.core.model.official.HomePageResponse
-import com.example.core.model.official.MetroData
+import com.example.core.model.HomePageResponse
+import com.example.core.model.MetroData
 
 /**   
  * 包名称： com.example.ept.home.utils

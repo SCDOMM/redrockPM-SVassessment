@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.official.MetroData
+import com.example.core.model.MetroData
 import com.example.ept.home.R
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
 

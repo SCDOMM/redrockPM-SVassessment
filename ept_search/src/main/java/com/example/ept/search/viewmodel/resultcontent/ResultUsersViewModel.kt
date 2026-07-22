@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.official.MetroData
+import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.core.network.await

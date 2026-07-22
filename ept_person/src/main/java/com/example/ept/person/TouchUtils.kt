@@ -8,14 +8,14 @@ import android.widget.HorizontalScrollView
 import kotlin.math.abs
 
 /**
- * 包名称： com.example.ept.person.utils
+ * 包名称： com.example.ept.person
  * 类名称：TouchUtils
- * 类描述：TODO
+ * 类描述：用来解决专辑的滑动冲突问题
  * 创建人：韦西波
  * 创建时间：2026-07-21 19:34
  *
  */
-class MyHorizontalScrollView(context: Context, attr: AttributeSet) :
+class AlbumHorizontalScrollView(context: Context, attr: AttributeSet) :
     HorizontalScrollView(context, attr) {
     private var startX = 0f
     private var isBeingDragged = false

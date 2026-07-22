@@ -20,7 +20,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/iv_album_cover_item_item"
+                android:id="@+id/iv_new_cover_item_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -33,10 +33,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_person_play"
-                app:layout_constraintBottom_toBottomOf="@id/iv_album_cover_item_item"
-                app:layout_constraintEnd_toEndOf="@id/iv_album_cover_item_item"
-                app:layout_constraintStart_toStartOf="@id/iv_album_cover_item_item"
-                app:layout_constraintTop_toTopOf="@id/iv_album_cover_item_item" />
+                app:layout_constraintBottom_toBottomOf="@id/iv_new_cover_item_item"
+                app:layout_constraintEnd_toEndOf="@id/iv_new_cover_item_item"
+                app:layout_constraintStart_toStartOf="@id/iv_new_cover_item_item"
+                app:layout_constraintTop_toTopOf="@id/iv_new_cover_item_item" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
