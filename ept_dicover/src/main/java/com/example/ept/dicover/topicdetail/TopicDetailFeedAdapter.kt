@@ -23,15 +23,19 @@ import com.example.ept.dicover.R
 class TopicDetailFeedAdapter : ListAdapter<TopicFeedItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
+        /** 视频类型 */
         private const val TYPE_VIDEO = 0
+        /** 图片类型 */
         private const val TYPE_IMAGE = 1
 
+        /** DiffUtil 回调，用于列表差异比较 */
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicFeedItem>() {
             override fun areItemsTheSame(old: TopicFeedItem, new: TopicFeedItem) = old.id == new.id
             override fun areContentsTheSame(old: TopicFeedItem, new: TopicFeedItem) = old == new
         }
     }
 
+    /** 视频类型视图持有者 */
     class VideoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val authorAvatar: ImageView = view.findViewById(R.id.iv_author_avatar)
         val authorName: TextView = view.findViewById(R.id.tv_author_name)
@@ -43,6 +47,7 @@ class TopicDetailFeedAdapter : ListAdapter<TopicFeedItem, RecyclerView.ViewHolde
         val commentCount: TextView = view.findViewById(R.id.tv_comment_count)
     }
 
+    /** 图片类型视图持有者 */
     class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val authorAvatar: ImageView = view.findViewById(R.id.iv_author_avatar)
         val authorName: TextView = view.findViewById(R.id.tv_author_name)
@@ -54,10 +59,12 @@ class TopicDetailFeedAdapter : ListAdapter<TopicFeedItem, RecyclerView.ViewHolde
         val commentCount: TextView = view.findViewById(R.id.tv_comment_count)
     }
 
+    /** 根据数据类型返回对应的 ViewType */
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position).isVideo) TYPE_VIDEO else TYPE_IMAGE
     }
 
+    /** 根据 viewType 创建对应的 ViewHolder */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_IMAGE -> {
@@ -73,6 +80,7 @@ class TopicDetailFeedAdapter : ListAdapter<TopicFeedItem, RecyclerView.ViewHolde
         }
     }
 
+    /** 绑定视图数据到 ViewHolder */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
 
@@ -132,16 +140,19 @@ class TopicFeedImageAdapter(
     private val imageUrls: List<String>
 ) : RecyclerView.Adapter<TopicFeedImageAdapter.ImageViewHolder>() {
 
+    /** 图片网格视图持有者 */
     class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.iv_image)
     }
 
+    /** 创建图片网格视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_topic_feed_image, parent, false)
         return ImageViewHolder(view)
     }
 
+    /** 绑定图片数据并加载 */
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         Glide.with(holder.image.context)
             .load(imageUrls[position])

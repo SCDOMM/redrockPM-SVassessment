@@ -33,10 +33,6 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
         <activity
-            android:name="com.example.ept.dicover.topicdetail.TopicDetailActivity"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
-            android:theme="@style/Theme.Eyepetater" />
-        <activity
             android:name="com.example.ept.dicover.lightTopic.LightTopicsActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
@@ -49,7 +45,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
         <activity
-            android:name="com.example.ept.dicover.topicdetail.TopicDetailActivity2"
+            android:name="com.example.ept.dicover.topicdetail.TopicDetailActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
     </application>

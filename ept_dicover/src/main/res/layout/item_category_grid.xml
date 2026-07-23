@@ -28,7 +28,6 @@
             android:id="@+id/iv_doscovery_category"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/ic_category_ad"
             android:layout_gravity="center_vertical" />
 
 

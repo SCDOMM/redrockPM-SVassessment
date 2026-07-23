@@ -19,8 +19,10 @@ import com.example.core.media.VideoPlayerActivity
 class CategoryFeedFragment : Fragment() {
 
     companion object {
+        /** 页面标签参数键 */
         private const val ARG_PAGE_LABEL = "page_label"
 
+        /** 创建新的 Fragment 实例 */
         fun newInstance(pageLabel: String): CategoryFeedFragment {
             return CategoryFeedFragment().apply {
                 arguments = Bundle().apply {
@@ -30,10 +32,12 @@ class CategoryFeedFragment : Fragment() {
         }
     }
 
+    /** 页面视图模型 */
     val viewModel: CategoryFeedViewModel by viewModels()
     private lateinit var adapter: CategoryDetailAdapter
     private var pageLabel = ""
 
+    /** 创建视图 */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +45,7 @@ class CategoryFeedFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_category_feed, container, false)
     }
 
+    /** 视图创建完成 */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayoutMediator
  */
 class TopicSquareActivity : AppCompatActivity() {
 
+    /** 启动话题广场页面 */
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, TopicSquareActivity::class.java)
@@ -30,6 +31,7 @@ class TopicSquareActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TopicSquareViewModel
 
+    /** 初始化页面：沉浸式状态栏、Toolbar、TabLayout + ViewPager2 联动 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

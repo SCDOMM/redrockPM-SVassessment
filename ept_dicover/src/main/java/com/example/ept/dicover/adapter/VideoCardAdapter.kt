@@ -23,6 +23,7 @@ class VideoCardAdapter(
     private val onItemClick: (TopicPlaylistVideo) -> Unit = {}
 ) : ListAdapter<TopicPlaylistVideo, VideoCardAdapter.ViewHolder>(DIFF_CALLBACK) {
 
+    /** 视图持有者，持有视频卡片各控件引用 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val authorIcon: ImageView = view.findViewById(R.id.iv_author_icon)
         val authorName: TextView = view.findViewById(R.id.tv_author_name)
@@ -32,12 +33,14 @@ class VideoCardAdapter(
         val duration: TextView = view.findViewById(R.id.tv_duration)
     }
 
+    /** 创建视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_video_card, parent, false)
         return ViewHolder(view)
     }
 
+    /** 绑定视图数据 */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
@@ -66,6 +69,7 @@ class VideoCardAdapter(
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
+    /** DiffUtil 回调，用于列表差量更新 */
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicPlaylistVideo>() {
             override fun areItemsTheSame(old: TopicPlaylistVideo, new: TopicPlaylistVideo) = old.id == new.id

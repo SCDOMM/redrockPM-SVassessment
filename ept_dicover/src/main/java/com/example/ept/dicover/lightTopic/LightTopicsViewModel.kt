@@ -29,24 +29,31 @@ class LightTopicsViewModel : ViewModel() {
     var loaded = false
         private set
 
+    /** 头部图片 URL */
     private val _headerImage = MutableLiveData<String>()
     val headerImage: LiveData<String> = _headerImage
 
+    /** 简介文本 */
     private val _brief = MutableLiveData<String>()
     val brief: LiveData<String> = _brief
 
+    /** 详细描述文本 */
     private val _text = MutableLiveData<String>()
     val text: LiveData<String> = _text
 
+    /** 视频列表数据 */
     private val _items = MutableLiveData<List<TopicPlaylistVideo>>()
     val items: LiveData<List<TopicPlaylistVideo>> = _items
 
+    /** 加载状态 */
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    /** 错误信息 */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    /** 加载轻话题详情数据 */
     fun loadDetail(topicId: Int) {
         loaded = true
         viewModelScope.launch {

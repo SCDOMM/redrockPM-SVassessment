@@ -23,24 +23,28 @@ class PreviewVideoAdapter(
 
     private val items = mutableListOf<TopicPlaylistVideo>()
 
+    /** 设置预览视频数据 */
     fun setData(list: List<TopicPlaylistVideo>) {
         items.clear()
         items.addAll(list)
         notifyDataSetChanged()
     }
 
+    /** 视图持有者，持有封面、时长和标题控件引用 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cover: ImageView = view.findViewById(R.id.iv_cover)
         val duration: TextView = view.findViewById(R.id.tv_duration)
         val title: TextView = view.findViewById(R.id.tv_title)
     }
 
+    /** 创建视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_preview_video, parent, false)
         return ViewHolder(view)
     }
 
+    /** 绑定视图数据 */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
@@ -60,5 +64,6 @@ class PreviewVideoAdapter(
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
+    /** 返回列表项数量 */
     override fun getItemCount() = items.size
 }

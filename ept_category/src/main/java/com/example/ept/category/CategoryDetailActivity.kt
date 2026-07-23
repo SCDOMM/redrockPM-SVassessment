@@ -27,9 +27,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 class CategoryDetailActivity : AppCompatActivity() {
 
     companion object {
+        /** 页面标签键 */
         const val EXTRA_PAGE_LABEL = "page_label"
+        /** 分类名称键 */
         const val EXTRA_CATEGORY_NAME = "category_name"
 
+        /** 启动分类详情页 */
         fun start(context: Context, pageLabel: String, categoryName: String) {
             val intent = Intent(context, CategoryDetailActivity::class.java).apply {
                 putExtra(EXTRA_PAGE_LABEL, pageLabel)
@@ -43,6 +46,7 @@ class CategoryDetailActivity : AppCompatActivity() {
     private var currentTabPosition = 0
     private val feedFragments = mutableMapOf<Int, CategoryFeedFragment>()
 
+    /** 页面创建 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

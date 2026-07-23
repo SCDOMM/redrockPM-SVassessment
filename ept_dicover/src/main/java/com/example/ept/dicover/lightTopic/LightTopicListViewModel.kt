@@ -25,15 +25,19 @@ class LightTopicListViewModel : ViewModel() {
     var loaded = false
         private set
 
+    /** 主题列表数据 */
     private val _items = MutableLiveData<List<LightTopicItem>>()
     val items: LiveData<List<LightTopicItem>> = _items
 
+    /** 加载状态 */
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    /** 错误信息 */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    /** 加载主题播单列表数据 */
     fun loadTopics() {
         loaded = true
         viewModelScope.launch {
@@ -70,6 +74,7 @@ class LightTopicListViewModel : ViewModel() {
         }
     }
 
+    /** 解析 API 返回的卡片列表，提取主题信息 */
     private fun parseTopics(cards: List<GetPageCard>): List<LightTopicItem> {
         val result = mutableListOf<LightTopicItem>()
 

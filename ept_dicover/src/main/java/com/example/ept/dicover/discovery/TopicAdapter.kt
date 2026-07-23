@@ -18,22 +18,26 @@ import com.example.ept.dicover.R
  * email : 3014386984@qq.com
  * date : 2026/7/17  13:28
  */
+/** 话题横向列表适配器 */
 class TopicAdapter(
     private val onItemClick: (TopicItem) -> Unit = {}
 ) : ListAdapter<TopicItem, TopicAdapter.ViewHolder>(DIFF_CALLBACK) {
 
+    /** 视图持有者：保存话题图标和标题引用 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: ImageView = view.findViewById(R.id.iv_topic_icon)
         val title: TextView = view.findViewById(R.id.tv_topic_title)
 
     }
 
+    /** 创建视图持有者：加载话题列表项布局 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_topic, parent, false)
         return ViewHolder(view)
     }
 
+    /** 绑定视图数据：设置标题、加载图标圆角图片、设置点击事件 */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.title.text = item.title
@@ -47,6 +51,7 @@ class TopicAdapter(
     }
 
     companion object {
+        /** 差异回调：用于 ListAdapter 局部刷新 */
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicItem>() {
             override fun areItemsTheSame(old: TopicItem, new: TopicItem) = old.id == new.id
             override fun areContentsTheSame(old: TopicItem, new: TopicItem) = old == new

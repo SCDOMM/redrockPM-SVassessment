@@ -15,8 +15,10 @@ class TopicSquareTabAdapter(
     private val tabs: List<TabItem>
 ) : FragmentStateAdapter(activity) {
 
+    /** 返回 Tab 总数 */
     override fun getItemCount() = tabs.size
 
+    /** 根据位置创建对应的 TopicSquareFragment */
     override fun createFragment(position: Int): Fragment {
         return TopicSquareFragment.newInstance(tabs[position].apiUrl)
     }

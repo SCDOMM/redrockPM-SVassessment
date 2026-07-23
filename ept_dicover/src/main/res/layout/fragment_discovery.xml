@@ -72,7 +72,6 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp" />
 
-            <!-- 话题广场标题 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

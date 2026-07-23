@@ -34,39 +34,63 @@ import kotlinx.coroutines.withContext
 /**
  * description ： 视频播放 Fragment，包含播放器、视频信息展示、相关推荐列表
  * email : 3014386984@qq.com
- * date : 2026/7/15 14:46
+ * date : 2026/7/22
  */
 class VideoPlayerFragment : Fragment() {
 
+    /** 视频播放器 */
     private lateinit var videoPlayer: StandardGSYVideoPlayer
+    /** 嵌套滚动视图 */
     private lateinit var scrollView: NestedScrollView
+    /** 视频标题 */
     private lateinit var tvTitle: TextView
+    /** 作者头像 */
     private lateinit var ivAuthor: ImageView
+    /** 作者名称 */
     private lateinit var tvAuthorName: TextView
+    /** 视频分类 */
     private lateinit var tvCategory: TextView
+    /** 视频描述 */
     private lateinit var tvDescription: TextView
+    /** 收藏数量 */
     private lateinit var tvCollectionCount: TextView
+    /** 评论数量 */
     private lateinit var tvReplyCount: TextView
+    /** 分享按钮 */
     private lateinit var ivShare: ImageView
+    /** 相关推荐列表 */
     private lateinit var rvRelated: RecyclerView
+    /** 屏幕方向工具类 */
     private var orientationUtils: OrientationUtils? = null
 
     private val api = RetrofitClient.create<KaiyanApi>()
     private lateinit var relatedAdapter: RelatedVideoAdapter
     private var isPlay: Boolean = false
 
+    /** 视频 ID */
     private var videoId: Long = 0
+    /** 视频播放地址 */
     private var videoUrl: String = ""
+    /** 视频标题 */
     private var videoTitle: String = ""
+    /** 视频封面图 URL */
     private var videoCover: String = ""
+    /** 作者名称 */
     private var authorName: String = ""
+    /** 作者头像 URL */
     private var authorIcon: String = ""
+    /** 视频分类 */
     private var category: String = ""
+    /** 视频描述 */
     private var description: String = ""
+    /** 收藏数量 */
     private var collectionCount: Int = 0
+    /** 评论数量 */
     private var replyCount: Int = 0
+    /** 视频播放地址（用于分享） */
     private var playUrl: String = ""
 
+    /** Fragment 创建时从参数中提取视频数据 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -84,6 +108,7 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
+    /** 加载 Fragment 布局 */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -92,6 +117,7 @@ class VideoPlayerFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_video_player, container, false)
     }
 
+    /** 初始化视图组件，绑定数据并加载相关推荐 */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         videoPlayer = view.findViewById(R.id.video_player)
@@ -290,6 +316,7 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
+    /** 格式化数量显示，超过1万显示为 "x.x万" */
     private fun formatCount(count: Int): String {
         return when {
             count >= 10000 -> String.format("%.1f万", count / 10000.0)
@@ -298,16 +325,19 @@ class VideoPlayerFragment : Fragment() {
     }
 
 
+    /** 暂停视频播放 */
     override fun onPause() {
         videoPlayer.currentPlayer.onVideoPause()
         super.onPause()
     }
 
+    /** 恢复视频播放 */
     override fun onResume() {
         videoPlayer.currentPlayer.onVideoResume(false)
         super.onResume()
     }
 
+    /** 释放播放器资源 */
     override fun onDestroyView() {
         orientationUtils?.releaseListener()
         orientationUtils = null
@@ -317,6 +347,7 @@ class VideoPlayerFragment : Fragment() {
 
 
 
+    /** Fragment 参数常量 */
     companion object {
         /** 视频 ID 参数键名 */
         private const val ARG_VIDEO_ID = "video_id"

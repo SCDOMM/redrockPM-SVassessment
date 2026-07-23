@@ -22,7 +22,9 @@ import com.example.ept.dicover.R
  */
 class LightTopicListActivity : AppCompatActivity() {
 
+    /** 页面启动入口 */
     companion object {
+        /** 启动主题播单列表页 */
         fun start(context: Context) {
             val intent = Intent(context, LightTopicListActivity::class.java)
             context.startActivity(intent)
@@ -31,6 +33,7 @@ class LightTopicListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: LightTopicListViewModel
 
+    /** 页面初始化，设置布局、观察 LiveData 并加载数据 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

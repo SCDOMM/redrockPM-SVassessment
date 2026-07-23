@@ -16,7 +16,7 @@ import com.example.core.network.RetrofitClient
 import com.example.core.network.api.KaiyanApi
 import com.example.ept.dicover.R
 import com.example.ept.dicover.discovery.TopicItem
-import com.example.ept.dicover.topicdetail.TopicDetailActivity2
+import com.example.ept.dicover.topicdetail.TopicDetailActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,8 +30,10 @@ import kotlinx.coroutines.withContext
 class TopicSquareFragment : Fragment() {
 
     companion object {
+        /** 页面标签参数键 */
         private const val ARG_PAGE_LABEL = "page_label"
 
+        /** 通过页面标签创建 Fragment 实例 */
         fun newInstance(pageLabel: String): TopicSquareFragment {
             val fragment = TopicSquareFragment()
             val args = Bundle()
@@ -44,6 +46,7 @@ class TopicSquareFragment : Fragment() {
     private val api = RetrofitClient.create<KaiyanApi>()
     private var pageLabel = ""
 
+    /** 从 arguments 中读取页面标签 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pageLabel = arguments?.getString(ARG_PAGE_LABEL) ?: ""
@@ -56,6 +59,7 @@ class TopicSquareFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_topic_list, container, false)
     }
 
+    /** 初始化视图：配置下拉刷新、列表及点击事件 */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -67,7 +71,7 @@ class TopicSquareFragment : Fragment() {
             // 点击话题卡片跳转详情
             Log.d("TopicSquareFragment", "Click: title=${item.title}, pageLabel=${item.pageLabel}")
             if (item.pageLabel.isNotEmpty()) {
-                TopicDetailActivity2.start(requireContext(), item.pageLabel, item.title)
+                TopicDetailActivity.start(requireContext(), item.pageLabel, item.title)
             } else {
                 Toast.makeText(requireContext(), "无法跳转: pageLabel为空", Toast.LENGTH_SHORT).show()
             }
@@ -82,6 +86,7 @@ class TopicSquareFragment : Fragment() {
         loadContent(swipeRefresh, adapter, topicItems)
     }
 
+    /** 加载话题广场数据，解析 API 返回的卡片列表 */
     private fun loadContent(
         swipeRefresh: SwipeRefreshLayout,
         adapter: TopicSquareAdapter,
@@ -147,6 +152,7 @@ class TopicSquareFragment : Fragment() {
         }
     }
 
+    /** 从 link 参数中通过正则提取 page_label 值 */
     private fun extractPageLabel(link: String): String {
         // 从 link 中提取 page_label
         // 格式: ...&api_request={"url":"...","params":{"page_label":"topic_detail-xxx",...}}

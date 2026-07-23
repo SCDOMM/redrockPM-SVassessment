@@ -21,15 +21,19 @@ class TopicSquareViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
 
+    /** 是否已加载过 Tab 数据 */
     var loaded = false
         private set
 
+    /** Tab 列表数据（对外只读） */
     private val _tabs = MutableLiveData<List<TabItem>>()
     val tabs: LiveData<List<TabItem>> = _tabs
 
+    /** 错误信息（对外只读） */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
+    /** 从 API 加载话题广场的 Tab 导航数据 */
     fun loadTabs() {
         loaded = true
         viewModelScope.launch {

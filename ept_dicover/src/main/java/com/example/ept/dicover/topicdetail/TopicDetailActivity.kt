@@ -3,100 +3,121 @@ package com.example.ept.dicover.topicdetail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.core.media.VideoPlayerActivity
+import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.ept.dicover.R
-import com.example.ept.dicover.adapter.TopicPlaylistAdapter
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 /**
- * description ： 话题详情页 Activity，使用 get_page 接口加载
+ * description ： 话题详情页，类似分类详情页布局
  * email : 3014386984@qq.com
- * date : 2026/7/18
+ * date : 2026/7/22
  */
 class TopicDetailActivity : AppCompatActivity() {
 
     companion object {
+        /** 页面标签键 */
         const val EXTRA_PAGE_LABEL = "page_label"
-        const val EXTRA_TAG_NAME = "tag_name"
+        /** 标题键 */
+        const val EXTRA_TITLE = "title"
 
-        fun start(context: Context, pageLabel: String, tagName: String) {
+        /** 启动话题详情页 */
+        fun start(context: Context, pageLabel: String, title: String) {
             val intent = Intent(context, TopicDetailActivity::class.java).apply {
                 putExtra(EXTRA_PAGE_LABEL, pageLabel)
-                putExtra(EXTRA_TAG_NAME, tagName)
+                putExtra(EXTRA_TITLE, title)
             }
             context.startActivity(intent)
         }
     }
 
     private lateinit var viewModel: TopicDetailViewModel
+    private var feedFragments = mutableMapOf<Int, TopicDetailFeedFragment>()
+    private var feedAdapter: TopicDetailTabAdapter? = null
 
+    /** 注册 Feed Fragment 到 map 中，便于下拉刷新 */
+    fun registerFeedFragment(position: Int, fragment: TopicDetailFeedFragment) {
+        feedFragments[position] = fragment
+    }
+
+    /** 页面初始化，设置布局、观察数据、配置下拉刷新 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContentView(R.layout.activity_topic_detail)
+        setContentView(R.layout.activity_topic_detail_2)
 
-        val root = findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
-        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+        val rootLayout = findViewById<android.view.View>(R.id.root_layout)
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(bars.left, bars.top, bars.right, 0)
             insets
         }
 
+        val pageLabel = intent.getStringExtra(EXTRA_PAGE_LABEL) ?: ""
+        val title = intent.getStringExtra(EXTRA_TITLE) ?: ""
+
         viewModel = ViewModelProvider(this)[TopicDetailViewModel::class.java]
 
-        val pageLabel = intent.getStringExtra(EXTRA_PAGE_LABEL) ?: ""
-        val tagName = intent.getStringExtra(EXTRA_TAG_NAME) ?: ""
+        val swipeRefresh = findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe_refresh)
+        val appBar = findViewById<AppBarLayout>(R.id.appbar)
+        val tabLayout = findViewById<TabLayout>(R.id.tab_topic)
+        val viewPager = findViewById<ViewPager2>(R.id.vp_topic)
+        val ivHeader = findViewById<ImageView>(R.id.iv_topic_header)
+        val tvTitle = findViewById<TextView>(R.id.tv_topic_title)
+        val tvDescription = findViewById<TextView>(R.id.tv_topic_desc)
+        val tvStats = findViewById<TextView>(R.id.tv_topic_stats)
 
-        val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
-        val rvDetail = findViewById<RecyclerView>(R.id.rv_topic_detail)
-
-        val layoutManager = LinearLayoutManager(this)
-        rvDetail.layoutManager = layoutManager
-
-        val adapter = TopicPlaylistAdapter { video ->
-            VideoPlayerActivity.start(this, video.id.toString())
-        }
-        rvDetail.adapter = adapter
-
-        viewModel.items.observe(this) { list ->
-            adapter.submitList(list)
+        // AppBarLayout 折叠时禁用下拉刷新
+        appBar.addOnOffsetChangedListener { _, verticalOffset ->
+            swipeRefresh.isEnabled = verticalOffset == 0
         }
 
-        viewModel.isLoading.observe(this) { loading ->
-            swipeRefresh.isRefreshing = loading
+        viewModel.tagInfo.observe(this) { info ->
+            tvTitle.text = info.title
+            tvDescription.text = info.description
+            tvStats.text = info.stats
+
+            if (info.headerImage.isNotEmpty()) {
+                Glide.with(this)
+                    .load(info.headerImage)
+                    .transform(CenterCrop())
+                    .into(ivHeader)
+            }
+
+            // 创建 Tab + ViewPager
+            if (feedAdapter == null && info.feedPageLabels.isNotEmpty()) {
+                feedAdapter = TopicDetailTabAdapter(this, info.feedPageLabels)
+                viewPager.adapter = feedAdapter
+
+                TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                    tab.text = info.feedPageLabels[position].first
+                }.attach()
+            }
         }
 
         viewModel.error.observe(this) { errorMsg ->
             errorMsg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 
+        // 下拉刷新
         swipeRefresh.setOnRefreshListener {
-            viewModel.loadDetail(pageLabel, tagName)
+            val currentFragment = feedFragments[viewPager.currentItem]
+            currentFragment?.refresh()
         }
 
-        rvDetail.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    val lastVisible = layoutManager.findLastVisibleItemPosition()
-                    val totalItems = layoutManager.itemCount
-                    if (lastVisible >= totalItems - 3 && viewModel.hasNextPage && viewModel.isLoading.value != true) {
-                        viewModel.loadNextPage()
-                    }
-                }
-            }
-        })
-
         if (!viewModel.loaded) {
-            viewModel.loadDetail(pageLabel, tagName)
+            viewModel.loadDetail(pageLabel)
         }
     }
 }

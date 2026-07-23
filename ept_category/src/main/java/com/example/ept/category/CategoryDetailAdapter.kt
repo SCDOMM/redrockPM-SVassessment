@@ -57,8 +57,11 @@ class CategoryDetailAdapter(
 ) : ListAdapter<CategoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
+        /** 分区标题类型 */
         private const val TYPE_HEADER = 0
+        /** 视频卡片类型 */
         private const val TYPE_VIDEO = 1
+        /** 图片帖子类型 */
         private const val TYPE_IMAGE = 2
 
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CategoryItem>() {
@@ -77,10 +80,12 @@ class CategoryDetailAdapter(
         }
     }
 
+    /** 分区标题视图持有者 */
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val text: TextView = view.findViewById(R.id.tv_header)
     }
 
+    /** 视频卡片视图持有者 */
     class VideoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cover: ImageView = view.findViewById(R.id.iv_hot_title)
         val duration: TextView = view.findViewById(R.id.actv_hot_geration)
@@ -94,6 +99,7 @@ class CategoryDetailAdapter(
         val shareCount: TextView = view.findViewById(R.id.tv_category_share)
     }
 
+    /** 图片帖子视图持有者 */
     class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val authorIcon: ImageView = view.findViewById(R.id.iv_author_avatar)
         val authorName: TextView = view.findViewById(R.id.tv_author_name)
@@ -112,6 +118,7 @@ class CategoryDetailAdapter(
         }
     }
 
+    /** 创建视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_HEADER -> {
@@ -132,6 +139,7 @@ class CategoryDetailAdapter(
         }
     }
 
+    /** 绑定视图数据 */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is CategoryItem.Header -> {
@@ -190,6 +198,7 @@ class CategoryDetailAdapter(
         }
     }
 
+    /** 格式化计数显示，超过10000显示为万 */
     private fun formatCount(count: Int): String {
         return when {
             count >= 10000 -> String.format("%.1f万", count / 10000.0)
@@ -202,19 +211,23 @@ class CategoryDetailAdapter(
  * 分类详情页图片网格适配器
  */
 class CategoryImageAdapter(
+    /** 图片URL列表 */
     private val imageUrls: List<String>
 ) : RecyclerView.Adapter<CategoryImageAdapter.ImageViewHolder>() {
 
+    /** 图片网格视图持有者 */
     class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.iv_image)
     }
 
+    /** 创建视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_category_image, parent, false)
         return ImageViewHolder(view)
     }
 
+    /** 绑定视图数据 */
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         Glide.with(holder.image.context)
             .load(imageUrls[position])

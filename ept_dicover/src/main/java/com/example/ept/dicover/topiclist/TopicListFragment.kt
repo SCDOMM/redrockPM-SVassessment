@@ -19,13 +19,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * description ： 单个 tab 的话题列表 Fragment
+ * description ： 单个 tab 的话题列表 Fragment，根据 API URL 加载并展示话题列表
  * email : 3014386984@qq.com
  * date : 2026/7/18
- */
-/**
- * 单个 tab 的话题列表 Fragment
- * 根据 API URL 加载并展示话题列表
  */
 class TopicListFragment : Fragment() {
 

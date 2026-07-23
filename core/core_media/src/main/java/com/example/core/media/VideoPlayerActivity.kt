@@ -21,14 +21,23 @@ import kotlinx.coroutines.withContext
 /**
  * description ： 视频播放页 Activity，通过 videoId 从 API 获取所有数据
  * email : 3014386984@qq.com
- * date : 2026/7/22 15:00
+ * date : 2026/7/22
  */
 class VideoPlayerActivity : AppCompatActivity() {
 
+    /** 视频播放器 Activity 常量和启动方法 */
     companion object {
+        /** 视频 ID 的额外参数键 */
         const val EXTRA_VIDEO_ID = "video_id"
+        /** 资源类型的额外参数键 */
         private const val EXTRA_RESOURCE_TYPE = "resource_type"
 
+        /**
+         * 启动视频播放 Activity
+         * @param context 上下文
+         * @param videoId 视频 ID
+         * @param resourceType 资源类型，默认 "pgc_video"
+         */
         fun start(context: Context, videoId: String, resourceType: String = "pgc_video") {
             val intent = Intent(context, VideoPlayerActivity::class.java).apply {
                 putExtra(EXTRA_VIDEO_ID, videoId)
@@ -40,6 +49,10 @@ class VideoPlayerActivity : AppCompatActivity() {
 
     private val api = RetrofitClient.create<KaiyanApi>()
 
+    /**
+     * Activity 创建时调用
+     * 初始化窗口、状态栏，加载视频详情并显示播放器 Fragment
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -113,6 +126,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
+    /** 设置状态栏外观，根据深色模式切换 */
     private fun setupStatusBar() {
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES

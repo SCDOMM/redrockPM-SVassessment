@@ -27,10 +27,12 @@ import com.example.ept.dicover.adapter.VideoCardAdapter
  */
 class LightTopicsActivity : AppCompatActivity() {
 
+    /** Intent 参数常量和页面启动入口 */
     companion object {
         const val EXTRA_TOPIC_ID = "topic_id"
         const val EXTRA_TITLE = "title"
 
+        /** 启动轻话题详情页 */
         fun start(context: Context, topicId: Int, title: String) {
             val intent = Intent(context, LightTopicsActivity::class.java).apply {
                 putExtra(EXTRA_TOPIC_ID, topicId)
@@ -42,6 +44,7 @@ class LightTopicsActivity : AppCompatActivity() {
 
     private lateinit var viewModel: LightTopicsViewModel
 
+    /** 页面初始化，设置布局、观察 LiveData 并加载数据 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

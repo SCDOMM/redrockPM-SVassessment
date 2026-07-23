@@ -13,13 +13,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * description ： 话题列表页 ViewModel
+ * description ： 话题列表页 ViewModel，加载话题分类 Tab 列表
  * email : 3014386984@qq.com
  * date : 2026/7/18
- */
-/**
- * 话题列表页 ViewModel
- * 加载话题分类 Tab 列表
  */
 class TopicListViewModel : ViewModel() {
 

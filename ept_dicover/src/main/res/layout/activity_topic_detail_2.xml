@@ -35,7 +35,6 @@
                     android:paddingBottom="12dp"
                     app:layout_collapseMode="parallax">
 
-                    <!-- 头部图片 -->
                     <ImageView
                         android:id="@+id/iv_topic_header"
                         android:layout_width="match_parent"
@@ -43,7 +42,6 @@
                         android:scaleType="centerCrop"
                         app:layout_collapseMode="parallax" />
 
-                    <!-- 标题 -->
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_topic_title"
                         android:layout_width="match_parent"
@@ -53,7 +51,6 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <!-- 描述 -->
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_topic_desc"
                         android:layout_width="match_parent"
@@ -63,7 +60,6 @@
                         android:textColor="#666666"
                         android:textSize="13sp" />
 
-                    <!-- 统计信息 -->
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_topic_stats"
                         android:layout_width="match_parent"
@@ -77,7 +73,6 @@
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <!-- TabLayout -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_topic"
                 android:layout_width="match_parent"

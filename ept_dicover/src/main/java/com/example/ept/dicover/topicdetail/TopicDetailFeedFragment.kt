@@ -26,8 +26,10 @@ import kotlinx.coroutines.withContext
 class TopicDetailFeedFragment : Fragment() {
 
     companion object {
+        /** 页面标签参数键 */
         private const val ARG_PAGE_LABEL = "page_label"
 
+        /** 创建实例并传递页面标签 */
         fun newInstance(pageLabel: String): TopicDetailFeedFragment {
             val fragment = TopicDetailFeedFragment()
             val args = Bundle()
@@ -42,11 +44,13 @@ class TopicDetailFeedFragment : Fragment() {
     private var adapter: TopicDetailFeedAdapter? = null
     private var swipeRefresh: SwipeRefreshLayout? = null
 
+    /** 获取页面标签参数 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pageLabel = arguments?.getString(ARG_PAGE_LABEL) ?: ""
     }
 
+    /** 创建布局视图 */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +58,7 @@ class TopicDetailFeedFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_topic_detail_feed, container, false)
     }
 
+    /** 初始化视图组件并加载数据 */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -71,10 +76,12 @@ class TopicDetailFeedFragment : Fragment() {
         loadFeed()
     }
 
+    /** 刷新 Feed 数据 */
     fun refresh() {
         loadFeed()
     }
 
+    /** 加载 Feed 列表数据 */
     private fun loadFeed() {
         swipeRefresh?.isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {
