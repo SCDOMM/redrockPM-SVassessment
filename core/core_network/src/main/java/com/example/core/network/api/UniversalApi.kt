@@ -7,7 +7,6 @@ import com.example.core.model.MetroItem
 import com.example.core.model.NoticeItem
 import com.example.core.model.PageResult
 import com.example.core.model.UserInfo
-import com.example.core.model.WeeklyRankResult
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -69,7 +68,7 @@ interface KaiyanApi {
         @Field("size") size: String = "1080X2163",
         @Field("system_version_code") systemVersionCode: String = "35",
         @Field("token") token: String = ""
-    ): Call<ApiResponse<WeeklyRankResult>>
+    ): Call<ApiResponse<PageResult>>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_result_v2")
@@ -96,39 +95,14 @@ interface KaiyanApi {
         @Field("version") version: Int = 1
     ): Call<ApiResponse<PaginatedResult<Card>>>
 
-    @FormUrlEncoded
-    @POST("v1/card/page/get_page")
-    fun getWorkPage(
-        @Field("page_label") pageLabel: String,
-        @Field("page_type") pageType: String = "card",
-    ): Call<ApiResponse< PageResult>>
-    @FormUrlEncoded
-    @POST("v1/card/metro/call_metro_list_v2")
-    fun loadMoreWork(
-        @Field("card_index") cardIndex: Int,
-        @Field("material") material: String,
-        @Field("material_index") materialIndex: Int,
-        @Field("last_item_id") lastItemId: String,
-        @Field("material_relative_index") materialRelativeIndex: Int = 0,
-        @Field("page_label") pageLabel: String,
-        @Field("card") card: String,
-        @Field("data_source") dataSource: String = "home_user_work_list"
-    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
 
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
-    fun getMoreHomePage(
-        @Field("page_label") pageLabel: String ,
+    fun getMorePage(
         @Field("data_source") dataSource: String="",
-        @Field("material") material: String,
-        @Field("card") card: String,
-        @Field("last_item_id") lastItemId: String
-    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
-    @FormUrlEncoded
-    @POST("v1/card/metro/call_metro_list_v2")
-    fun getMoreDailyPage(
-        @Field("data_source") dataSource: String = "history_issue_feed",
-        @Field("material") material: String,
-        @Field("last_item_id") lastItemId: String
+        @Field("page_label") pageLabel: String="",
+        @Field("material") materialJSON: String,
+        @Field("card") cardJSON: String="",
+        @Field("last_item_id") lastItemId: String,
     ): Call<ApiResponse<PaginatedResult<MetroItem>>>
 }

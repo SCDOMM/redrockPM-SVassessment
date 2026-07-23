@@ -107,7 +107,7 @@ data class MetroData(
     val recommendLevel: String? = null,
     val tags: List<Tag>? = null,
     val cover: CoverInfo? = null,
-    val author: Author? = null,
+
     @SerializedName("hot_value")
     val hotValue: Int? = null,
     val consumption: Consumption? = null,
@@ -121,7 +121,7 @@ data class MetroData(
     @SerializedName("raw_publish_time")
     val rawPublishTime: String? = null,
     val location: Location? = null,
-    val topics: List<Topic>? = null,
+
     @SerializedName("image_count")
     val imageCount: Int? = null,
     @SerializedName("private_msg_link")
@@ -137,8 +137,7 @@ data class MetroData(
     val itemId: String?=null,
     @SerializedName("images")
     val images: List<Image>?=null,
-    @SerializedName("video")
-    val video: VideoDetail?=null,
+
     @SerializedName("is_mine")
     val isMine: Boolean?=null,
     @SerializedName("show_lock_icon")
@@ -152,7 +151,14 @@ data class MetroData(
     @SerializedName("real_location")
     val realLocation: String?=null,
     @SerializedName("comment_extra_tracking_fields")
-    val commentExtraTrackingFields: Map<String, String>?=null
+    val commentExtraTrackingFields: Map<String, String>?=null,
+
+    //"日报"功能和个人主页必须需要的字段
+    val author: Author? = null,
+    //个人主页必须需要的字段
+    val video: VideoDetail?=null,
+    //个人主页的作品页必须需要的字段
+    val topics: List<Tag>? = null,
     )
 
 data class DurationInfo(
@@ -173,7 +179,7 @@ data class PlayCtrl(
 )
 
 data class Tag(
-    val id: Int = 0,
+    val id: Long = 0,
     val title: String = "",
     val link: String? = null
 )
@@ -231,11 +237,7 @@ data class Location(
     val latitude: String? = "0.0000000"
 )
 
-data class Topic(
-    val id: Long = 0,
-    val title: String = "",
-    val link: String? = null
-)
+
 data class Image(
     @SerializedName("image_id")
     val imageId: String? = null,
@@ -262,7 +264,4 @@ data class VideoDetail(
 data class MoreOption(
     val title: String = "",
     val type: String = ""                // "report_item"
-)
-data class WeeklyRankResult(
-    @SerializedName("card_list") val cardList: List<Card> = emptyList()
 )
