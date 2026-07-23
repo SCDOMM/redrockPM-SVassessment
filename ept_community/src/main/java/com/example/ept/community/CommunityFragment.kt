@@ -44,20 +44,11 @@ class CommunityFragment : Fragment() {
 
         /** 社区适配器，处理卡片点击事件并跳转到视频播放页 */
         val adapter = CommunityAdapter { video ->
-            val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, video.id)
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_URL, video.playUrl)
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_TITLE, video.nickname)
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_COVER, video.coverUrl)
-                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_NAME, video.nickname)
-                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_ICON, video.avatar)
-                putExtra(VideoPlayerActivity.EXTRA_CATEGORY, "")
-                putExtra(VideoPlayerActivity.EXTRA_DESCRIPTION, video.description)
-                putExtra(VideoPlayerActivity.EXTRA_COLLECTION_COUNT, video.collectionCount)
-                putExtra(VideoPlayerActivity.EXTRA_REPLY_COUNT, video.replyCount)
-                putExtra(VideoPlayerActivity.EXTRA_PLAY_URL, video.playUrl)
+            // 只传 videoId，Activity 会从 API 获取所有数据
+            val videoId = video.id.toString()
+            if (videoId != "0") {
+                VideoPlayerActivity.start(requireContext(), videoId)
             }
-            startActivity(intent)
         }
         rvCommunity.adapter = adapter
 

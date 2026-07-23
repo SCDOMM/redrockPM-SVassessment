@@ -1,9 +1,10 @@
 package com.example.ept.community
-
 /**
- * 社区页数据项
- * 使用密封类（sealed class）表示三种卡片类型
+ * description ： 社区页数据项,使用密封类（sealed class）表示三种卡片类型
+ * email : 3014386984@qq.com
+ * date : 2026/7/21  10:32
  */
+
 sealed class CommunityItem {
     /**
      * 标题卡片

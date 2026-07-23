@@ -10,26 +10,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.core.model.Item
-import com.example.core.model.videoEntity.VideoData
-import com.example.core.model.videoEntity.VideoSmallCardData
+import com.example.core.model.VideoData
 import com.google.gson.Gson
-
-/**
- * description ： 相关推荐视频列表适配器
- * email : 3014386984@qq.com
- * date : 2026/7/15 13:27
- */
-data class RelatedVideoItem(
-    val id: Long,
-    val title: String,
-    val coverUrl: String,
-    val duration: Long,
-    val authorName: String,
-    val authorIcon: String = "",
-    val category: String = "",
-    val description: String = "",
-    val playUrl: String = ""
-)
 
 /**
  * description ： 相关推荐视频列表适配器
@@ -39,6 +21,18 @@ data class RelatedVideoItem(
 class RelatedVideoAdapter(
     private val onItemClick: (RelatedVideoItem) -> Unit = {}
 ) : RecyclerView.Adapter<RelatedVideoAdapter.VideoViewHolder>() {
+
+    data class RelatedVideoItem(
+        val id: Long,
+        val title: String,
+        val coverUrl: String,
+        val duration: Long,
+        val authorName: String,
+        val authorIcon: String = "",
+        val category: String = "",
+        val description: String = "",
+        val playUrl: String = ""
+    )
 
     private var items: List<RelatedVideoItem> = emptyList()
     private val gson = Gson()
@@ -70,7 +64,7 @@ class RelatedVideoAdapter(
                     RelatedVideoItem(
                         id = video.id,
                         title = video.title,
-                        coverUrl = video.cover.feed,
+                        coverUrl = video.cover?.feed ?: "",
                         duration = video.duration,
                         authorName = video.author?.name ?: "",
                         authorIcon = video.author?.icon ?: "",
@@ -81,17 +75,17 @@ class RelatedVideoAdapter(
                 }
                 "videoSmallCard" -> {
                     val json = gson.toJson(item.data)
-                    val card = gson.fromJson(json, VideoSmallCardData::class.java)
+                    val video = gson.fromJson(json, VideoData::class.java)
                     RelatedVideoItem(
-                        id = card.id,
-                        title = card.title,
-                        coverUrl = card.cover.feed,
-                        duration = card.duration,
-                        authorName = card.author?.name ?: "",
-                        authorIcon = card.author?.icon ?: "",
-                        category = card.category ?: "",
-                        description = card.description ?: "",
-                        playUrl = card.playUrl ?: ""
+                        id = video.id,
+                        title = video.title,
+                        coverUrl = video.cover?.feed ?: "",
+                        duration = video.duration,
+                        authorName = video.author?.name ?: "",
+                        authorIcon = video.author?.icon ?: "",
+                        category = video.category,
+                        description = video.description,
+                        playUrl = video.playUrl
                     )
                 }
                 else -> null

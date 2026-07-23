@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -13,6 +14,12 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
+
+/**
+ * description ： 分类详情页列表适配器，支持分区标题、视频卡片与图片帖子混合展示
+ * email : 3014386984@qq.com
+ * date : 2026/7/21 15:53
+ */
 sealed class CategoryItem {
     data class Header(val text: String) : CategoryItem()
     data class Video(
@@ -30,6 +37,18 @@ sealed class CategoryItem {
         val replyCount: Int = 0,
         val webUrl: String = ""
     ) : CategoryItem()
+    data class Image(
+        val id: Long,
+        val title: String,
+        val imageUrls: List<String>,
+        val authorName: String,
+        val authorIcon: String,
+        val description: String = "",
+        val likeCount: Int = 0,
+        val commentCount: Int = 0,
+        val collectionCount: Int = 0,
+        val shareCount: Int = 0
+    ) : CategoryItem()
 }
 
 class CategoryDetailAdapter(
@@ -40,12 +59,14 @@ class CategoryDetailAdapter(
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_VIDEO = 1
+        private const val TYPE_IMAGE = 2
 
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CategoryItem>() {
             override fun areItemsTheSame(old: CategoryItem, new: CategoryItem): Boolean {
                 return when {
                     old is CategoryItem.Header && new is CategoryItem.Header -> old.text == new.text
                     old is CategoryItem.Video && new is CategoryItem.Video -> old.videoId == new.videoId
+                    old is CategoryItem.Image && new is CategoryItem.Image -> old.id == new.id
                     else -> false
                 }
             }
@@ -73,10 +94,21 @@ class CategoryDetailAdapter(
         val shareCount: TextView = view.findViewById(R.id.tv_category_share)
     }
 
+    class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val authorIcon: ImageView = view.findViewById(R.id.iv_author_avatar)
+        val authorName: TextView = view.findViewById(R.id.tv_author_name)
+        val title: TextView = view.findViewById(R.id.tv_content_title)
+        val rvImages: RecyclerView = view.findViewById(R.id.rv_images)
+        val likeCount: TextView = view.findViewById(R.id.tv_like_count)
+        val collectionCount: TextView = view.findViewById(R.id.tv_collection_count)
+        val commentCount: TextView = view.findViewById(R.id.tv_comment_count)
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is CategoryItem.Header -> TYPE_HEADER
             is CategoryItem.Video -> TYPE_VIDEO
+            is CategoryItem.Image -> TYPE_IMAGE
         }
     }
 
@@ -86,6 +118,11 @@ class CategoryDetailAdapter(
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_category_header, parent, false)
                 HeaderViewHolder(view)
+            }
+            TYPE_IMAGE -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_category_image_post, parent, false)
+                ImageViewHolder(view)
             }
             else -> {
                 val view = LayoutInflater.from(parent.context)
@@ -128,6 +165,28 @@ class CategoryDetailAdapter(
                 vh.itemView.setOnClickListener { onVideoClick(item) }
                 vh.shareIcon.setOnClickListener { onShareClick(item) }
             }
+            is CategoryItem.Image -> {
+                val vh = holder as ImageViewHolder
+                vh.authorName.text = item.authorName
+                vh.title.text = item.title
+                vh.likeCount.text = formatCount(item.likeCount)
+                vh.collectionCount.text = formatCount(item.collectionCount)
+                vh.commentCount.text = formatCount(item.commentCount)
+
+                if (item.authorIcon.isNotEmpty()) {
+                    Glide.with(vh.itemView)
+                        .load(item.authorIcon)
+                        .transform(CircleCrop())
+                        .into(vh.authorIcon)
+                }
+
+                // 图片网格
+                val imageAdapter = CategoryImageAdapter(item.imageUrls)
+                vh.rvImages.apply {
+                    layoutManager = GridLayoutManager(vh.itemView.context, 2)
+                    adapter = imageAdapter
+                }
+            }
         }
     }
 
@@ -137,4 +196,31 @@ class CategoryDetailAdapter(
             else -> count.toString()
         }
     }
+}
+
+/**
+ * 分类详情页图片网格适配器
+ */
+class CategoryImageAdapter(
+    private val imageUrls: List<String>
+) : RecyclerView.Adapter<CategoryImageAdapter.ImageViewHolder>() {
+
+    class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val image: ImageView = view.findViewById(R.id.iv_image)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_category_image, parent, false)
+        return ImageViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
+        Glide.with(holder.image.context)
+            .load(imageUrls[position])
+            .transform(CenterCrop(), RoundedCorners(8))
+            .into(holder.image)
+    }
+
+    override fun getItemCount() = imageUrls.size
 }

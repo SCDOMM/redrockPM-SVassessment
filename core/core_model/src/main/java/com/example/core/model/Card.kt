@@ -42,7 +42,12 @@ data class FollowCardHeader(
     val iconType: String? = null,
     val description: String? = null,
     val time: Long? = null,
-    val showHateVideo: Boolean? = null
+    val showHateVideo: Boolean? = null,
+    val followType: String? = null,
+    val tagId: Int? = null,
+    val tagName: String? = null,
+    val issuerName: String? = null,       // 作者/发布者名称
+    val topShow: Boolean? = null
 )
 
 data class TextCardData(

@@ -197,17 +197,11 @@ class VideoPlayerFragment : Fragment() {
      */
     private fun initRelatedVideos() {
         relatedAdapter = RelatedVideoAdapter { item ->
-            val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, item.id)
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_URL, item.playUrl)
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_TITLE, item.title)
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_COVER, item.coverUrl)
-                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_NAME, item.authorName)
-                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_ICON, item.authorIcon)
-                putExtra(VideoPlayerActivity.EXTRA_CATEGORY, item.category)
-                putExtra(VideoPlayerActivity.EXTRA_DESCRIPTION, item.description)
+            // 只传 videoId，Activity 会从 API 获取所有数据
+            val videoId = item.id.toString()
+            if (videoId != "0") {
+                VideoPlayerActivity.start(requireContext(), videoId)
             }
-            startActivity(intent)
         }
         rvRelated.layoutManager = LinearLayoutManager(requireContext())
         rvRelated.adapter = relatedAdapter
@@ -222,10 +216,42 @@ class VideoPlayerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getVideoRelated(videoId).execute()
+                    api.getRelatedRecommend(videoId.toString()).execute()
                 }
-                if (response.isSuccessful) {
-                    relatedAdapter.submitList(relatedAdapter.parseItems(response.body()?.itemList ?: emptyList()))
+                val body = response.body()
+                if (body?.code == 0) {
+                    val result = body.result
+                    if (result != null) {
+                        val items = result.item_list.mapNotNull { item ->
+                        val video = item.video ?: return@mapNotNull null
+                        val title = video.title
+                        if (title.isEmpty()) return@mapNotNull null
+
+                        val coverUrl = video.cover?.url ?: ""
+                        val videoIdVal = video.video_id.toLongOrNull() ?: 0L
+                        val duration = video.duration?.value ?: 0L
+                        val playUrl = video.play_url
+                            .replace("\\u003d", "=")
+                            .replace("\\u0026", "&")
+                        val authorName = item.author?.nick ?: ""
+                        val authorIcon = item.author?.avatar?.url ?: ""
+                        val category = item.category?.name ?: ""
+                        val consumption = item.consumption
+
+                        RelatedVideoAdapter.RelatedVideoItem(
+                            id = videoIdVal,
+                            title = title,
+                            coverUrl = coverUrl,
+                            duration = duration,
+                            authorName = authorName,
+                            authorIcon = authorIcon,
+                            category = category,
+                            description = item.text,
+                            playUrl = playUrl
+                        )
+                    }
+                    relatedAdapter.submitList(items)
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -31,6 +31,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.viewpager2)
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation(libs.retrofit.core)
     implementation(libs.glide)
     implementation(libs.gson)

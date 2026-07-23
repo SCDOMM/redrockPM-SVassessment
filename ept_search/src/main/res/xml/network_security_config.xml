@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">kaiyanapp.com</domain>
+        <domain includeSubdomains="true">ali-img.kaiyanapp.com</domain>
+        <domain includeSubdomains="true">img.kaiyanapp.com</domain>
+        <domain includeSubdomains="true">eyepetizer-videos.oss-cn-beijing.aliyuncs.com</domain>
+        <domain includeSubdomains="true">aliyuncs.com</domain>
+        <domain includeSubdomains="true">qlogo.cn</domain>
+        <domain includeSubdomains="true">sinaimg.cn</domain>
+        <domain includeSubdomains="true">qq.com</domain>
+        <domain includeSubdomains="true">sinaimg.com</domain>
+    </domain-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

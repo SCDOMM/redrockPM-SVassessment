@@ -10,12 +10,14 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 /**
  * description ： 分类详情页 Activity
@@ -25,12 +27,12 @@ import com.bumptech.glide.Glide
 class CategoryDetailActivity : AppCompatActivity() {
 
     companion object {
-        const val EXTRA_API_URL = "api_url"
+        const val EXTRA_PAGE_LABEL = "page_label"
         const val EXTRA_CATEGORY_NAME = "category_name"
 
-        fun start(context: Context, apiUrl: String, categoryName: String) {
+        fun start(context: Context, pageLabel: String, categoryName: String) {
             val intent = Intent(context, CategoryDetailActivity::class.java).apply {
-                putExtra(EXTRA_API_URL, apiUrl)
+                putExtra(EXTRA_PAGE_LABEL, pageLabel)
                 putExtra(EXTRA_CATEGORY_NAME, categoryName)
             }
             context.startActivity(intent)
@@ -38,82 +40,86 @@ class CategoryDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: CategoryDetailViewModel
+    private var currentTabPosition = 0
+    private val feedFragments = mutableMapOf<Int, CategoryFeedFragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_category_detail)
 
-        // 状态栏 insets 只应用于内容，不额外加 padding
-        val root = findViewById<android.view.View>(R.id.nsv_category_detail)
+        val root = findViewById<android.view.View>(R.id.root_layout)
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(bars.left, 0, bars.right, 0)
+            view.setPadding(bars.left, bars.top, bars.right, 0)
             insets
         }
 
         viewModel = ViewModelProvider(this)[CategoryDetailViewModel::class.java]
 
-        val swipeRefresh = findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
+        val swipeRefresh = findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe_refresh)
         val ivHeader = findViewById<ImageView>(R.id.iv_category_header)
         val tvTitle = findViewById<AppCompatTextView>(R.id.actv_category_header_title)
         val tvDesc = findViewById<AppCompatTextView>(R.id.actv_category_header_desc)
-        val rvCategory = findViewById<RecyclerView>(R.id.rv_category_detail)
+        val tvStats = findViewById<AppCompatTextView>(R.id.tv_category_stats)
+        val tabLayout = findViewById<TabLayout>(R.id.tab_category)
+        val viewPager = findViewById<ViewPager2>(R.id.vp_category)
 
-        val apiUrl = intent.getStringExtra(EXTRA_API_URL) ?: ""
+        val pageLabel = intent.getStringExtra(EXTRA_PAGE_LABEL) ?: ""
         val categoryName = intent.getStringExtra(EXTRA_CATEGORY_NAME) ?: ""
         tvTitle.text = categoryName
 
-        val layoutManager = LinearLayoutManager(this)
-        rvCategory.layoutManager = layoutManager
+        var feedAdapter: FragmentStateAdapter? = null
 
-        val adapter = CategoryDetailAdapter(
-            onVideoClick = { video ->
-                val videoIntent = Intent(this, com.example.core.media.VideoPlayerActivity::class.java).apply {
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_VIDEO_ID, video.videoId)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_VIDEO_URL, video.playUrl)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_VIDEO_TITLE, video.title)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_VIDEO_COVER, video.coverUrl)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_AUTHOR_NAME, video.authorName)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_AUTHOR_ICON, video.authorIcon)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_CATEGORY, video.category)
-                    putExtra(com.example.core.media.VideoPlayerActivity.EXTRA_DESCRIPTION, video.description)
-                }
-                startActivity(videoIntent)
-            },
-            onShareClick = { video ->
-                if (video.webUrl.isNotEmpty()) {
-                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, video.webUrl)
-                    }
-                    startActivity(Intent.createChooser(shareIntent, "分享视频"))
-                }
+        // AppBarLayout 折叠时禁用 SwipeRefreshLayout，避免上滑触发刷新
+        val appBarLayout = findViewById<AppBarLayout>(R.id.appbar)
+        appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
+            val isExpanded = verticalOffset == 0
+            swipeRefresh.isEnabled = isExpanded
+        }
+
+        // ViewPager2 页面切换
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                currentTabPosition = position
             }
-        )
-        rvCategory.adapter = adapter
+        })
 
+        // 观察 header 信息
         viewModel.tagInfo.observe(this) { info ->
             if (info != null) {
-                tvDesc.text = info.description
-                Glide.with(this)
-                    .load(info.headerImage)
-                    .placeholder(android.R.color.darker_gray)
-                    .error(
-                        Glide.with(this)
-                            .load(info.fallbackCover)
-                            .placeholder(android.R.color.darker_gray)
-                    )
-                    .into(ivHeader)
+                if (info.description.isNotEmpty()) {
+                    tvDesc.text = info.description
+                }
+                if (info.stats.isNotEmpty()) {
+                    tvStats.text = info.stats
+                }
+                if (info.headerImage.isNotEmpty()) {
+                    Glide.with(this)
+                        .load(info.headerImage)
+                        .placeholder(android.R.color.darker_gray)
+                        .into(ivHeader)
+                }
+                // 设置 ViewPager2
+                if (info.feedPageLabels.isNotEmpty() && feedAdapter == null) {
+                    val feedPageLabels = info.feedPageLabels.map { it.second }
+                    val tabTitles = info.feedPageLabels.map { it.first }
+
+                    feedAdapter = object : FragmentStateAdapter(this) {
+                        override fun getItemCount() = feedPageLabels.size
+                        override fun createFragment(position: Int): Fragment {
+                            val fragment = CategoryFeedFragment.newInstance(feedPageLabels[position])
+                            feedFragments[position] = fragment
+                            return fragment
+                        }
+                    }
+                    viewPager.adapter = feedAdapter
+
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                        tab.text = tabTitles[position]
+                    }.attach()
+                }
             }
-        }
-
-        viewModel.items.observe(this) { list ->
-            adapter.submitList(list)
-        }
-
-        viewModel.isLoading.observe(this) { loading ->
-            swipeRefresh.isRefreshing = loading
         }
 
         viewModel.error.observe(this) { errorMsg ->
@@ -122,23 +128,23 @@ class CategoryDetailActivity : AppCompatActivity() {
             }
         }
 
+        // SwipeRefreshLayout 刷新当前 tab
         swipeRefresh.setOnRefreshListener {
-            viewModel.loadCategoryDetail(apiUrl, categoryName)
-        }
-
-        val nestedScrollView = findViewById<NestedScrollView>(R.id.nsv_category_detail)
-        nestedScrollView?.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            val child = nestedScrollView.getChildAt(0)
-            if (child != null) {
-                val diff = child.bottom - (nestedScrollView.height + scrollY)
-                if (diff < 500 && viewModel.hasNextPage && viewModel.isLoading.value != true) {
-                    viewModel.loadNextPage()
+            val currentFragment = feedFragments[currentTabPosition]
+            if (currentFragment != null) {
+                currentFragment.refresh()
+                currentFragment.viewModel.isLoading.observe(this) { loading ->
+                    if (!loading) {
+                        swipeRefresh.isRefreshing = false
+                    }
                 }
+            } else {
+                swipeRefresh.isRefreshing = false
             }
         }
 
         if (!viewModel.loaded) {
-            viewModel.loadCategoryDetail(apiUrl, categoryName)
+            viewModel.loadCategoryDetail(pageLabel, categoryName)
         }
     }
 }

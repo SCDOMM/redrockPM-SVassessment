@@ -1,7 +1,5 @@
 package com.example.core.model
 
-import com.example.core.model.TabInfoWrapper
-import com.example.core.model.TabItem
 import com.google.gson.annotations.SerializedName
 
 /**   

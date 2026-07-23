@@ -1,50 +1,45 @@
 package com.example.core.media
 
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.core.media.R
+import androidx.lifecycle.lifecycleScope
+import com.example.core.network.RetrofitClient
+import com.example.core.network.api.KaiyanApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
- * description ： 视频播放页 Activity，初始化 Edge-to-Edge 并加载 VideoPlayerFragment
+ * description ： 视频播放页 Activity，通过 videoId 从 API 获取所有数据
  * email : 3014386984@qq.com
  * date : 2026/7/15 15:00
  */
 class VideoPlayerActivity : AppCompatActivity() {
 
     companion object {
-        /** 视频 ID */
         const val EXTRA_VIDEO_ID = "video_id"
-        /** 视频播放地址 */
-        const val EXTRA_VIDEO_URL = "video_url"
-        /** 视频标题 */
-        const val EXTRA_VIDEO_TITLE = "video_title"
-        /** 视频封面图 */
-        const val EXTRA_VIDEO_COVER = "video_cover"
-        /** 作者名称 */
-        const val EXTRA_AUTHOR_NAME = "author_name"
-        /** 作者头像 */
-        const val EXTRA_AUTHOR_ICON = "author_icon"
-        /** 视频分类 */
-        const val EXTRA_CATEGORY = "category"
-        /** 视频描述 */
-        const val EXTRA_DESCRIPTION = "description"
-        /** 收藏数 */
-        const val EXTRA_COLLECTION_COUNT = "collection_count"
-        /** 回复数 */
-        const val EXTRA_REPLY_COUNT = "reply_count"
-        /** 视频播放地址（用于分享） */
-        const val EXTRA_PLAY_URL = "play_url"
+        private const val EXTRA_RESOURCE_TYPE = "resource_type"
+
+        fun start(context: Context, videoId: String, resourceType: String = "pgc_video") {
+            val intent = Intent(context, VideoPlayerActivity::class.java).apply {
+                putExtra(EXTRA_VIDEO_ID, videoId)
+                putExtra(EXTRA_RESOURCE_TYPE, resourceType)
+            }
+            context.startActivity(intent)
+        }
     }
 
-    /**
-     * 初始化窗口适配、解析 Intent 参数、加载 VideoPlayerFragment
-     */
+    private val api = RetrofitClient.create<KaiyanApi>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -59,35 +54,65 @@ class VideoPlayerActivity : AppCompatActivity() {
             insets
         }
 
-        val videoId = intent.getLongExtra(EXTRA_VIDEO_ID, 0)
-        val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL) ?: ""
-        val videoTitle = intent.getStringExtra(EXTRA_VIDEO_TITLE) ?: ""
-        val videoCover = intent.getStringExtra(EXTRA_VIDEO_COVER) ?: ""
-        val authorName = intent.getStringExtra(EXTRA_AUTHOR_NAME) ?: ""
-        val authorIcon = intent.getStringExtra(EXTRA_AUTHOR_ICON) ?: ""
-        val category = intent.getStringExtra(EXTRA_CATEGORY) ?: ""
-        val description = intent.getStringExtra(EXTRA_DESCRIPTION) ?: ""
-        val collectionCount = intent.getIntExtra(EXTRA_COLLECTION_COUNT, 0)
-        val replyCount = intent.getIntExtra(EXTRA_REPLY_COUNT, 0)
-        val playUrl = intent.getStringExtra(EXTRA_PLAY_URL) ?: ""
+        val videoId = intent.getStringExtra(EXTRA_VIDEO_ID) ?: ""
+        val resourceType = intent.getStringExtra(EXTRA_RESOURCE_TYPE) ?: "pgc_video"
+
+        if (videoId.isEmpty()) {
+            Toast.makeText(this, "视频ID无效", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container,
-                    VideoPlayerFragment.newInstance(
-                        videoId, videoUrl, videoTitle, videoCover,
-                        authorName, authorIcon, category, description,
-                        collectionCount, replyCount, playUrl
-                    )
-                )
-                .commit()
+            lifecycleScope.launch {
+                try {
+                    val response = withContext(Dispatchers.IO) {
+                        api.getItemDetail(videoId, resourceType).execute()
+                    }
+                    val body = response.body()
+                    if (body?.code == 0) {
+                        val detail = body.result
+                        if (detail != null) {
+                            // 清理 play_url 中的转义字符
+                            val rawPlayUrl = detail.video?.play_url ?: ""
+                            val cleanPlayUrl = rawPlayUrl
+                                .replace("\\u003d", "=")
+                                .replace("\\u0026", "&")
+
+                            supportFragmentManager.beginTransaction()
+                                .replace(
+                                    R.id.fragment_container,
+                                    VideoPlayerFragment.newInstance(
+                                        videoId = videoId.toLongOrNull() ?: 0L,
+                                        videoUrl = cleanPlayUrl,
+                                        videoTitle = detail.video?.title ?: "",
+                                        videoCover = detail.video?.cover?.url ?: "",
+                                        authorName = detail.author?.nick ?: "",
+                                        authorIcon = detail.author?.avatar?.url ?: "",
+                                        category = detail.category?.name ?: "",
+                                        description = detail.text,
+                                        collectionCount = detail.consumption?.collection_count ?: 0,
+                                        replyCount = detail.consumption?.comment_count ?: 0,
+                                        playUrl = ""
+                                    )
+                                )
+                                .commit()
+                        } else {
+                            Toast.makeText(this@VideoPlayerActivity, "加载视频详情失败", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    } else {
+                        Toast.makeText(this@VideoPlayerActivity, "加载视频详情失败", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@VideoPlayerActivity, "网络错误: ${e.message}", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
         }
     }
 
-    /**
-     * 根据深色/浅色模式设置状态栏图标颜色
-     */
     private fun setupStatusBar() {
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/cv_result_topics_item"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp"
+        app:layout_constraintDimensionRatio="W,3:8"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="10dp"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="0.5dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_result_topics_cover_item"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:layout_marginVertical="10dp"
+                android:src="@drawable/eyepetater"
+                app:layout_constraintDimensionRatio="W,7:6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:shapeAppearanceOverlay="@style/roundedCorner" />
+
+            <TextView
+                android:id="@+id/tv_result_topics_title_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:maxLines="2"
+                android:text="标题测试"
+                android:textColor="#1A1A1A"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_result_topics_cover_item"
+                app:layout_constraintTop_toTopOf="@id/iv_result_topics_cover_item" />
+
+            <TextView
+                android:id="@+id/tv_result_topics_interact_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="114人参与"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_result_topics_cover_item"
+                app:layout_constraintStart_toStartOf="@id/tv_result_topics_title_item" />
+
+            <TextView
+                android:id="@+id/tv_result_topics_desc_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="你是一个一个一个"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_result_topics_title_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_result_topics_title_item" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginVertical="5dp"
+        android:alpha="0.1"
+        android:background="#333333"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cv_result_topics_item" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@ class ItemDeserializer : JsonDeserializer<Item> {
                 when (itemType) {
                     "video" -> context.deserialize<VideoData>(dataElement, VideoData::class.java)
                     "videoSmallCard" -> context.deserialize<VideoData>(dataElement, VideoData::class.java)
-                    "followCard" -> context.deserialize<FollowCardData>(dataElement, FollowCardData::class.java)
+                    "followCard", "autoPlayFollowCard" -> context.deserialize<FollowCardData>(dataElement, FollowCardData::class.java)
                     "squareCardCollection" -> context.deserialize<SquareCardCollectionData>(dataElement, SquareCardCollectionData::class.java)
                     "textCard" -> context.deserialize<TextCardData>(dataElement, TextCardData::class.java)
                     "banner" -> context.deserialize<BannerData>(dataElement, BannerData::class.java)

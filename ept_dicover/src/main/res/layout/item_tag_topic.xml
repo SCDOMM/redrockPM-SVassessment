@@ -19,7 +19,7 @@
         android:layout_marginVertical="5dp"
         android:orientation="vertical">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_tag_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:textSize="13sp"
             android:textStyle="bold" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_tag_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,5 +42,11 @@
             android:maxLines="2"
             android:textColor="@color/text_primary"
             android:textSize="11sp" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="192人参与"
+            android:textSize="10sp"/>
     </LinearLayout>
 </LinearLayout>

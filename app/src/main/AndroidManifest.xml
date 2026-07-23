@@ -29,11 +29,27 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
         <activity
-            android:name="com.example.ept.dicover.TopicListActivity"
+            android:name="com.example.ept.dicover.topiclist.TopicListActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
         <activity
-            android:name="com.example.ept.dicover.TopicDetailActivity"
+            android:name="com.example.ept.dicover.topicdetail.TopicDetailActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.dicover.lightTopic.LightTopicsActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.dicover.lightTopic.LightTopicListActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.dicover.topicsquare.TopicSquareActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.dicover.topicdetail.TopicDetailActivity2"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
     </application>
