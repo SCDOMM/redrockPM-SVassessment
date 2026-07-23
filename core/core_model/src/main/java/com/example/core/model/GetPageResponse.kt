@@ -1,4 +1,4 @@
-`package com.example.core.model
+package com.example.core.model
 
 /**
  * description ： get_page 接口响应模型
