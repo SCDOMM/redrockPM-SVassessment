@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 class CommunityViewModel : ViewModel() {
 
     /** 开眼 API 接口实例，用于网络请求 */
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
     /** Gson 实例，用于 JSON 解析 */
     private val gson = Gson()
 

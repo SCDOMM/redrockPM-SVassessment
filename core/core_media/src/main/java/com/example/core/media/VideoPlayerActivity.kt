@@ -13,7 +13,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,7 +47,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
 
     /**
      * Activity 创建时调用

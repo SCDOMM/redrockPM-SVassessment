@@ -6,9 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.GetPageCard
-import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +19,7 @@ import kotlinx.coroutines.withContext
  */
 class CategoryDetailViewModel : ViewModel() {
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
 
     /** 标签信息数据类 */
     data class TagInfo(

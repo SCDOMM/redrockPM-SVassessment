@@ -1,9 +1,9 @@
-package com.example.ept.notify.fragment
+package com.example.core.common
 
 import androidx.fragment.app.Fragment
 
-/**   
- * 包名称： com.example.ept.home.fragment
+/**
+ * 包名称： com.example.core.common
  * 类名称：FragmentInterface
  * 类描述：TODO
  * 创建人：韦西波

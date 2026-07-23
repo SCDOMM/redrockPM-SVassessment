@@ -5,13 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.CallMetroListResponse
 import com.example.core.model.GetPageCard
-import com.example.core.model.GetPageMetroData
 import com.example.core.model.GetPageMetroItem
-import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +21,7 @@ import kotlinx.coroutines.withContext
  */
 class CategoryFeedViewModel : ViewModel() {
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
     private val gson = Gson()
 
     private val allItems = mutableListOf<CategoryItem>()

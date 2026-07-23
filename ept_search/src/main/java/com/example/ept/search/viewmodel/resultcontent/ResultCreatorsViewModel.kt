@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.example.core.network.await
 import com.example.ept.search.utils.parseSearchResponseV2
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class ResultCreatorsViewModel  (application: Application) : AndroidViewModel(app
     private var lastItemId=2
     private var allCreators: List<MetroData> =emptyList()
     private var query=""
-    private val appService: KaiyanApi by lazy {
+    private val appService: SpecficApi by lazy {
         RetrofitClient.create()
     }
     fun initLiveData(allCreators: MutableList<MetroData>,query: String){
