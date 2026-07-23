@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    >
 
     <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/cv1_video_item"
@@ -41,7 +43,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="测试测试"
-                android:textColor="#808080"
+                android:textColor="#000000"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@id/iv_video_author_profile_item"
                 app:layout_constraintTop_toTopOf="@id/iv_video_author_profile_item" />
@@ -127,6 +129,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:visibility="gone"
+                android:textColor="#1E90FF"
                 android:text="展开"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_desc_item"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -215,7 +219,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_video_label_item"
+                app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
                 app:layout_constraintStart_toEndOf="@id/iv_video_comment_item"
                 />
             <ImageView
@@ -228,5 +232,12 @@
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
+    <View
+        android:id="@+id/divider_video_item"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="5dp"
+        android:background="#808080"
+        android:alpha="0.2"
+        app:layout_constraintTop_toBottomOf="@id/cv3_video_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,7 +38,7 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
         RetrofitClient.create()
     }
 
-    fun initCreator(uid: Long) {
+    fun initCreator(uid: String) {
         viewModelScope.launch {
             try {
                 val response = appService.getUserInfo(uid).await()
@@ -74,7 +74,7 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
             }
         }
     }
-    fun initRefresh(uid: Long) {
+    fun initRefresh(uid: String) {
         viewModelScope.launch {
             try {
                 val response = appService.getUserInfo(uid).await()

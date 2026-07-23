@@ -40,12 +40,13 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
                 val pageType = albumTab.pageType
                 val response = appService.getPage(pageLabel, pageType).await()
                 val cardList = response.result?.cardList!!
-                allAlbums = parseAlbumCards(cardList)
+                val result= parseAlbumCards(cardList)
+                allAlbums=result.albums
                 val callCard = cardList.firstOrNull { it.type == "call_card_list" }
                 val params = callCard?.cardData?.body?.apiRequest?.params
                 lastItemId = (params?.get("last_item_id")?: "0").toString()
                 cardJSON = (params?.get("card_list") as? String) ?: ""
-                _liveData.value = AlbumState.InitState(allAlbums.toMutableList())
+                _liveData.value = AlbumState.InitState(allAlbums.toMutableList(),result.title.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value = AlbumState.FailedState(e.message.toString())
@@ -63,13 +64,14 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
                     version = 1
                 ).await()
                 val newCards = response.result?.itemList ?: emptyList()
-                if (lastItemId=="0"){
+                if (lastItemId.isNullOrEmpty()){
                     _liveData.value = AlbumState.LoadingState(allAlbums.toMutableList())
                     return@launch
                 }
                 lastItemId = response.result?.lastItemId ?: "0"
 
-                val newAlbums = parseAlbumCards(newCards)
+                val section = parseAlbumCards(newCards)
+                val newAlbums=section.albums
                 allAlbums = allAlbums + newAlbums
                 _liveData.value = AlbumState.LoadingState(allAlbums.toMutableList())
             } catch (e: Exception) {
@@ -81,7 +83,7 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 sealed class AlbumState {
-    data class InitState(val albumList: MutableList<AlbumData>) : AlbumState()
+    data class InitState(val albumList: MutableList<AlbumData>,val title: String) : AlbumState()
     data class RefreshState(val albumData: MutableList<AlbumData>) : AlbumState()
     data class LoadingState(val newAlbumData: MutableList<AlbumData>) : AlbumState()
     data class FailedState(val msg: String) : AlbumState()

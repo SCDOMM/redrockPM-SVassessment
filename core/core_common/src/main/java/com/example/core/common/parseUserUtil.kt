@@ -82,10 +82,19 @@ private fun parseSetSlideMetroListCard(card: Card): List<UserHomeItem> {
     }
     return items
 }
-
-fun parseAlbumCards(cardList: List<Card>)=cardList
-    .filter { it.type == "set_slide_metro_list" }
+data class AlbumSection(
+    val title: String?,
+    val albums: List<AlbumData>
+)
+fun parseAlbumCards(cardList: List<Card>): AlbumSection{
+    val titleCard = cardList.firstOrNull { it.type == "set_metro_list" }
+    val title = titleCard?.cardData?.header?.left
+        ?.firstOrNull { it.type == "text" }
+        ?.metroData?.text
+    val list=cardList.filter { it.type == "set_slide_metro_list" }
     .mapNotNull { extractAlbumFromCard(it) }
+    return AlbumSection(title,list)
+}
 private fun extractAlbumFromCard(card: Card): AlbumData? {
     val albumMeta = card.cardData?.footer?.left
         ?.firstOrNull { it is MetroItem && it.type == "user" }

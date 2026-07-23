@@ -41,9 +41,13 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
             try {
                 val response=appService.searchLoad(query,"topic",lastItemId,10).await()
                 val resultData= parseLoadSearch(response)
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = TopicsState.LoadingState(allTopics.toMutableList())
+                    return@launch
+                }
                 allTopics=allTopics+resultData.topicList
                 lastItemId=response.result?.lastItemId?:"0"
-                _liveData.value= TopicsState.LoadingMoreState(allTopics.toMutableList())
+                _liveData.value= TopicsState.LoadingState(allTopics.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value= TopicsState.ErrorState(e.message.toString())
@@ -55,6 +59,6 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
 sealed class TopicsState {
     data class InitState(val topicData: MutableList<MetroData>) : TopicsState()
     data class RefreshState(val topicList: MutableList<MetroData>) : TopicsState()
-    data class LoadingMoreState(val newTopicList: MutableList<MetroData>) : TopicsState()
+    data class LoadingState(val newTopicList: MutableList<MetroData>) : TopicsState()
     data class ErrorState(val errorMsg: String) : TopicsState()
 }

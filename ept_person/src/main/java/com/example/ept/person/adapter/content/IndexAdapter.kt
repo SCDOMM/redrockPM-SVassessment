@@ -1,5 +1,6 @@
 package com.example.ept.person.adapter.content
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,7 +92,8 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
     inner class SectionTitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitleItemItem: TextView = itemView.findViewById(R.id.tv_title_item_item)
         fun bindData(item: UserHomeItem.SectionTitle) {
-            tvTitleItemItem.text = item.text
+            if (item.text.isNullOrEmpty())       tvTitleItemItem.text ="暂无作品"
+            else tvTitleItemItem.text = item.text
         }
     }
 
@@ -123,7 +125,7 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
 
         val ivVideoForwardItem: ImageView = itemView.findViewById(R.id.iv_video_forward_item)
         val tvVideoFoldItem: TextView = itemView.findViewById(R.id.tv_video_fold_item)
-
+        var isExpanded=false
         fun bindData(item: UserHomeItem.VideoPopular) {
             val data = item.data
             Glide.with(ivVideoCover.context)
@@ -136,7 +138,7 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
                 .error(R.drawable.eyepetater)
                 .placeholder(R.drawable.eyepetater)
                 .into(ivVideoAuthorProfileItem)
-            tvVideoAuthorNameItem.text = data.title ?: data.video?.title ?: ""
+            tvVideoAuthorNameItem.text = data.nick ?: data.author?.nick ?: ""
             tvVideoTimeItem.text = data.publishTime ?: data.rawPublishTime ?: ""
             tvVideoDescItem.text = data.text ?: ""
             tvVideoLabelItem.text = data.tags?.firstOrNull()?.title ?: ""
@@ -144,6 +146,26 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
             tvVideoCollectionItem.text = data.consumption?.collectionCount?.toString() ?: "0"
             tvVideoCommentItem.text = data.consumption?.commentCount?.toString() ?: "0"
             tvVideoTopicItem.text = data.topics?.firstOrNull()?.title ?: ""
+
+            tvVideoFoldItem.post {
+                if (tvVideoDescItem.lineCount>=2){
+                    tvVideoFoldItem.visibility= View.VISIBLE
+                }else{
+                    tvVideoFoldItem.visibility=View.GONE
+                }
+            }
+            tvVideoFoldItem.setOnClickListener {
+                if (isExpanded){
+                    tvVideoDescItem.maxLines=2
+                    tvVideoDescItem.ellipsize = TextUtils.TruncateAt.END
+                    tvVideoFoldItem.text="展开"
+                }else{
+                    tvVideoDescItem.maxLines=Integer.MAX_VALUE
+                    tvVideoDescItem.ellipsize = null
+                    tvVideoFoldItem.text="收起"
+                }
+                isExpanded=!isExpanded
+            }
         }
     }
 

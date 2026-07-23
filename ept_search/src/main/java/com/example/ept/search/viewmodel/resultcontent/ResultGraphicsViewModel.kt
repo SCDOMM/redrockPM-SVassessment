@@ -41,9 +41,13 @@ class ResultGraphicsViewModel(application: Application) : AndroidViewModel(appli
             try {
                 val response = appService.searchLoad(query, "graphic", lastItemId, 10).await()
                 val loadResult = parseLoadSearch(response)
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = GraphicsState.LoadingState(allGraphics.toMutableList())
+                    return@launch
+                }
                 lastItemId = response.result?.lastItemId ?: "0"
                 allGraphics = allGraphics + loadResult.graphicList
-                _liveData.value = GraphicsState.LoadingMoreState(allGraphics.toMutableList())
+                _liveData.value = GraphicsState.LoadingState(allGraphics.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value = GraphicsState.ErrorState(e.message.toString())
@@ -55,6 +59,6 @@ class ResultGraphicsViewModel(application: Application) : AndroidViewModel(appli
 sealed class GraphicsState {
     data class InitState(val graphicList: MutableList<MetroData>) : GraphicsState()
     data class RefreshState(val graphicList: MutableList<MetroData>) : GraphicsState()
-    data class LoadingMoreState(val newGraphicList: MutableList<MetroData>) : GraphicsState()
+    data class LoadingState(val newGraphicList: MutableList<MetroData>) : GraphicsState()
     data class ErrorState(val errorMsg: String) : GraphicsState()
 }

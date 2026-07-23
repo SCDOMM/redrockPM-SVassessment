@@ -68,11 +68,8 @@ fun parseLoadSearch(response: ApiResponse<PaginatedResult<MetroItem>>): SearchRe
             "image" -> articleList.add(data)        // 图文 -> articleList
             "topic" -> topicList.add(data)          // 话题 -> topicList
             "user" -> {                             // 用户需要进一步区分
-                when (data.type) {
-                    "pgc" -> creatorList.add(data)  // pgc 创作者 -> creatorList
-                    "ugc" -> userList.add(data)     // ugc 用户 -> userList
-                    else -> userList.add(data)      // 未知类型默认放入 userList
-                }
+                val target = if (data.type == "pgc") creatorList else userList
+                target.add(data)
             }
         }
     }

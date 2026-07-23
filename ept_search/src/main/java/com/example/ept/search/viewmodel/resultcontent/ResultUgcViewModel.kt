@@ -40,9 +40,13 @@ class ResultUgcViewModel  (application: Application) : AndroidViewModel(applicat
             try {
                 val response=appService.searchLoad(query,"ugc",lastItemId,10).await()
                 val resultData= parseLoadSearch(response)
-                allUgc=allUgc+resultData.ugcList
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = UgcState.LoadingState(allUgc.toMutableList())
+                    return@launch
+                }
                 lastItemId=response.result?.lastItemId?:"0"
-                _liveData.value= UgcState.LoadingMoreState(allUgc.toMutableList())
+                allUgc=allUgc+resultData.ugcList
+                _liveData.value= UgcState.LoadingState(allUgc.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value= UgcState.ErrorState(e.message.toString())
@@ -54,6 +58,6 @@ class ResultUgcViewModel  (application: Application) : AndroidViewModel(applicat
 sealed class UgcState{
     data class InitState(val ugcData: MutableList<MetroData>) : UgcState()
     data class RefreshState(val ugcList:MutableList<MetroData>): UgcState()
-    data class LoadingMoreState( val newUgcList: MutableList<MetroData>): UgcState()
+    data class LoadingState(val newUgcList: MutableList<MetroData>): UgcState()
     data class ErrorState(val errorMsg: String): UgcState()
 }

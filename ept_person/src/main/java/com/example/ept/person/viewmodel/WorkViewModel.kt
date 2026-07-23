@@ -1,7 +1,6 @@
 package com.example.ept.person.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -38,16 +37,15 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val response = appService.getPage(workTab.pageLabel, workTab.pageType).await()
-                val metroList = parseWorkListFromCardList(response)
-                allWorks = metroList
+                val result = parseWorkListFromCardList(response)
+                allWorks = result.items
                 val firstCard = response.result?.cardList?.firstOrNull { it.type == "call_metro_list" }
                 val params = firstCard?.cardData?.body?.apiRequest?.params
 
                 lastItemId = params?.get("last_item_id") as? String ?: ""
-                Log.d("测试1",lastItemId)
                 materialJson = params?.get("material") as? String ?: ""
                 cardJSON = Gson().toJson(firstCard)
-                _liveData.value = WorkState.InitState(metroList.toMutableList())
+                _liveData.value = WorkState.InitState(result.items.toMutableList(),result.title.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value = WorkState.FailedState(e.message.toString())
@@ -66,14 +64,11 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
             ).await()
 
             val newItems = response.result?.itemList
-            if (lastItemId==""){
+            if (lastItemId.isNullOrEmpty()){
                 _liveData.value = WorkState.LoadingState(allWorks.toMutableList())
                 return@launch
             }
             lastItemId = response.result?.lastItemId?:""
-
-            Log.d("测试",lastItemId)
-
             val workDataList = newItems?.mapNotNull { it.metroData}
             if (!workDataList.isNullOrEmpty()) allWorks=allWorks+workDataList
             _liveData.value = WorkState.LoadingState(allWorks.toMutableList())
@@ -84,7 +79,7 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 sealed class WorkState{
-    data class InitState(val workList: MutableList<MetroData>) : WorkState()
+    data class InitState(val workList: MutableList<MetroData>,val title: String) : WorkState()
     data class RefreshState(val workList: MutableList<MetroData>) : WorkState()
     data class LoadingState(val newWorkList: MutableList<MetroData>) : WorkState()
     data class FailedState(val msg: String) : WorkState()

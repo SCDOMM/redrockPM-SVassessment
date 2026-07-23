@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +21,7 @@ class AlbumFragment : Fragment() {
     private lateinit var rvAlbumDefault: RecyclerView
     private lateinit var albumViewModel: AlbumViewModel
     private lateinit var creatorViewModel: CreatorViewModel
-
+    private lateinit var tvAlbumTitle: TextView
     private lateinit var adapter: AlbumAdapter
     private var isLoading=false
 
@@ -33,7 +34,7 @@ class AlbumFragment : Fragment() {
         rvAlbumDefault=view.findViewById(R.id.rv_album_default)
         albumViewModel= ViewModelProvider(this)[AlbumViewModel::class.java]
         creatorViewModel= ViewModelProvider(requireActivity())[CreatorViewModel::class.java]
-
+        tvAlbumTitle=view.findViewById(R.id.tv_album_title)
         initEvent()
         initAdd()
         return view
@@ -51,6 +52,10 @@ class AlbumFragment : Fragment() {
                     Toast.makeText(view.context, state.msg, Toast.LENGTH_SHORT).show()
                     isLoading=false
                 }is AlbumState.InitState -> {
+                    tvAlbumTitle.text=state.title
+                    if (state.title=="null"){
+                        tvAlbumTitle.text="暂无作品"
+                    }
                     adapter.submitList(state.albumList)
                 }
                 is AlbumState.LoadingState -> {

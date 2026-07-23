@@ -1,5 +1,6 @@
 package com.example.ept.search.adapter.resultcontent
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.core.model.MetroData
 import com.example.ept.search.R
+import com.therouter.TheRouter
 
 /**   
  * 包名称： com.example.ept.search.adapter
@@ -47,6 +49,11 @@ class ResultUgcAdapter :
             itemView.findViewById(R.id.tv_ugc_desc_item)
 
         fun bindData(metroData: MetroData) {
+            itemView.setOnClickListener {
+                TheRouter.build("http://therouter.com/person")
+                    .withString("uid",metroData.uid.toString())
+                    .navigation()
+            }
             Glide.with(ivUgcProfileItem.context)
                 .load(metroData.avatar?.url)
                 .placeholder(R.drawable.eyepetater)

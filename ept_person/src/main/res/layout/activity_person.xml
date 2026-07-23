@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="10dp"
+    android:fitsSystemWindows="true"
     tools:context=".PersonActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -50,6 +51,17 @@
                                 android:src="@drawable/eyepetater"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintDimensionRatio="W,9:16" />
+
+                            <ImageView
+                                android:id="@+id/iv_creator_back"
+                                android:layout_margin="15dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/video_back"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                />
 
                             <com.google.android.material.imageview.ShapeableImageView
                                 android:id="@+id/iv_creator_profile"
@@ -144,7 +156,7 @@
                                 android:layout_margin="10dp"
                                 android:text="+"
                                 android:textColor="#FFFFFF"
-                                android:background="#000000"
+                                android:backgroundTint="#000000"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/iv_creator_background" />
 

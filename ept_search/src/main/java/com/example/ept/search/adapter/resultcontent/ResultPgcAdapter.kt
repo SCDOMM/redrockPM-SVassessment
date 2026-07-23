@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.core.model.MetroData
 import com.example.ept.search.R
+import com.therouter.TheRouter
 
 /**   
  * 包名称： com.example.ept.search.adapter
@@ -47,6 +48,11 @@ class ResultPgcAdapter :
             itemView.findViewById(R.id.tv_pgc_desc_item)
         val ivPgcAddItem: ImageView = itemView.findViewById(R.id.iv_pgc_add_item)
         fun bindData(metroData: MetroData) {
+            itemView.setOnClickListener {
+                TheRouter.build("http://therouter.com/person")
+                    .withString("uid",metroData.uid.toString())
+                    .navigation()
+            }
             Glide.with(ivPgcProfileItem.context)
                 .load(metroData.avatar?.url)
                 .placeholder(R.drawable.eyepetater)

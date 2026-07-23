@@ -14,6 +14,7 @@ import com.example.ept.search.fragment.PreSearchFragment
 import com.example.ept.search.fragment.ResultFragment
 import com.example.ept.search.viewmodel.SearchState
 import com.example.ept.search.viewmodel.SearchViewModel
+import com.therouter.TheRouter
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
@@ -41,6 +42,7 @@ class SearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
         svSearchTop = findViewById(R.id.sv_search_top)
         tvSearchCancel = findViewById(R.id.tv_search_cancel)
+        TheRouter.init(this)
         initEvent()
         initSearch()
         initPreSearch()

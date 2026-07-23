@@ -44,7 +44,7 @@ class ResultUgcFragment : Fragment() {
             when(data){
                 is UgcState.ErrorState -> Toast.makeText(view.context,data.errorMsg, Toast.LENGTH_SHORT).show()
                 is UgcState.InitState ->adapter.submitList(data.ugcData)
-                is UgcState.LoadingMoreState ->{
+                is UgcState.LoadingState ->{
                     isLoading=false
                     adapter.submitList(data.newUgcList)
                 }

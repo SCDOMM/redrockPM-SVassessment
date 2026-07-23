@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -27,6 +28,15 @@ class RecentAdapter : ListAdapter<MetroData, RecentAdapter.RecentVideoViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentVideoViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_item_new, parent, false)
+
+        val screenWidth = view.context.resources.displayMetrics.widthPixels
+        val itemWidth= (screenWidth * 0.8).toInt()
+
+        view.layoutParams = LinearLayout.LayoutParams(
+            itemWidth,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
         return RecentVideoViewHolder(view)
     }
     override fun onBindViewHolder(holder: RecentVideoViewHolder, position: Int) {
@@ -54,6 +64,7 @@ class RecentAdapter : ListAdapter<MetroData, RecentAdapter.RecentVideoViewHolder
             tvNewAuthorNameItemItem.text = data.author?.nick ?: ""
             tvNewLabelItemItem.text = data.tags?.firstOrNull()?.title ?: ""
             tvNewDurationItemItem.text = data.duration?.text ?: ""
+
         }
     }
 }

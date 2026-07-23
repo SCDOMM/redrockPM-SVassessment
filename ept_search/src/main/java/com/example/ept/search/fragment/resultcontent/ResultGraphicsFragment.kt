@@ -47,7 +47,7 @@ class ResultGraphicsFragment : Fragment() {
                is GraphicsState.InitState ->{
                    adapter.submitList(data.graphicList)
                }
-               is GraphicsState.LoadingMoreState->{
+               is GraphicsState.LoadingState->{
                    isLoading=false
                    adapter.submitList(data.newGraphicList)
                }

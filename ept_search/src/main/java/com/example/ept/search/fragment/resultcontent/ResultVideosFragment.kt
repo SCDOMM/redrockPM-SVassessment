@@ -45,7 +45,7 @@ class ResultVideosFragment : Fragment() {
             when(data){
                 is VideosState.ErrorState -> Toast.makeText(view.context,data.errorMsg, Toast.LENGTH_SHORT).show()
                 is VideosState.InitState ->adapter.submitList(data.videoList)
-                is VideosState.LoadingMoreState ->{
+                is VideosState.LoadingState ->{
                     isLoading=false
                     adapter.submitList(data.newVideoList)
                 }

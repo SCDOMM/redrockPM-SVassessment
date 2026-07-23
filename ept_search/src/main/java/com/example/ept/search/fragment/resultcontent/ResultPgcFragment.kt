@@ -48,7 +48,7 @@ class ResultPgcFragment : Fragment() {
                     adapter.submitList(data.pgcList)
                 }
 
-                is PgcState.LoadingMoreState -> {
+                is PgcState.LoadingState -> {
                     isLoading = false
                     adapter.submitList(data.newPgcList)
                 }

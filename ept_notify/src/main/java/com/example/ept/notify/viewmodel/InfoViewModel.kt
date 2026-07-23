@@ -76,6 +76,10 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
             try {
                 val response=appService.getPushList(lastItemId).await()
                 val infoList=response.result?.itemList?:emptyList()
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = InfoState.LoadingState(allMessages.toMutableList())
+                    return@launch
+                }
                 lastItemId= response.result?.lastItemId ?:"0"
                 allMessages=allMessages+infoList
                 _liveData.value = InfoState.LoadingState(allMessages.toMutableList())

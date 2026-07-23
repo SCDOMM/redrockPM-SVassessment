@@ -46,7 +46,7 @@ class ResultTopicsFragment : Fragment() {
             when(data){
                 is TopicsState.ErrorState -> Toast.makeText(view.context,data.errorMsg, Toast.LENGTH_SHORT).show()
                 is TopicsState.InitState ->adapter.submitList(data.topicData)
-                is TopicsState.LoadingMoreState ->{
+                is TopicsState.LoadingState ->{
                     isLoading=false
                     adapter.submitList(data.newTopicList)
                 }

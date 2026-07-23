@@ -40,9 +40,13 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
             try {
                 val response = appService.searchLoad(query, "pgc", lastItemId, 10).await()
                 val loadResult = parseLoadSearch(response)
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = PgcState.LoadingState(allPgc.toMutableList())
+                    return@launch
+                }
                 lastItemId = response.result?.lastItemId ?: "0"
                 allPgc=allPgc+loadResult.pgcList
-                _liveData.value= PgcState.LoadingMoreState(allPgc.toMutableList())
+                _liveData.value= PgcState.LoadingState(allPgc.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value= PgcState.ErrorState(e.message.toString())
@@ -53,6 +57,6 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
 sealed class PgcState{
     data class InitState(val pgcList: MutableList<MetroData>): PgcState()
     data class RefreshState(val pgcList:MutableList<MetroData>): PgcState()
-    data class LoadingMoreState( val newPgcList: MutableList<MetroData>): PgcState()
+    data class LoadingState(val newPgcList: MutableList<MetroData>): PgcState()
     data class ErrorState(val errorMsg: String): PgcState()
 }

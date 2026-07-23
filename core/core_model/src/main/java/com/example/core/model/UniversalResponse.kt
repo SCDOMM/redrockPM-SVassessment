@@ -78,7 +78,7 @@ data class MetroItem(
 )
 
 data class MetroData(
-    val uid: Long? = null,
+    val uid: String? = null,
     val nick: String? = null,
     val avatar: Avatar? = null,
     val description: String? = null,

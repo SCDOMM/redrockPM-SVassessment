@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +19,7 @@ import com.example.ept.person.viewmodel.WorkViewModel
 class WorkFragment : Fragment() {
     private lateinit var view: View
     private lateinit var rvWorkDefault: RecyclerView
+    private lateinit var tvWorkTitle: TextView
     private lateinit var workViewModel: WorkViewModel
     private lateinit var creatorViewModel: CreatorViewModel
     private lateinit var adapter: WorkAdapter
@@ -34,7 +36,7 @@ class WorkFragment : Fragment() {
         workViewModel= ViewModelProvider(this)[WorkViewModel::class.java]
         creatorViewModel= ViewModelProvider(requireActivity())[CreatorViewModel::class.java]
         rvWorkDefault=view.findViewById(R.id.rv_work_default)
-
+        tvWorkTitle=view.findViewById(R.id.tv_work_title)
         initEvent()
         initAdd()
         return view
@@ -49,7 +51,12 @@ class WorkFragment : Fragment() {
         workViewModel.liveData.observe(viewLifecycleOwner){state ->
             when(state){
                 is WorkState.FailedState -> Toast.makeText(view.context,state.msg,Toast.LENGTH_SHORT).show()
-                is WorkState.InitState -> adapter.submitList(state.workList)
+                is WorkState.InitState ->{
+                    tvWorkTitle.text=state.title
+                    if (state.title=="null"){
+                        tvWorkTitle.text="暂无作品"
+                    }
+                    adapter.submitList(state.workList)}
                 is WorkState.LoadingState -> {
                     isLoading=false
                     adapter.submitList(state.newWorkList)

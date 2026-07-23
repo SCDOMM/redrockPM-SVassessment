@@ -23,11 +23,13 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.therouter.router.Autowired
 import com.therouter.router.Route
 
-@Route(path = "http://therouter.com/person/pgc")
+@Route(path = "http://therouter.com/person", params =["uid","000000000"] )
 class PersonActivity : AppCompatActivity() {
     private lateinit var aplCreatorDefault: AppBarLayout
+    private lateinit var ivCreatorBack: ImageView
     private lateinit var ivCreatorBackground: ImageView
     private lateinit var ivCreatorProfile: ShapeableImageView
     private lateinit var tvCreatorName: TextView
@@ -42,12 +44,16 @@ class PersonActivity : AppCompatActivity() {
     private lateinit var tlCreatorDefault: TabLayout
     private lateinit var creatorViewModel: CreatorViewModel
     private var fragmentList = mutableListOf<FragmentInterface>()
+
+    @Autowired
+    lateinit var uid: String
     private lateinit var vp2CreatorDefault: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_person)
         aplCreatorDefault = findViewById(R.id.apl_creator_default)
+        ivCreatorBack=findViewById(R.id.iv_creator_back)
         ivCreatorBackground = findViewById(R.id.iv_creator_background)
         ivCreatorProfile = findViewById(R.id.iv_creator_profile)
         tvCreatorName = findViewById(R.id.tv_creator_name)
@@ -62,8 +68,12 @@ class PersonActivity : AppCompatActivity() {
         vp2CreatorDefault = findViewById(R.id.vp2_creator_default)
         tlCreatorDefault = findViewById(R.id.tl_creator_default)
         creatorViewModel = ViewModelProvider(this)[CreatorViewModel::class.java]
+        uid = intent.getStringExtra("uid") ?: "000000000"
+        creatorViewModel.initCreator(uid)
 
-        creatorViewModel.initCreator(301040809)
+        ivCreatorBack.setOnClickListener {
+            finish()
+        }
         initViewModel()
         initRefresh()
     }
@@ -74,7 +84,7 @@ class PersonActivity : AppCompatActivity() {
         }
         srlCreatorDefault.setOnRefreshListener {
             srlCreatorDefault.isRefreshing = false
-            creatorViewModel.initRefresh(301040809)
+            creatorViewModel.initRefresh(uid)
         }
     }
 

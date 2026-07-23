@@ -43,9 +43,13 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
                 Log.d("请求searchLoad！","")
                 val response = appService.searchLoad(query, "video", lastItemId, 10).await()
                 val resultData = parseLoadSearch(response)
-                allVideos = allVideos + resultData.videoList
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = VideosState.LoadingState(allVideos.toMutableList())
+                    return@launch
+                }
                 lastItemId = response.result?.lastItemId ?: "0"
-                _liveData.value = VideosState.LoadingMoreState(allVideos.toMutableList())
+                allVideos = allVideos + resultData.videoList
+                _liveData.value = VideosState.LoadingState(allVideos.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value = VideosState.ErrorState(e.message.toString())
@@ -59,6 +63,6 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
 sealed class VideosState {
     data class InitState(val videoList: MutableList<MetroData>) : VideosState()
     data class RefreshState(val videoList: MutableList<MetroData>) : VideosState()
-    data class LoadingMoreState(val newVideoList: MutableList<MetroData>) : VideosState()
+    data class LoadingState(val newVideoList: MutableList<MetroData>) : VideosState()
     data class ErrorState(val errorMsg: String) : VideosState()
 }

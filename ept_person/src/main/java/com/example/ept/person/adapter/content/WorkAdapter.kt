@@ -1,5 +1,6 @@
 package com.example.ept.person.adapter.content
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,7 +89,9 @@ class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallb
         val tvVideoCollectionItem: TextView = itemView.findViewById(R.id.tv_video_collection_item)
         val tvVideoCommentItem: TextView = itemView.findViewById(R.id.tv_video_comment_item)
         val tvVideoTopicItem: TextView=itemView.findViewById(R.id.tv_video_topic_item)
+        val ivVideoTopicItem: ImageView=itemView.findViewById(R.id.iv_video_topic_item)
 
+        var isExpanded=false
 
         val ivVideoForwardItem: ImageView = itemView.findViewById(R.id.iv_video_forward_item)
         val tvVideoFoldItem: TextView = itemView.findViewById(R.id.tv_video_fold_item)
@@ -109,9 +112,30 @@ class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallb
             tvVideoDescItem.text=metroData.text
             tvVideoLabelItem.text= metroData.tags?.map { it.title } as CharSequence?
             tvVideoTopicItem.text=metroData.topics?.firstOrNull()?.title
+
             tvVideoLikeItem.text = metroData.consumption?.likeCount.toString()
             tvVideoCollectionItem.text =metroData.consumption?.collectionCount.toString()
             tvVideoCommentItem.text=metroData.consumption?.commentCount.toString()
+
+            tvVideoFoldItem.post {
+                if (tvVideoDescItem.lineCount>=2){
+                    tvVideoFoldItem.visibility= View.VISIBLE
+                }else{
+                    tvVideoFoldItem.visibility=View.GONE
+                }
+            }
+            tvVideoFoldItem.setOnClickListener {
+                if (isExpanded){
+                    tvVideoDescItem.maxLines=2
+                    tvVideoDescItem.ellipsize = TextUtils.TruncateAt.END
+                    tvVideoFoldItem.text="展开"
+                }else{
+                    tvVideoDescItem.maxLines=Integer.MAX_VALUE
+                    tvVideoDescItem.ellipsize = null
+                    tvVideoFoldItem.text="收起"
+                }
+                isExpanded=!isExpanded
+            }
         }
     }
 
@@ -131,6 +155,7 @@ class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallb
         val tvGraphicFoldItem: TextView = itemView.findViewById(R.id.tv_graphic_fold_item)
         val rvGraphicCoverItem: RecyclerView = itemView.findViewById(R.id.rv_graphic_cover_item)
         val adapter= WorkGraphicAdapter()
+        var isExpanded=false
         fun bindData(metroData: MetroData) {
             Glide.with(ivGraphicAuthorProfileItem.context)
                 .load(metroData.author?.avatar?.url)
@@ -156,6 +181,26 @@ class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallb
             tvGraphicLikeItem.text = metroData.consumption?.likeCount.toString()
             tvGraphicCollectionItem.text =metroData.consumption?.collectionCount.toString()
             tvGraphicCommentItem.text=metroData.consumption?.commentCount.toString()
+
+            tvGraphicFoldItem.post {
+                if (tvGraphicDescItem.lineCount>=2){
+                    tvGraphicFoldItem.visibility= View.VISIBLE
+                }else{
+                    tvGraphicFoldItem.visibility=View.GONE
+                }
+            }
+            tvGraphicFoldItem.setOnClickListener {
+                if (isExpanded){
+                    tvGraphicDescItem.maxLines=2
+                    tvGraphicDescItem.ellipsize = TextUtils.TruncateAt.END
+                    tvGraphicFoldItem.text="展开"
+                }else{
+                    tvGraphicDescItem.maxLines=Integer.MAX_VALUE
+                    tvGraphicDescItem.ellipsize = null
+                    tvGraphicFoldItem.text="收起"
+                }
+                isExpanded=!isExpanded
+            }
         }
     }
 }

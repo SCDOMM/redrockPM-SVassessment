@@ -13,15 +13,10 @@
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
         <activity
             android:name=".PersonActivity"
-            android:exported="true"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
-
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.core.common
 
+import android.util.Log
 import com.example.core.model.ApiResponse
 import com.example.core.model.MetroData
 import com.example.core.model.PageResult
@@ -31,20 +32,37 @@ private inline fun extractMetroDataFromPageResult(
     return result
 }
 
-fun parseVideosFromCardList(response: ApiResponse<PageResult>) =
-    extractMetroDataFromPageResult(
-        response,
-        cardTypeFilter = { it == "set_metro_list" },
-        itemTypeFilter = { it == "video" }
-    )
-fun parseWorkListFromCardList(response: ApiResponse<PageResult>) =
-    extractMetroDataFromPageResult(
+data class WorkListResult(
+    val title: String?,
+    val items: List<MetroData>
+)
+
+fun parseVideosFromCardList(response: ApiResponse<PageResult>) = extractMetroDataFromPageResult(
+    response,
+    cardTypeFilter = { it == "set_metro_list" },
+    itemTypeFilter = { it == "video" }
+)
+
+fun parseWorkListFromCardList(response: ApiResponse<PageResult>): WorkListResult {
+    var title: String? = null
+    if (response.result?.cardList?.firstOrNull()?.type == "set_metro_list") {
+        response.result?.cardList?.firstOrNull()?.cardData?.header?.left?.firstOrNull()
+            ?.let { headerItem ->
+                if (headerItem.type == "text") {
+                    title = headerItem.metroData?.text
+                }
+            }
+    }
+    val list = extractMetroDataFromPageResult(
         response,
         itemTypeFilter = { it in listOf("item", "video") },
         dataFilter = { data ->
             data.resourceType in listOf("ugc_picture", "pgc_picture", "ugc_video", "pgc_video")
         }
     )
+    return WorkListResult(title, list)
+}
+
 
 fun findDelimiterIndex(text: String?, delimiter: String): Int {
     if (text == null) return -1

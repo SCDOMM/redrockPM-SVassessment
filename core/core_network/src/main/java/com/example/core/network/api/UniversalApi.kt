@@ -53,7 +53,7 @@ interface UniversalApi {
 
     @GET("v1/user/center/get_user_info")
     fun getUserInfo(
-        @Query("uid") uid: Long,
+        @Query("uid") uid: String,
         @Query("user_type") userType: String = ""
     ): Call<ApiResponse<UserInfo>>
 }
