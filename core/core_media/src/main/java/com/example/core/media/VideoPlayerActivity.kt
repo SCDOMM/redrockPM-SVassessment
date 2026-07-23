@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 /**
  * description ： 视频播放页 Activity，通过 videoId 从 API 获取所有数据
  * email : 3014386984@qq.com
- * date : 2026/7/15 15:00
+ * date : 2026/7/22 15:00
  */
 class VideoPlayerActivity : AppCompatActivity() {
 
