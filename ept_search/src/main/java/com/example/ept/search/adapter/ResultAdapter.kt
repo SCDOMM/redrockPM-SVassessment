@@ -2,7 +2,7 @@ package com.example.ept.search.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.ept.search.fragment.FragmentInterface
+import com.example.core.common.FragmentInterface
 import com.example.ept.search.fragment.ResultFragment
 
 /**   

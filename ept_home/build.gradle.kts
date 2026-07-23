@@ -37,6 +37,8 @@ dependencies {
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
     implementation(project(":ept_notify"))
+
+    implementation(project(":core:core_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
@@ -50,7 +52,6 @@ dependencies {
     implementation(libs.glide.okhttp)
     implementation(libs.therouter.api)
     ksp(libs.therouter.compiler)
-
 }
 ksp {
     arg("therouter.moduleName", ":ept_home")

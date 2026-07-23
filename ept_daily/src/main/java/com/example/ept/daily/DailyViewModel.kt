@@ -6,11 +6,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.core.common.parseVideosFromCardList
 import com.example.core.model.MetroData
-import com.example.core.model.utils.safeInt
 import com.example.core.model.utils.safeString
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
 import kotlinx.coroutines.launch
 
@@ -29,7 +29,7 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
     private var materialJSON = ""
     private var allVideos: List<MetroData> = emptyList()
 
-    private val appService: KaiyanApi by lazy {
+    private val appService: UniversalApi by lazy {
         RetrofitClient.create()
     }
     init {
@@ -40,7 +40,7 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val response = appService.getPage("daily_issue", "card").await()
-                allVideos = parseDailyVideos(response)
+                allVideos = parseVideosFromCardList(response)
                 val callMetroCard = response.result?.cardList?.find { it.type == "call_metro_list" }
                 val params = callMetroCard?.cardData?.body?.apiRequest?.params
                 if (params != null) {
@@ -59,10 +59,10 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
     fun loadingMore() {
         viewModelScope.launch {
             try {
-                val response = appService.getMoreDailyPage(
-                    "history_issue_feed",
-                    materialJSON,
-                    lastItemId
+                val response = appService.getMorePage(
+                    dataSource = "history_issue_feed",
+                    materialJSON = materialJSON,
+                    lastItemId = lastItemId
                 ).await()
                 lastItemId = response.result?.lastItemId ?: "0"
 

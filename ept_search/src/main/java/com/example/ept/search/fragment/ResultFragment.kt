@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.example.core.common.FragmentInterface
 import com.example.ept.search.R
 import com.example.ept.search.adapter.ResultAdapter
 import com.example.ept.search.fragment.resultcontent.ResultGraphicsFragment

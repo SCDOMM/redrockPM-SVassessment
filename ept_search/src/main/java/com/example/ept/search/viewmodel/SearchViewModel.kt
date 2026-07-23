@@ -1,16 +1,17 @@
 package com.example.ept.search.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.SearchResultData
-import com.example.ept.search.utils.parseSearchResponse
+import com.example.core.common.SearchResultData
+import com.example.core.common.parseSearch
 import kotlinx.coroutines.launch
 
 /**   
@@ -40,7 +41,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private val _resultLiveData = MutableLiveData<SearchResultData>()
     val resultLiveData: LiveData<SearchResultData> get() = _resultLiveData
 
-    private val appService: KaiyanApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
     init {
@@ -52,8 +53,9 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         _historyLiveData.value=query
         viewModelScope.launch {
             try {
+                Log.d("请求search！","")
                 val response = appService.search(query, 0, 10).await()
-                val result = parseSearchResponse(response, query)
+                val result = parseSearch(response, query)
                 _resultLiveData.value = result
                 _liveData.value = SearchState.Result(query)
             } catch (e: Exception) {

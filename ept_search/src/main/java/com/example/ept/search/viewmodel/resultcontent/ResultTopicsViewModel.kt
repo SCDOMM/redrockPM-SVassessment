@@ -7,9 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
+import com.example.core.common.parseLoadSearch
 import kotlinx.coroutines.launch
 
 /**   
@@ -26,7 +26,7 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
     private var lastItemId = "2"
     private var allTopics: List<MetroData> = emptyList()
     private lateinit var query: String
-    private val appService: KaiyanApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
 
@@ -40,7 +40,7 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch {
             try {
                 val response=appService.searchLoad(query,"topic",lastItemId,10).await()
-                val resultData= parseSearchResponseV2(response)
+                val resultData= parseLoadSearch(response)
                 allTopics=allTopics+resultData.topicList
                 lastItemId=response.result?.lastItemId?:"0"
                 _liveData.value= TopicsState.LoadingMoreState(allTopics.toMutableList())

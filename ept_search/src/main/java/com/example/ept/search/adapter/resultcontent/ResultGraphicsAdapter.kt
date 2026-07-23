@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.core.model.MetroData
 import com.example.ept.search.R
-import com.example.ept.search.utils.findDelimiterIndex
+import com.example.core.common.findDelimiterIndex
 
 /**   
  * 包名称： com.example.ept.search.adapter

@@ -7,9 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
+import com.example.core.common.parseLoadSearch
 import kotlinx.coroutines.launch
 
 /**   
@@ -27,7 +27,7 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
     private var lastItemId="2"
     private var allPgc: List<MetroData> =emptyList()
     private var query=""
-    private val appService: KaiyanApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
     fun initLiveData(allPgc: MutableList<MetroData>, query: String){
@@ -39,7 +39,7 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
         viewModelScope.launch {
             try {
                 val response = appService.searchLoad(query, "pgc", lastItemId, 10).await()
-                val loadResult = parseSearchResponseV2(response)
+                val loadResult = parseLoadSearch(response)
                 lastItemId = response.result?.lastItemId ?: "0"
                 allPgc=allPgc+loadResult.pgcList
                 _liveData.value= PgcState.LoadingMoreState(allPgc.toMutableList())

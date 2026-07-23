@@ -2,8 +2,8 @@ package com.example.ept.person.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.core.common.FragmentInterface
 import com.example.ept.person.PersonActivity
-import com.example.ept.person.fragment.FragmentInterface
 
 /**   
  * 包名称： com.example.ept.person.pgc.adapter

@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.example.core.common.FragmentInterface
 import com.example.ept.person.adapter.PersonAdapter
 import com.example.ept.person.fragment.AlbumFragment
-import com.example.ept.person.fragment.FragmentInterface
 import com.example.ept.person.fragment.IndexFragment
 import com.example.ept.person.fragment.WorkFragment
 import com.example.ept.person.viewmodel.CreatorState
@@ -99,11 +99,11 @@ class PersonActivity : AppCompatActivity() {
                         .into(ivCreatorProfile)
                     tvCreatorName.text = state.userInfo.nick
                     tvCreatorDesc.text = state.userInfo.description
-                    tvCreatorFans.text = "${state.userInfo.fans_count}粉丝"
-                    tvCreatorFollow.text = "${state.userInfo.follow_count}关注"
-                    tvCreatorBadge.text = "${state.userInfo.medal_count}勋章"
+                    tvCreatorFans.text = "${state.userInfo.fansCount}粉丝"
+                    tvCreatorFollow.text = "${state.userInfo.followCount}关注"
+                    tvCreatorBadge.text = "${state.userInfo.medalCount}勋章"
                     tvCreatorPopular.text =
-                        "被收藏${state.userInfo.collected_count}次，被分享${state.userInfo.shared_count}次"
+                        "被收藏${state.userInfo.collectedCount}次，被分享${state.userInfo.sharedCount}次"
                     srlCreatorDefault.isRefreshing=false
                 }
                 is CreatorState.RefreshState->{
@@ -119,11 +119,11 @@ class PersonActivity : AppCompatActivity() {
                         .into(ivCreatorProfile)
                     tvCreatorName.text = state.userInfo.nick
                     tvCreatorDesc.text = state.userInfo.description
-                    tvCreatorFans.text = "${state.userInfo.fans_count}粉丝"
-                    tvCreatorFollow.text = "${state.userInfo.follow_count}关注"
-                    tvCreatorBadge.text = "${state.userInfo.medal_count}勋章"
+                    tvCreatorFans.text = "${state.userInfo.fansCount}粉丝"
+                    tvCreatorFollow.text = "${state.userInfo.followCount}关注"
+                    tvCreatorBadge.text = "${state.userInfo.medalCount}勋章"
                     tvCreatorPopular.text =
-                        "被收藏${state.userInfo.collected_count}次，被分享${state.userInfo.shared_count}次"
+                        "被收藏${state.userInfo.collectedCount}次，被分享${state.userInfo.sharedCount}次"
                     srlCreatorDefault.isRefreshing=false
                 }
             }

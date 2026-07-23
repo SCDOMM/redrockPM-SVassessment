@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.glide.okhttp)
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
+    implementation(project(":core:core_common"))
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.glide)
     androidTestImplementation(libs.androidx.espresso.core)

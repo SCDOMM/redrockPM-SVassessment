@@ -4,15 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * 包名称： com.example.core.model
- * 类名称：SearchResponse
- * 类描述：TODO
+ * 类名称：UniversalResponse
+ * 类描述：全局通用的数据类
  * 创建人：韦西波
  * 创建时间：2026-07-18 14:28
  *
  */
-/**
- * 搜索接口顶层响应
- */
+data class ApiResponse<T>(
+    val code: Int = 0,
+    val message: Any? = null,
+    val result: T? = null
+)
 data class PaginatedResult<T>(
     @SerializedName("item_list") val itemList: List<T> = emptyList(),
     @SerializedName("item_count") val itemCount: Int = 0,
@@ -127,7 +129,6 @@ data class MetroData(
     @SerializedName("private_msg_link")
     val privateMsgLink: String? = null,
 
-    // ========== 话题（collection）特有字段 ==========
     @SerializedName("topic_id")
     val topicId: String? = null,
     val labels: List<Any>? = null,
@@ -264,4 +265,29 @@ data class VideoDetail(
 data class MoreOption(
     val title: String = "",
     val type: String = ""                // "report_item"
+)
+
+data class PageResult(
+    val nav: PageInfo? = null,
+    @SerializedName("page_info")
+    val pageInfo: PageInfo? = null,
+    @SerializedName("card_list")
+    val cardList: List<Card> = emptyList()
+)
+
+data class PageInfo(
+    @SerializedName("page_id")
+    val pageId: Long? = null,
+    val title: String? = null,
+    @SerializedName("enable_share")
+    val enableShare: Boolean? = null,
+    @SerializedName("page_label")
+    val pageLabel: String? = null,
+    @SerializedName("tracking_data")
+    val trackingData: Any? = null,
+    @SerializedName("show_the_end")
+    val showTheEnd: Boolean? = null,
+
+    //搜索专用的字段
+    val type: String? = null,          // "video" / "pgc" / "graphic" / "topic" / "ugc"
 )

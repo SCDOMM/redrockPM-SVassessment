@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.glide)
     implementation(project(":core:core_network"))
     implementation(project(":core:core_model"))
+    implementation(project(":core:core_common"))
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 

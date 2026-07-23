@@ -1,19 +1,17 @@
 package com.example.ept.notify.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ept.notify.R
 import com.example.ept.notify.adapter.NotifyAdapter
-import com.example.ept.notify.fragment.FragmentInterface
+import com.example.core.common.FragmentInterface
 import com.example.ept.notify.fragment.InfoFragment
 import com.example.ept.notify.fragment.InteractFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.therouter.TheRouter
 import com.therouter.router.Route
 
 @Route(path = "http://therouter.com/notify")

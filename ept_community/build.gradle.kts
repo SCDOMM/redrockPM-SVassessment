@@ -26,6 +26,7 @@ dependencies {
     implementation(project(":core:core_network"))
     implementation(project(":core:core_model"))
     implementation(project(":core:core_media"))
+    implementation(project(":core:core_common"))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.fragment.ktx)

@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.model.AlbumData
 import com.example.core.model.NavTab
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
-import com.example.ept.person.utils.parseAlbumCards
+import com.example.core.common.parseAlbumCards
 import kotlinx.coroutines.launch
 
 /**
@@ -29,15 +29,15 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
     private var lastItemId= "0"
     private var cardJSON: String = ""
     private var pageLabel: String = ""
-    private val appService: KaiyanApi by lazy {
+    private val appService: UniversalApi by lazy {
         RetrofitClient.create()
     }
     fun initLiveData(albumTab: NavTab) {
         viewModelScope.launch {
-            pageLabel = albumTab.page_label
+            pageLabel = albumTab.pageLabel
             try {
-                val pageLabel = albumTab.page_label
-                val pageType = albumTab.page_type
+                val pageLabel = albumTab.pageLabel
+                val pageType = albumTab.pageType
                 val response = appService.getPage(pageLabel, pageType).await()
                 val cardList = response.result?.cardList!!
                 allAlbums = parseAlbumCards(cardList)

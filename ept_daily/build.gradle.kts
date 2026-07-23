@@ -35,6 +35,7 @@ dependencies {
     implementation(project(":core:core_network"))
     implementation(project(":ept_notify"))
     implementation(project(":ept_search"))
+    implementation(project(":core:core_common"))
     implementation(libs.glide)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     androidTestImplementation(libs.androidx.espresso.core)

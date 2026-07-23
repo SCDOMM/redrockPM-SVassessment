@@ -1,15 +1,16 @@
 package com.example.ept.search.viewmodel.resultcontent
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
+import com.example.core.common.parseLoadSearch
 import kotlinx.coroutines.launch
 
 /**   
@@ -26,7 +27,7 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
     private var lastItemId = "2"
     private lateinit var query: String
     private var allVideos: List<MetroData> = emptyList()
-    private val appService: KaiyanApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
 
@@ -39,8 +40,9 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
     fun loadMore() {
         viewModelScope.launch {
             try {
+                Log.d("请求searchLoad！","")
                 val response = appService.searchLoad(query, "video", lastItemId, 10).await()
-                val resultData = parseSearchResponseV2(response)
+                val resultData = parseLoadSearch(response)
                 allVideos = allVideos + resultData.videoList
                 lastItemId = response.result?.lastItemId ?: "0"
                 _liveData.value = VideosState.LoadingMoreState(allVideos.toMutableList())

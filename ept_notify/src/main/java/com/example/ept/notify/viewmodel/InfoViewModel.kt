@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.NoticeItem
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -28,7 +28,7 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
     val liveData: LiveData<InfoState> get() = _liveData
     private var lastItemId="2"
     private var allMessages: List<NoticeItem> =emptyList()
-    private val appService: KaiyanApi by lazy {
+    private val appService: UniversalApi by lazy {
         RetrofitClient.create()
     }
     init {

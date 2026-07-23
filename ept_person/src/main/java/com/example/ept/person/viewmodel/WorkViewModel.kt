@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.model.NavTab
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
-import com.example.ept.person.utils.parseWorkDataList
+import com.example.core.common.parseWorkListFromCardList
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
@@ -29,7 +29,7 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
     private lateinit var cardJSON: String
     private lateinit var materialJson: String
     private var lastItemId=""
-    private val appService: KaiyanApi by lazy {
+    private val appService: UniversalApi by lazy {
         RetrofitClient.create()
     }
     private var allWorks:List<MetroData> = emptyList()
@@ -37,8 +37,8 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
     fun initLiveData(workTab: NavTab) {
         viewModelScope.launch {
             try {
-                val response = appService.getWorkPage(workTab.page_label, workTab.page_type).await()
-                val metroList = parseWorkDataList(response)
+                val response = appService.getPage(workTab.pageLabel, workTab.pageType).await()
+                val metroList = parseWorkListFromCardList(response)
                 allWorks = metroList
                 val firstCard = response.result?.cardList?.firstOrNull { it.type == "call_metro_list" }
                 val params = firstCard?.cardData?.body?.apiRequest?.params
@@ -57,13 +57,12 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadMore() {
         viewModelScope.launch {
-            val response=appService.loadMoreWork(
-                cardIndex = 2,
-                material = materialJson,
-                materialIndex = 12,
+            val response=appService.getMorePage(
+                dataSource= "home_user_work_list",
+                materialJSON = materialJson,
                 lastItemId = lastItemId,
                 pageLabel = "user_center_work",
-                card = cardJSON
+                cardJSON = cardJSON
             ).await()
 
             val newItems = response.result?.itemList

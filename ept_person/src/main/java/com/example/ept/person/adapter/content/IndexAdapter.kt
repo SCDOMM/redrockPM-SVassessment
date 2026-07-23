@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ept.person.R
-import com.example.ept.person.utils.UserHomeItem
+import com.example.core.common.UserHomeItem
 import com.google.android.material.imageview.ShapeableImageView
 
 /**   
@@ -33,10 +33,10 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         return when (item) {
-            is UserHomeItem.Title -> TYPE_SECTION_TITLE
-            is UserHomeItem.SlideVideoGroup -> TYPE_VIDEO_RECENT
-            is UserHomeItem.SingleContent -> TYPE_VIDEO_POPULAR
-            is UserHomeItem.AlbumCard -> TYPE_ALBUM
+            is UserHomeItem.SectionTitle -> TYPE_SECTION_TITLE
+            is UserHomeItem.VideoRecent -> TYPE_VIDEO_RECENT
+            is UserHomeItem.VideoPopular -> TYPE_VIDEO_POPULAR
+            is UserHomeItem.Album -> TYPE_ALBUM
         }
     }
 
@@ -81,16 +81,16 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
     ) {
         val item = getItem(position)
         when (holder) {
-            is SectionTitleViewHolder -> holder.bindData(item as UserHomeItem.Title)
-            is RecentVideoViewHolder -> holder.bindData(item as UserHomeItem.SlideVideoGroup)
-            is PopularVideoViewHolder -> holder.bindData(item as UserHomeItem.SingleContent)
-            is AlbumViewHolder -> holder.bindData(item as UserHomeItem.AlbumCard)
+            is SectionTitleViewHolder -> holder.bindData(item as UserHomeItem.SectionTitle)
+            is RecentVideoViewHolder -> holder.bindData(item as UserHomeItem.VideoRecent)
+            is PopularVideoViewHolder -> holder.bindData(item as UserHomeItem.VideoPopular)
+            is AlbumViewHolder -> holder.bindData(item as UserHomeItem.Album)
         }
     }
 
     inner class SectionTitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitleItemItem: TextView = itemView.findViewById(R.id.tv_title_item_item)
-        fun bindData(item: UserHomeItem.Title) {
+        fun bindData(item: UserHomeItem.SectionTitle) {
             tvTitleItemItem.text = item.text
         }
     }
@@ -98,7 +98,7 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
     inner class RecentVideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val rvNewItem: RecyclerView = itemView.findViewById(R.id.rv_new_item)
         val recentAdapter = RecentAdapter()
-        fun bindData(item: UserHomeItem.SlideVideoGroup) {
+        fun bindData(item: UserHomeItem.VideoRecent) {
             rvNewItem.adapter = recentAdapter
             val manager =
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -124,7 +124,7 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
         val ivVideoForwardItem: ImageView = itemView.findViewById(R.id.iv_video_forward_item)
         val tvVideoFoldItem: TextView = itemView.findViewById(R.id.tv_video_fold_item)
 
-        fun bindData(item: UserHomeItem.SingleContent) {
+        fun bindData(item: UserHomeItem.VideoPopular) {
             val data = item.data
             Glide.with(ivVideoCover.context)
                 .load(data.video?.cover?.url)
@@ -155,7 +155,7 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
         val tvAlbumTitleItem: TextView = itemView.findViewById(R.id.tv_album_title_item)
         val tvAlbumDescItem: TextView = itemView.findViewById(R.id.tv_album_desc_item)
 
-        fun bindData(item: UserHomeItem.AlbumCard) {
+        fun bindData(item: UserHomeItem.Album) {
 
             val albumData = item.albumData
             tvAlbumTitleItem.text = albumData.albumName
@@ -199,17 +199,17 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
 object IndexDiffCallback : DiffUtil.ItemCallback<UserHomeItem>() {
     override fun areItemsTheSame(oldItem: UserHomeItem, newItem: UserHomeItem): Boolean {
         return when (oldItem) {
-            is UserHomeItem.Title if newItem is UserHomeItem.Title ->
+            is UserHomeItem.SectionTitle if newItem is UserHomeItem.SectionTitle ->
                 oldItem.text == newItem.text
 
-            is UserHomeItem.SlideVideoGroup if newItem is UserHomeItem.SlideVideoGroup ->
+            is UserHomeItem.VideoRecent if newItem is UserHomeItem.VideoRecent ->
                 oldItem.videoItems == newItem.videoItems
 
-            is UserHomeItem.SingleContent if newItem is UserHomeItem.SingleContent ->
+            is UserHomeItem.VideoPopular if newItem is UserHomeItem.VideoPopular ->
                 oldItem.data.resourceId == newItem.data.resourceId &&
                         oldItem.data.itemId == newItem.data.itemId
 
-            is UserHomeItem.AlbumCard if newItem is UserHomeItem.AlbumCard ->
+            is UserHomeItem.Album if newItem is UserHomeItem.Album ->
                 oldItem.albumData.albumName == newItem.albumData.albumName
 
             else -> false

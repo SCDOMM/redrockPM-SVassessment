@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.model.NavTab
 import com.example.core.model.UserInfo
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
 import kotlinx.coroutines.launch
 
@@ -34,7 +34,7 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
     val albumLiveData: LiveData<NavTab> get() = _albumLiveData
 
 
-    private val appService: KaiyanApi by lazy {
+    private val appService: UniversalApi by lazy {
         RetrofitClient.create()
     }
 
@@ -44,25 +44,25 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
                 val response = appService.getUserInfo(uid).await()
                 val result = response.result
                 _liveData.value = result?.let { CreatorState.InitState(it,
-                    result.nav_tabs?.nav_list?.size ?: 0
+                    result.navTabs?.navList?.size ?: 0
                 ) }
 
-                val indexTab = result?.nav_tabs?.nav_list?.firstOrNull {
-                    it.icon_type == "index"
+                val indexTab = result?.navTabs?.navList?.firstOrNull {
+                    it.iconType == "index"
                 }
                 if (indexTab != null) {
                     _indexLiveData.value = indexTab
                 }
 
-                val workTab = result?.nav_tabs?.nav_list?.firstOrNull {
-                    it.icon_type == "work"
+                val workTab = result?.navTabs?.navList?.firstOrNull {
+                    it.iconType == "work"
                 }
                 if (workTab != null) {
                     _workLiveData.value = workTab
                 }
 
-                val albumTab = result?.nav_tabs?.nav_list?.firstOrNull {
-                    it.icon_type == "album"
+                val albumTab = result?.navTabs?.navList?.firstOrNull {
+                    it.iconType == "album"
                 }
                 if (albumTab!=null) {
                     _albumLiveData.value = albumTab
@@ -81,22 +81,22 @@ class CreatorViewModel(application: Application) : AndroidViewModel(application)
                 val result = response.result
                 _liveData.value = result?.let { CreatorState.RefreshState(it) }
 
-                val indexTab = result?.nav_tabs?.nav_list?.firstOrNull {
-                    it.icon_type == "index"
+                val indexTab = result?.navTabs?.navList?.firstOrNull {
+                    it.iconType == "index"
                 }
                 if (indexTab != null) {
                     _indexLiveData.value = indexTab
                 }
 
-                val workTab = result?.nav_tabs?.nav_list?.firstOrNull {
-                    it.icon_type == "work"
+                val workTab = result?.navTabs?.navList?.firstOrNull {
+                    it.iconType == "work"
                 }
                 if (workTab != null) {
                     _workLiveData.value = workTab
                 }
 
-                val albumTab = result?.nav_tabs?.nav_list?.firstOrNull {
-                    it.icon_type == "album"
+                val albumTab = result?.navTabs?.navList?.firstOrNull {
+                    it.iconType == "album"
                 }
                 if (albumTab!=null) {
                     _albumLiveData.value = albumTab
