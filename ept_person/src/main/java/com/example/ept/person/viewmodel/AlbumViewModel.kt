@@ -26,7 +26,7 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
     val liveData: LiveData<AlbumState> get() = _liveData
 
     private var allAlbums: List<AlbumData> = emptyList()
-    private var lastItemId: Int = 0
+    private var lastItemId= "0"
     private var cardJSON: String = ""
     private var pageLabel: String = ""
     private val appService: KaiyanApi by lazy {
@@ -43,7 +43,7 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
                 allAlbums = parseAlbumCards(cardList)
                 val callCard = cardList.firstOrNull { it.type == "call_card_list" }
                 val params = callCard?.cardData?.body?.apiRequest?.params
-                lastItemId = (params?.get("last_item_id") as? Number)?.toInt() ?: 0
+                lastItemId = (params?.get("last_item_id")?: "0").toString()
                 cardJSON = (params?.get("card_list") as? String) ?: ""
                 _liveData.value = AlbumState.InitState(allAlbums.toMutableList())
             } catch (e: Exception) {
@@ -63,11 +63,11 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
                     version = 1
                 ).await()
                 val newCards = response.result?.itemList ?: emptyList()
-                if (lastItemId==0){
+                if (lastItemId=="0"){
                     _liveData.value = AlbumState.LoadingState(allAlbums.toMutableList())
                     return@launch
                 }
-                lastItemId = response.result?.lastItemId ?: 0
+                lastItemId = response.result?.lastItemId ?: "0"
 
                 val newAlbums = parseAlbumCards(newCards)
                 allAlbums = allAlbums + newAlbums

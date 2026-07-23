@@ -73,7 +73,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 val response = appService.getHotQueries().await()
                 val result=response.result
-                _recommendLiveData.value = result?.item_list
+                _recommendLiveData.value = result?.itemList
                 _liveData.value= SearchState.Recommend
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -108,7 +108,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                 val response = appService.getPreSearch(query).await()
                 val preSearchResult = response.result
                 _liveData.value = SearchState.PreSearch
-                _preSearchLiveData.value = preSearchResult?.item_list
+                _preSearchLiveData.value = preSearchResult?.itemList
 
             } catch (e: Exception) {
                 e.printStackTrace()

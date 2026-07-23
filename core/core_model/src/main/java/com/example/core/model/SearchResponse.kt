@@ -13,51 +13,11 @@ import com.google.gson.annotations.SerializedName
 /**
  * 搜索接口顶层响应
  */
-data class SearchResponse(
-    val code: Int = 0,
-    val message: Any? = null,
-    val result: SearchResult? = null
+data class PaginatedResult<T>(
+    @SerializedName("item_list") val itemList: List<T> = emptyList(),
+    @SerializedName("item_count") val itemCount: Int = 0,
+    @SerializedName("last_item_id") val lastItemId: String? = ""
 )
-
-data class SearchResult(
-    val item_list: List<SearchCategory> = emptyList()
-)
-
-data class SearchCategory(
-    val nav: SearchNav? = null,
-    val page_info: PageInfo? = null,
-    val card_list: List<Card> = emptyList()
-)
-
-data class SearchResponseV2(    //用于搜索的上拉加载
-    val code: Int = 0,
-    val message: Any? = null,
-    val result: SearchResultV2? = null
-)
-
-data class SearchResultV2(
-    val item_list: List<MetroItem> = emptyList(),
-    val item_count: Int? = null,
-    val last_item_id: Int? = null
-)
-
-data class SearchNav(
-    val title: String? = null,
-    val type: String? = null,          // "video" / "pgc" / "graphic" / "topic" / "ugc"
-    val tracking_data: Any? = null
-)
-
-data class PreSearchResponse(
-    val code: Int = 0,
-    val message: Any? = null,
-    val result: PreSearchResult? = null
-)
-
-data class PreSearchResult(
-    val item_list: List<String> = emptyList(),   // 推荐搜索词列表
-    val item_count: Int = 0                       // 数量
-)
-
 data class Card(
     @SerializedName("card_id") val cardId: Long = 0,
     @SerializedName("card_unique_id") val cardUniqueId: String? = null,
@@ -302,4 +262,7 @@ data class VideoDetail(
 data class MoreOption(
     val title: String = "",
     val type: String = ""                // "report_item"
+)
+data class WeeklyRankResult(
+    @SerializedName("card_list") val cardList: List<Card> = emptyList()
 )

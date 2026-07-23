@@ -10,18 +10,11 @@ import com.google.gson.annotations.SerializedName
  * 创建时间：2026-07-20 15:02
  *
  */
-data class NoticeResponse(
+
+data class ApiResponse<T>(
     val code: Int = 0,
     val message: Any? = null,
-    val result: NoticeResult? = null
-)
-data class NoticeResult(
-    @SerializedName("item_list")
-    val itemList: List<NoticeItem> = emptyList(),
-    @SerializedName("item_count")
-    val itemCount: Int = 0,
-    @SerializedName("last_item_id")
-    val lastItemId: Int=0 // 用于分页
+    val result: T? = null
 )
 /**
  * 单条通知消息

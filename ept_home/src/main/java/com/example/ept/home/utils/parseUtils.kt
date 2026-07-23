@@ -1,7 +1,8 @@
 package com.example.ept.home.utils
 
-import com.example.core.model.PageResponse
+import com.example.core.model.ApiResponse
 import com.example.core.model.MetroData
+import com.example.core.model.PageResult
 
 /**   
  * 包名称： com.example.ept.home.utils
@@ -11,7 +12,7 @@ import com.example.core.model.MetroData
  * 创建时间：2026-07-20 16:03
  *
  */
-fun parseHomeVideos(response: PageResponse): List<MetroData> {
+fun parseHomeVideos(response: ApiResponse<PageResult>): List<MetroData> {
     val list = mutableListOf<MetroData>()
     response.result?.cardList?.forEach { card ->
         if (card.type == "set_metro_list") {

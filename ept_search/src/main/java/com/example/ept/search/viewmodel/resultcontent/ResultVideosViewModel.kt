@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class ResultVideosViewModel(application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<VideosState>()
     val liveData: LiveData<VideosState> get() = _liveData
-    private var lastItemId = 2
+    private var lastItemId = "2"
     private lateinit var query: String
     private var allVideos: List<MetroData> = emptyList()
     private val appService: KaiyanApi by lazy {
@@ -42,7 +42,7 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
                 val response = appService.searchLoad(query, "video", lastItemId, 10).await()
                 val resultData = parseSearchResponseV2(response)
                 allVideos = allVideos + resultData.videoList
-                lastItemId = response.result?.last_item_id ?: 0
+                lastItemId = response.result?.lastItemId ?: "0"
                 _liveData.value = VideosState.LoadingMoreState(allVideos.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

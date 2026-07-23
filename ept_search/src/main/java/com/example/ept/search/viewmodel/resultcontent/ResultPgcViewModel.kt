@@ -24,7 +24,7 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
     private var _liveData = MutableLiveData<PgcState>()
     val liveData: LiveData<PgcState> get() = _liveData
 
-    private var lastItemId=2
+    private var lastItemId="2"
     private var allPgc: List<MetroData> =emptyList()
     private var query=""
     private val appService: KaiyanApi by lazy {
@@ -40,7 +40,7 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
             try {
                 val response = appService.searchLoad(query, "pgc", lastItemId, 10).await()
                 val loadResult = parseSearchResponseV2(response)
-                lastItemId = response.result?.last_item_id ?: 0
+                lastItemId = response.result?.lastItemId ?: "0"
                 allPgc=allPgc+loadResult.pgcList
                 _liveData.value= PgcState.LoadingMoreState(allPgc.toMutableList())
             } catch (e: Exception) {

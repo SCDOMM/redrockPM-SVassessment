@@ -24,7 +24,7 @@ class ResultGraphicsViewModel(application: Application) : AndroidViewModel(appli
     private var _liveData = MutableLiveData<GraphicsState>()
     val liveData: LiveData<GraphicsState> get() = _liveData
     private var allGraphics: List<MetroData> = emptyList()
-    private var lastItemId = 2
+    private var lastItemId = "2"
     private var query = ""
     private val appService: KaiyanApi by lazy {
         RetrofitClient.create()
@@ -41,7 +41,7 @@ class ResultGraphicsViewModel(application: Application) : AndroidViewModel(appli
             try {
                 val response = appService.searchLoad(query, "graphic", lastItemId, 10).await()
                 val loadResult = parseSearchResponseV2(response)
-                lastItemId = response.result?.last_item_id ?: 0
+                lastItemId = response.result?.lastItemId ?: "0"
                 allGraphics = allGraphics + loadResult.graphicList
                 _liveData.value = GraphicsState.LoadingMoreState(allGraphics.toMutableList())
             } catch (e: Exception) {

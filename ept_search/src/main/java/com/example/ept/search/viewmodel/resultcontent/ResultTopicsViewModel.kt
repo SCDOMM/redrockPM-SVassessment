@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class ResultTopicsViewModel(application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<TopicsState>()
     val liveData: LiveData<TopicsState> get() = _liveData
-    private var lastItemId = 2
+    private var lastItemId = "2"
     private var allTopics: List<MetroData> = emptyList()
     private lateinit var query: String
     private val appService: KaiyanApi by lazy {
@@ -42,7 +42,7 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
                 val response=appService.searchLoad(query,"topic",lastItemId,10).await()
                 val resultData= parseSearchResponseV2(response)
                 allTopics=allTopics+resultData.topicList
-                lastItemId=response.result?.last_item_id?:0
+                lastItemId=response.result?.lastItemId?:"0"
                 _liveData.value= TopicsState.LoadingMoreState(allTopics.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

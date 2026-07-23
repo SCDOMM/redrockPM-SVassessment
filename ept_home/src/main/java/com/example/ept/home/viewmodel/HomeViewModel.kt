@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<HomeState>()
     val liveData: LiveData<HomeState> get() = _liveData
-    private var lastItemId = 1
+    private var lastItemId = "1"
     private var cardJSON = ""
     private var materialJSON = ""
     private var allVideos: List<MetroData> = emptyList()
@@ -47,7 +47,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 if (params != null) {
                     materialJSON = params.safeString("material")
                     cardJSON = params.safeString("card")
-                    lastItemId = params.safeInt("last_item_id")
+                    lastItemId = params.safeString("last_item_id")
                 }
                 _liveData.postValue(HomeState.RefreshState(allVideos.toMutableList()))
             } catch (e: Exception) {
@@ -67,10 +67,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     cardJSON,
                     lastItemId
                 ).await()
-                lastItemId = response.result?.last_item_id ?: 0
-                response.result?.item_list ?: emptyList()
+                lastItemId = response.result?.lastItemId?:"0"
+                response.result?.itemList?: emptyList()
 
-                val newVideos: List<MetroData> = response.result?.item_list
+                val newVideos: List<MetroData> = response.result?.itemList
                     ?.mapNotNull { it.metroData }   // 只保留非 null 的 metroData
                     ?: emptyList()
                 allVideos = allVideos + newVideos

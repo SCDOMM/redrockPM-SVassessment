@@ -4,8 +4,10 @@ import android.content.Context
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
 import com.example.core.model.MetroData
-import com.example.core.model.SearchResponse
-import com.example.core.model.SearchResponseV2
+import com.example.core.model.ApiResponse
+import com.example.core.model.MetroItem
+import com.example.core.model.PaginatedResult
+import com.example.core.model.PageResult
 import com.therouter.router.gson
 
 /**   
@@ -24,15 +26,15 @@ data class SearchResultData(
     val ugcList: List<MetroData> = emptyList(),
     val query: String
 )
-fun parseSearchResponse(response: SearchResponse, query: String): SearchResultData {
+fun parseSearchResponse(response: ApiResponse<PaginatedResult<PageResult>>, query: String): SearchResultData {
     val videoList = mutableListOf<MetroData>()
     val creatorList = mutableListOf<MetroData>()
     val articleList = mutableListOf<MetroData>()
     val topicList = mutableListOf<MetroData>()
     val userList = mutableListOf<MetroData>()
-    response.result?.item_list?.forEach { category ->
+    response.result?.itemList?.forEach { category ->
         val navType = category.nav?.type ?: return@forEach
-        val metroItems = category.card_list.flatMap { card ->
+        val metroItems = category.cardList.flatMap { card ->
             card.cardData?.body?.metroList ?: emptyList()
         }
         when (navType) {
@@ -52,13 +54,13 @@ fun parseSearchResponse(response: SearchResponse, query: String): SearchResultDa
         query
     )
 }
-fun parseSearchResponseV2(response: SearchResponseV2): SearchResultData {
+fun parseSearchResponseV2(response: ApiResponse<PaginatedResult<MetroItem>>): SearchResultData {
     val videoList = mutableListOf<MetroData>()
     val creatorList = mutableListOf<MetroData>()
     val articleList = mutableListOf<MetroData>()
     val topicList = mutableListOf<MetroData>()
     val userList = mutableListOf<MetroData>()
-    response.result?.item_list?.forEach { item ->
+    response.result?.itemList?.forEach { item ->
         val data = item.metroData ?: return@forEach
         when (item.type) {
             "video" -> videoList.add(data)          // 视频 -> videoList

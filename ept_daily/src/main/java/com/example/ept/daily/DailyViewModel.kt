@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class DailyViewModel(application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<DailyState>()
     val liveData: LiveData<DailyState> get() = _liveData
-    private var lastItemId = 1
+    private var lastItemId = "1"
     private var materialJSON = ""
     private var allVideos: List<MetroData> = emptyList()
 
@@ -45,7 +45,7 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
                 val params = callMetroCard?.cardData?.body?.apiRequest?.params
                 if (params != null) {
                     materialJSON = params.safeString("material")
-                    lastItemId = params.safeInt("last_item_id")
+                    lastItemId = params.safeString("last_item_id")
                 }
                 Log.d("DailyVM", "material=$materialJSON, lastItemId=$lastItemId")
                 _liveData.postValue(DailyState.RefreshState(allVideos.toMutableList()))
@@ -64,9 +64,9 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
                     materialJSON,
                     lastItemId
                 ).await()
-                lastItemId = response.result?.last_item_id ?: 0
+                lastItemId = response.result?.lastItemId ?: "0"
 
-                val newVideos: List<MetroData> = response.result?.item_list
+                val newVideos: List<MetroData> = response.result?.itemList
                     ?.mapNotNull { it.metroData }
                     ?: emptyList()
                 allVideos = allVideos + newVideos

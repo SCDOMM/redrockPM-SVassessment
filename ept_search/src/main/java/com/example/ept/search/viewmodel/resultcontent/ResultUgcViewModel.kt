@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class ResultUgcViewModel  (application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<UgcState>()
     val liveData: LiveData<UgcState> get() = _liveData
-    private var lastItemId=2
+    private var lastItemId="2"
     private var allUgc: List<MetroData> =emptyList()
     private lateinit var query: String
     private val appService: KaiyanApi by lazy {
@@ -41,7 +41,7 @@ class ResultUgcViewModel  (application: Application) : AndroidViewModel(applicat
                 val response=appService.searchLoad(query,"ugc",lastItemId,10).await()
                 val resultData= parseSearchResponseV2(response)
                 allUgc=allUgc+resultData.ugcList
-                lastItemId=response.result?.last_item_id?:0
+                lastItemId=response.result?.lastItemId?:"0"
                 _liveData.value= UgcState.LoadingMoreState(allUgc.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

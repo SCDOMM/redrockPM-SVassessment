@@ -8,12 +8,6 @@ package com.example.core.model
  * 创建时间：2026-07-21 16:30
  *
  */
-// UserCenterResponse.kt
-data class UserCenterResponse(
-    val code: Int = 0,
-    val message: Any? = null,
-    val result: UserInfo? = null
-)
 
 data class UserInfo(
     val uid: Long,

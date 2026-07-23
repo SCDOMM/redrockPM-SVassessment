@@ -4,8 +4,9 @@ import com.example.core.model.AlbumData
 import com.example.core.model.AlbumVideoPreview
 import com.example.core.model.MetroItem
 import com.example.core.model.Card
-import com.example.core.model.PageResponse
+import com.example.core.model.ApiResponse
 import com.example.core.model.MetroData
+import com.example.core.model.PageResult
 
 /**   
  * 包名称： com.example.ept.person.utils
@@ -41,7 +42,7 @@ fun parseAlbumCards(cardList: List<Card>): List<AlbumData> {
             )
         }
 }
-fun parseWorkDataList(response: PageResponse): List<MetroData> {
+fun parseWorkDataList(response: ApiResponse<PageResult>): List<MetroData> {
     val result = mutableListOf<MetroData>()
     response.result?.cardList?.forEach { card ->
         val metroList = card.cardData?.body?.metroList ?: return@forEach
@@ -69,7 +70,7 @@ sealed class UserHomeItem {
 
     data class AlbumCard(val albumData: AlbumData, val videoPreviews: List<AlbumVideoPreview>) : UserHomeItem()
 }
-fun parseCardForAdapter(response: PageResponse): List<UserHomeItem> {
+fun parseCardForAdapter(response: ApiResponse<PageResult>): List<UserHomeItem> {
     val result = mutableListOf<UserHomeItem>()
     val cards = response.result?.cardList ?: return result
     var i = 0

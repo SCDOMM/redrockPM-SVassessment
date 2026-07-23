@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 class InfoViewModel(application: Application): AndroidViewModel(application) {
     private var _liveData = MutableLiveData<InfoState>()
     val liveData: LiveData<InfoState> get() = _liveData
-    private var lastItemId=2
+    private var lastItemId="2"
     private var allMessages: List<NoticeItem> =emptyList()
     private val appService: KaiyanApi by lazy {
         RetrofitClient.create()
@@ -60,7 +60,7 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
     fun initViewModel(){
         viewModelScope.launch {
             try {
-                val response=appService.getPushList(1).await()
+                val response=appService.getPushList("1").await()
                 val infoList=response.result?.itemList?:emptyList()
                 allMessages=infoList
                 _liveData.value= InfoState.InitState(infoList.toMutableList())
@@ -76,7 +76,7 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
             try {
                 val response=appService.getPushList(lastItemId).await()
                 val infoList=response.result?.itemList?:emptyList()
-                lastItemId= response.result?.lastItemId ?:0
+                lastItemId= response.result?.lastItemId ?:"0"
                 allMessages=allMessages+infoList
                 _liveData.value = InfoState.LoadingState(allMessages.toMutableList())
             }catch (e: Exception){

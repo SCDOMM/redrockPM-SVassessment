@@ -1,15 +1,13 @@
 package com.example.core.network.api
 
-import com.example.core.model.CallMetroListResponse
-import com.example.core.model.PageResponse
-import com.example.core.model.NoticeResponse
-import com.example.core.model.PreSearchResponse
-import com.example.core.model.SearchResponse
-import com.example.core.model.SearchResponseV2
-import com.example.core.model.CallAlbumCardListResponse
-import com.example.core.model.CallWorkMetroListResponse
-import com.example.core.model.UserCenterResponse
-import com.example.core.model.WeeklyRankResponse
+import com.example.core.model.ApiResponse
+import com.example.core.model.Card
+import com.example.core.model.PaginatedResult
+import com.example.core.model.MetroItem
+import com.example.core.model.NoticeItem
+import com.example.core.model.PageResult
+import com.example.core.model.UserInfo
+import com.example.core.model.WeeklyRankResult
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -27,7 +25,7 @@ interface KaiyanApi {
     fun getUserInfo(
         @Query("uid") uid: Long,
         @Query("user_type") userType: String = ""
-    ): Call<UserCenterResponse>
+    ): Call<ApiResponse<UserInfo>>
 
     @GET("v1/recommend/search/get_hot_queries")
     fun getHotQueries(
@@ -40,12 +38,12 @@ interface KaiyanApi {
         @Query("last_channel") lastChannel: String = "huawei",
         @Query("system_version_code") systemVersionCode: String = "35",
         @Query("token") token: String = ""
-    ): Call<PreSearchResponse>
+    ): Call<ApiResponse<PaginatedResult<String>>>
 
     @GET("v1/common/notice/get_push_list")
     fun getPushList(
-        @Query("last_item_id") lastItemId: Int
-    ): Call<NoticeResponse>
+        @Query("last_item_id") lastItemId: String
+    ): Call<ApiResponse<PaginatedResult<NoticeItem>>>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_result_v2")
@@ -53,12 +51,12 @@ interface KaiyanApi {
         @Field("query") query: String,
         @Field("start") start: Int = 0,
         @Field("num") num: Int = 10
-    ): Call<SearchResponse>
+    ): Call<ApiResponse<PaginatedResult<PageResult>>>
 
     @GET("v1/recommend/search/get_pre_search")
     fun getPreSearch(
         @Query("query") query: String
-    ): Call<PreSearchResponse>
+    ): Call<ApiResponse<PaginatedResult<String>>>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_recommend_card_list")
@@ -71,39 +69,39 @@ interface KaiyanApi {
         @Field("size") size: String = "1080X2163",
         @Field("system_version_code") systemVersionCode: String = "35",
         @Field("token") token: String = ""
-    ): Call<WeeklyRankResponse>
+    ): Call<ApiResponse<WeeklyRankResult>>
 
     @FormUrlEncoded
     @POST("v1/search/search/get_search_result_v2")
     fun searchLoad(
         @Field("query") query: String,
         @Field("type") type: String,          // "video", "graphic" 等
-        @Field("last_item_id") lastItemId: Int,
+        @Field("last_item_id") lastItemId: String,
         @Field("num") num: Int = 10,
-    ): Call<SearchResponseV2>
+    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
 
     @FormUrlEncoded
     @POST("v1/card/page/get_page")
     fun getPage(
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
-    ): Call<PageResponse>
+    ): Call<ApiResponse< PageResult>>
 
     @FormUrlEncoded
     @POST("v1/card/card/call_card_list")
     fun loadMoreAlbum(
-        @Field("last_item_id") lastItemId: Int,
+        @Field("last_item_id") lastItemId: String,
         @Field("card_list") cardList: String,
         @Field("page_label") pageLabel: String = "user_center_album",
         @Field("version") version: Int = 1
-    ): Call<CallAlbumCardListResponse>
+    ): Call<ApiResponse<PaginatedResult<Card>>>
 
     @FormUrlEncoded
     @POST("v1/card/page/get_page")
     fun getWorkPage(
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
-    ): Call<PageResponse>
+    ): Call<ApiResponse< PageResult>>
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
     fun loadMoreWork(
@@ -115,7 +113,7 @@ interface KaiyanApi {
         @Field("page_label") pageLabel: String,
         @Field("card") card: String,
         @Field("data_source") dataSource: String = "home_user_work_list"
-    ): Call<CallWorkMetroListResponse>
+    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
 
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
@@ -124,13 +122,13 @@ interface KaiyanApi {
         @Field("data_source") dataSource: String="",
         @Field("material") material: String,
         @Field("card") card: String,
-        @Field("last_item_id") lastItemId: Int
-    ): Call<CallMetroListResponse>
+        @Field("last_item_id") lastItemId: String
+    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
     fun getMoreDailyPage(
         @Field("data_source") dataSource: String = "history_issue_feed",
         @Field("material") material: String,
-        @Field("last_item_id") lastItemId: Int
-    ): Call<CallMetroListResponse>
+        @Field("last_item_id") lastItemId: String
+    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
 }
