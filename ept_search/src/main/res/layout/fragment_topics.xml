@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".fragment.resultcontent.ResultTopicsFragment">
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/srl_result_topics"
+        android:id="@+id/srl_topics_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_result_topics"
+            android:id="@+id/rv_topics_default"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

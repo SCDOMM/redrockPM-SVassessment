@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.therouter.TheRouter
 
 class DailyFragment : Fragment() {
     private lateinit var view: View
@@ -41,12 +42,11 @@ class DailyFragment : Fragment() {
         adapter = DailyAdapter()
         rvDailyDefault.adapter = adapter
         rvDailyDefault.layoutManager = LinearLayoutManager(requireContext())
-        val layoutManager = rvDailyDefault.layoutManager as LinearLayoutManager
         ivDailyNotify.setOnClickListener {
             initNotify()
         }
         ivDailySearch.setOnClickListener {
-
+            initSearch()
         }
         srlDailyDefault.setOnRefreshListener {
             viewModel.refreshLiveData()
@@ -97,8 +97,9 @@ class DailyFragment : Fragment() {
     }
 
     fun initNotify() {
-
-
+        TheRouter.build("http://therouter.com/notify").navigation(view.context)
     }
-
+    fun initSearch(){
+        TheRouter.build("http://therouter.com/search").navigation(view.context)
+    }
 }

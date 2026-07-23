@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.MessageData
 import com.example.core.model.NoticeItem
 import com.example.ept.notify.R
 import java.text.SimpleDateFormat

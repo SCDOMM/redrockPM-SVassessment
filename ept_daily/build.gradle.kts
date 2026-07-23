@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -32,6 +33,9 @@ dependencies {
     implementation(libs.gsy.video.player)
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
+    implementation(project(":ept_notify"))
+    implementation(project(":ept_search"))
+    implementation(project(":core:core_common"))
     implementation(libs.glide)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -41,4 +45,10 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.glide.okhttp)
+
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
+}
+ksp {
+    arg("therouter.moduleName", ":ept_home")
 }

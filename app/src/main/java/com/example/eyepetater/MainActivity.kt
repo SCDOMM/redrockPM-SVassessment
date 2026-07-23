@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.ept.dicover.DiscoveryFragment
+import com.example.ept.community.CommunityFragment
 import com.example.ept.dicover.discovery.DiscoveryFragment
 
 class MainActivity : AppCompatActivity() {

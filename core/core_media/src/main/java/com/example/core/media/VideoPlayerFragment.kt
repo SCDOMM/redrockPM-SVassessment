@@ -16,7 +16,7 @@ import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.UniversalApi
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.GSYVideoManager.backFromWindowFull
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
@@ -30,63 +30,39 @@ import kotlinx.coroutines.withContext
 /**
  * description ： 视频播放 Fragment，包含播放器、视频信息展示、相关推荐列表
  * email : 3014386984@qq.com
- * date : 2026/7/22
+ * date : 2026/7/15 14:46
  */
 class VideoPlayerFragment : Fragment() {
 
-    /** 视频播放器 */
     private lateinit var videoPlayer: StandardGSYVideoPlayer
-    /** 嵌套滚动视图 */
     private lateinit var scrollView: NestedScrollView
-    /** 视频标题 */
     private lateinit var tvTitle: TextView
-    /** 作者头像 */
     private lateinit var ivAuthor: ImageView
-    /** 作者名称 */
     private lateinit var tvAuthorName: TextView
-    /** 视频分类 */
     private lateinit var tvCategory: TextView
-    /** 视频描述 */
     private lateinit var tvDescription: TextView
-    /** 收藏数量 */
     private lateinit var tvCollectionCount: TextView
-    /** 评论数量 */
     private lateinit var tvReplyCount: TextView
-    /** 分享按钮 */
     private lateinit var ivShare: ImageView
-    /** 相关推荐列表 */
     private lateinit var rvRelated: RecyclerView
-    /** 屏幕方向工具类 */
     private var orientationUtils: OrientationUtils? = null
 
-    private val api = RetrofitClient.create<SpecficApi>()
+    private val api = RetrofitClient.create<UniversalApi>()
     private lateinit var relatedAdapter: RelatedVideoAdapter
     private var isPlay: Boolean = false
 
-    /** 视频 ID */
     private var videoId: Long = 0
-    /** 视频播放地址 */
     private var videoUrl: String = ""
-    /** 视频标题 */
     private var videoTitle: String = ""
-    /** 视频封面图 URL */
     private var videoCover: String = ""
-    /** 作者名称 */
     private var authorName: String = ""
-    /** 作者头像 URL */
     private var authorIcon: String = ""
-    /** 视频分类 */
     private var category: String = ""
-    /** 视频描述 */
     private var description: String = ""
-    /** 收藏数量 */
     private var collectionCount: Int = 0
-    /** 评论数量 */
     private var replyCount: Int = 0
-    /** 视频播放地址（用于分享） */
     private var playUrl: String = ""
 
-    /** Fragment 创建时从参数中提取视频数据 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -104,7 +80,6 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
-    /** 加载 Fragment 布局 */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -113,7 +88,6 @@ class VideoPlayerFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_video_player, container, false)
     }
 
-    /** 初始化视图组件，绑定数据并加载相关推荐 */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         videoPlayer = view.findViewById(R.id.video_player)
@@ -219,11 +193,17 @@ class VideoPlayerFragment : Fragment() {
      */
     private fun initRelatedVideos() {
         relatedAdapter = RelatedVideoAdapter { item ->
-            // 只传 videoId，Activity 会从 API 获取所有数据
-            val videoId = item.id.toString()
-            if (videoId != "0") {
-                VideoPlayerActivity.start(requireContext(), videoId)
+            val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, item.id)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_URL, item.playUrl)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_TITLE, item.title)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_COVER, item.coverUrl)
+                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_NAME, item.authorName)
+                putExtra(VideoPlayerActivity.EXTRA_AUTHOR_ICON, item.authorIcon)
+                putExtra(VideoPlayerActivity.EXTRA_CATEGORY, item.category)
+                putExtra(VideoPlayerActivity.EXTRA_DESCRIPTION, item.description)
             }
+            startActivity(intent)
         }
         rvRelated.layoutManager = LinearLayoutManager(requireContext())
         rvRelated.adapter = relatedAdapter
@@ -238,42 +218,10 @@ class VideoPlayerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getRelatedRecommend(videoId.toString()).execute()
+                    api.getVideoRelated(videoId).execute()
                 }
-                val body = response.body()
-                if (body?.code == 0) {
-                    val result = body.result
-                    if (result != null) {
-                        val items = result.item_list.mapNotNull { item ->
-                        val video = item.video ?: return@mapNotNull null
-                        val title = video.title
-                        if (title.isEmpty()) return@mapNotNull null
-
-                        val coverUrl = video.cover?.url ?: ""
-                        val videoIdVal = video.video_id.toLongOrNull() ?: 0L
-                        val duration = video.duration?.value ?: 0L
-                        val playUrl = video.play_url
-                            .replace("\\u003d", "=")
-                            .replace("\\u0026", "&")
-                        val authorName = item.author?.nick ?: ""
-                        val authorIcon = item.author?.avatar?.url ?: ""
-                        val category = item.category?.name ?: ""
-                        val consumption = item.consumption
-
-                        RelatedVideoAdapter.RelatedVideoItem(
-                            id = videoIdVal,
-                            title = title,
-                            coverUrl = coverUrl,
-                            duration = duration,
-                            authorName = authorName,
-                            authorIcon = authorIcon,
-                            category = category,
-                            description = item.text,
-                            playUrl = playUrl
-                        )
-                    }
-                    relatedAdapter.submitList(items)
-                    }
+                if (response.isSuccessful) {
+                    relatedAdapter.submitList(relatedAdapter.parseItems(response.body()?.itemList ?: emptyList()))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -312,7 +260,6 @@ class VideoPlayerFragment : Fragment() {
         }
     }
 
-    /** 格式化数量显示，超过1万显示为 "x.x万" */
     private fun formatCount(count: Int): String {
         return when {
             count >= 10000 -> String.format("%.1f万", count / 10000.0)
@@ -321,19 +268,16 @@ class VideoPlayerFragment : Fragment() {
     }
 
 
-    /** 暂停视频播放 */
     override fun onPause() {
         videoPlayer.currentPlayer.onVideoPause()
         super.onPause()
     }
 
-    /** 恢复视频播放 */
     override fun onResume() {
         videoPlayer.currentPlayer.onVideoResume(false)
         super.onResume()
     }
 
-    /** 释放播放器资源 */
     override fun onDestroyView() {
         orientationUtils?.releaseListener()
         orientationUtils = null
@@ -343,7 +287,6 @@ class VideoPlayerFragment : Fragment() {
 
 
 
-    /** Fragment 参数常量 */
     companion object {
         /** 视频 ID 参数键名 */
         private const val ARG_VIDEO_ID = "video_id"

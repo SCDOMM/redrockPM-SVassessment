@@ -1,31 +1,40 @@
 package com.example.ept.notify.activity
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ept.notify.R
 import com.example.ept.notify.adapter.NotifyAdapter
-import com.example.ept.notify.fragment.FragmentInterface
+import com.example.core.common.FragmentInterface
 import com.example.ept.notify.fragment.InfoFragment
 import com.example.ept.notify.fragment.InteractFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.therouter.router.Route
 
+@Route(path = "http://therouter.com/notify")
 class NotifyActivity : AppCompatActivity() {
     private lateinit var vp2NotifyDefault: ViewPager2
     private lateinit var tlNotifyDefault: TabLayout
+    private lateinit var ivNotifyBack: ImageView
     private var fragmentList = mutableListOf<FragmentInterface>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notify)
         vp2NotifyDefault = findViewById(R.id.vp2_notify_default)
         tlNotifyDefault = findViewById(R.id.tl_notify_default)
+        ivNotifyBack=findViewById(R.id.iv_notify_back)
         initEvent()
         initTabs()
     }
 
     fun initEvent() {
+        ivNotifyBack.setOnClickListener {
+            finish()
+        }
+
         fragmentList.add(object : FragmentInterface {
             override fun back(): Fragment {
                 return InteractFragment()

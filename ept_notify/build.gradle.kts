@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -39,10 +40,18 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
     implementation(libs.glide.okhttp)
-    implementation(project(":core:core_model"))
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.glide)
     implementation(project(":core:core_network"))
+    implementation(project(":core:core_model"))
+    implementation(project(":core:core_common"))
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
+
+}
+ksp {
+    arg("therouter.moduleName", ":ept_notify")
 }

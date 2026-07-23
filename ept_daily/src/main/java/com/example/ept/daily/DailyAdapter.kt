@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.core.model.VideoData
+import com.example.core.model.MetroData
 
 /**   
  * 包名称： com.example.ept.daily
@@ -20,7 +20,7 @@ import com.example.core.model.VideoData
  * 创建时间：2026-07-15 21:11
  *
  */
-class DailyAdapter : ListAdapter<VideoData, DailyAdapter.DailyViewHolder>(DailyDiffCallback) {
+class DailyAdapter : ListAdapter<MetroData, DailyAdapter.DailyViewHolder>(DailyDiffCallback) {
     override fun onBindViewHolder(
         holder: DailyViewHolder,
         position: Int
@@ -45,41 +45,40 @@ class DailyAdapter : ListAdapter<VideoData, DailyAdapter.DailyViewHolder>(DailyD
         val tvDailyLabelItem: TextView = view.findViewById(R.id.tv_daily_label_item)
         val tvAuthorDescItem: TextView = view.findViewById(R.id.tv_daily_author_item)
         val tvDailyDurationItem: TextView = view.findViewById(R.id.tv_daily_duration_item)
-        fun bindData(videoData: VideoData) {
+        fun bindData(videoData: MetroData) {
             Glide.with(ivDailyCoverItem.context)
-                .load(videoData.cover?.feed)
+                .load(videoData.cover?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
                 .into(ivDailyCoverItem)
             Glide.with(ivDailyAuthorItem)
-                .load(videoData.cover?.feed)
+                .load(videoData.author?.avatar?.url)
                 .placeholder(R.drawable.eyepetater)
                 .error(R.drawable.eyepetater)
                 .into(ivDailyAuthorItem)
             tvDailyTitleItem.text = videoData.title
-            val label = videoData.label?.text
-                ?: videoData.category
+            val label =  videoData.tags?.firstOrNull()?.title?.removePrefix("# ")
             tvDailyLabelItem.text = "#$label"
-            tvAuthorDescItem.text = videoData.author?.name
-            val duration = DateUtils.formatElapsedTime(videoData.duration)
+            tvAuthorDescItem.text = videoData.author?.nick
+            val duration = DateUtils.formatElapsedTime(videoData.duration?.value?.toLong()!!)
             tvDailyDurationItem.text = "▶$duration"
         }
     }
 }
 
-object DailyDiffCallback : DiffUtil.ItemCallback<VideoData>() {
+object DailyDiffCallback : DiffUtil.ItemCallback<MetroData>() {
     override fun areItemsTheSame(
-        oldItem: VideoData,
-        newItem: VideoData
+        oldItem: MetroData,
+        newItem: MetroData
     ): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.videoId == newItem.videoId
     }
 
     override fun areContentsTheSame(
-        oldItem: VideoData,
-        newItem: VideoData
+        oldItem: MetroData,
+        newItem: MetroData
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.playUrl == newItem.playUrl
     }
 }
 

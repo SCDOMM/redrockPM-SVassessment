@@ -3,7 +3,7 @@ package com.example.ept.notify.adapter
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.ept.notify.activity.NotifyActivity
-import com.example.ept.notify.fragment.FragmentInterface
+import com.example.core.common.FragmentInterface
 
 /**   
  * 包名称： com.example.ept.home.adapter

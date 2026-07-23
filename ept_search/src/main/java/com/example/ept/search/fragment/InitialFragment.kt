@@ -1,7 +1,6 @@
 package com.example.ept.search.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,9 +12,9 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.ept.search.R
-import com.example.ept.search.utils.addSearchHistory
-import com.example.ept.search.utils.clearSearchHistory
-import com.example.ept.search.utils.getHistoryFromPrefs
+import com.example.core.common.addSearchHistory
+import com.example.core.common.clearSearchHistory
+import com.example.core.common.getHistoryFromPrefs
 import com.example.ept.search.viewmodel.SearchViewModel
 import com.google.android.flexbox.FlexboxLayout
 

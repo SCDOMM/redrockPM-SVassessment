@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".fragment.InitialFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".fragment.InitialFragment">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tv_initial_history"
@@ -88,25 +88,25 @@
             app:layout_constraintStart_toStartOf="@id/tv_initial_ranking"
             app:layout_constraintTop_toBottomOf="@id/tv_initial_ranking">
 
-            <include layout="@layout/itemview_ranking"
+            <include
                 android:id="@+id/rank_initial_0"
-                />
+                layout="@layout/itemview_ranking" />
 
-            <include layout="@layout/itemview_ranking"
+            <include
                 android:id="@+id/rank_initial_1"
-                />
+                layout="@layout/itemview_ranking" />
 
-            <include layout="@layout/itemview_ranking"
+            <include
                 android:id="@+id/rank_initial_2"
-                />
+                layout="@layout/itemview_ranking" />
 
-            <include layout="@layout/itemview_ranking"
+            <include
                 android:id="@+id/rank_initial_3"
-                />
+                layout="@layout/itemview_ranking" />
 
-            <include layout="@layout/itemview_ranking"
+            <include
                 android:id="@+id/rank_initial_4"
-                />
+                layout="@layout/itemview_ranking" />
 
         </LinearLayout>
 

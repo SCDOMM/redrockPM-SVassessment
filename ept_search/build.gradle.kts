@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -33,6 +34,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.flexbox)
     implementation(libs.material)
+    implementation(libs.transportation.consumer)
     testImplementation(libs.junit)
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.gson)
@@ -40,9 +42,17 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.glide.okhttp)
     implementation(project(":core:core_model"))
+    implementation(project(":core:core_network"))
+    implementation(project(":core:core_common"))
+    implementation(project(":ept_person"))
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.glide)
-    implementation(project(":core:core_network"))
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
+}
+ksp {
+    arg("therouter.moduleName", ":ept_search")
 }

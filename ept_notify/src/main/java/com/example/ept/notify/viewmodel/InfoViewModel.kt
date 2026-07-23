@@ -1,14 +1,13 @@
 package com.example.ept.notify.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.NoticeItem
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -27,9 +26,9 @@ import java.util.concurrent.TimeUnit
 class InfoViewModel(application: Application): AndroidViewModel(application) {
     private var _liveData = MutableLiveData<InfoState>()
     val liveData: LiveData<InfoState> get() = _liveData
-    private var lastItemId=2
+    private var lastItemId="2"
     private var allMessages: List<NoticeItem> =emptyList()
-    private val appService: KaiyanApi by lazy {
+    private val appService: UniversalApi by lazy {
         RetrofitClient.create()
     }
     init {
@@ -61,7 +60,7 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
     fun initViewModel(){
         viewModelScope.launch {
             try {
-                val response=appService.getPushList(1).await()
+                val response=appService.getPushList("1").await()
                 val infoList=response.result?.itemList?:emptyList()
                 allMessages=infoList
                 _liveData.value= InfoState.InitState(infoList.toMutableList())
@@ -77,7 +76,11 @@ class InfoViewModel(application: Application): AndroidViewModel(application) {
             try {
                 val response=appService.getPushList(lastItemId).await()
                 val infoList=response.result?.itemList?:emptyList()
-                lastItemId= response.result?.lastItemId ?:0
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = InfoState.LoadingState(allMessages.toMutableList())
+                    return@launch
+                }
+                lastItemId= response.result?.lastItemId ?:"0"
                 allMessages=allMessages+infoList
                 _liveData.value = InfoState.LoadingState(allMessages.toMutableList())
             }catch (e: Exception){

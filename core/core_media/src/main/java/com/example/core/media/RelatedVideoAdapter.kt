@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.core.model.Item
-import com.example.core.model.VideoData
+
+import com.example.core.model.*
 import com.google.gson.Gson
 
 /**

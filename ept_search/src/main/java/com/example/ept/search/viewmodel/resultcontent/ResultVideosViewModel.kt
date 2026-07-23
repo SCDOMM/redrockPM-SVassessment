@@ -1,15 +1,16 @@
 package com.example.ept.search.viewmodel.resultcontent
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
+import com.example.core.common.parseLoadSearch
 import kotlinx.coroutines.launch
 
 /**   
@@ -23,10 +24,10 @@ import kotlinx.coroutines.launch
 class ResultVideosViewModel(application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<VideosState>()
     val liveData: LiveData<VideosState> get() = _liveData
-    private var lastItemId = 2
+    private var lastItemId = "2"
     private lateinit var query: String
     private var allVideos: List<MetroData> = emptyList()
-    private val appService: SpecficApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
 
@@ -39,11 +40,16 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
     fun loadMore() {
         viewModelScope.launch {
             try {
+                Log.d("请求searchLoad！","")
                 val response = appService.searchLoad(query, "video", lastItemId, 10).await()
-                val resultData = parseSearchResponseV2(response)
+                val resultData = parseLoadSearch(response)
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = VideosState.LoadingState(allVideos.toMutableList())
+                    return@launch
+                }
+                lastItemId = response.result?.lastItemId ?: "0"
                 allVideos = allVideos + resultData.videoList
-                lastItemId = response.result?.last_item_id ?: 0
-                _liveData.value = VideosState.LoadingMoreState(allVideos.toMutableList())
+                _liveData.value = VideosState.LoadingState(allVideos.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value = VideosState.ErrorState(e.message.toString())
@@ -57,6 +63,6 @@ class ResultVideosViewModel(application: Application) : AndroidViewModel(applica
 sealed class VideosState {
     data class InitState(val videoList: MutableList<MetroData>) : VideosState()
     data class RefreshState(val videoList: MutableList<MetroData>) : VideosState()
-    data class LoadingMoreState(val newVideoList: MutableList<MetroData>) : VideosState()
+    data class LoadingState(val newVideoList: MutableList<MetroData>) : VideosState()
     data class ErrorState(val errorMsg: String) : VideosState()
 }

@@ -7,9 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
+import com.example.core.common.parseLoadSearch
 import kotlinx.coroutines.launch
 
 /**   
@@ -23,10 +23,10 @@ import kotlinx.coroutines.launch
 class ResultTopicsViewModel(application: Application) : AndroidViewModel(application) {
     private var _liveData = MutableLiveData<TopicsState>()
     val liveData: LiveData<TopicsState> get() = _liveData
-    private var lastItemId = 2
+    private var lastItemId = "2"
     private var allTopics: List<MetroData> = emptyList()
     private lateinit var query: String
-    private val appService: SpecficApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
 
@@ -40,10 +40,14 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
         viewModelScope.launch {
             try {
                 val response=appService.searchLoad(query,"topic",lastItemId,10).await()
-                val resultData= parseSearchResponseV2(response)
+                val resultData= parseLoadSearch(response)
+                if (lastItemId.isNullOrEmpty()){
+                    _liveData.value = TopicsState.LoadingState(allTopics.toMutableList())
+                    return@launch
+                }
                 allTopics=allTopics+resultData.topicList
-                lastItemId=response.result?.last_item_id?:0
-                _liveData.value= TopicsState.LoadingMoreState(allTopics.toMutableList())
+                lastItemId=response.result?.lastItemId?:"0"
+                _liveData.value= TopicsState.LoadingState(allTopics.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()
                 _liveData.value= TopicsState.ErrorState(e.message.toString())
@@ -55,6 +59,6 @@ class ResultTopicsViewModel(application: Application) : AndroidViewModel(applica
 sealed class TopicsState {
     data class InitState(val topicData: MutableList<MetroData>) : TopicsState()
     data class RefreshState(val topicList: MutableList<MetroData>) : TopicsState()
-    data class LoadingMoreState(val newTopicList: MutableList<MetroData>) : TopicsState()
+    data class LoadingState(val newTopicList: MutableList<MetroData>) : TopicsState()
     data class ErrorState(val errorMsg: String) : TopicsState()
 }
