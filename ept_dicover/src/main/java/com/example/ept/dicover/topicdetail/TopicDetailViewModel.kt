@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.GetPageCard
+import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,7 +21,8 @@ import kotlinx.coroutines.withContext
  */
 class TopicDetailViewModel : ViewModel() {
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
+    private val gson = Gson()
 
     /** 是否已加载过 */
     var loaded = false
@@ -38,9 +42,19 @@ class TopicDetailViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getPage(pageLabel = pageLabel).execute()
+                    api.getPageRaw(pageLabel = pageLabel).execute()
                 }
-                val body = response.body()
+                val rawBody = response.body()?.string() ?: ""
+                if (!response.isSuccessful()) {
+                    _error.value = "HTTP错误: ${response.code()}"
+                    return@launch
+                }
+                if (rawBody.isEmpty()) {
+                    _error.value = "响应体为空"
+                    return@launch
+                }
+
+                val body = gson.fromJson(rawBody, GetPageResponse::class.java)
                 if (body?.code != 0) {
                     _error.value = "加载失败: code=${body?.code}"
                     return@launch

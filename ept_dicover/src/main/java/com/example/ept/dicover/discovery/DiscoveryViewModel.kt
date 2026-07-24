@@ -8,9 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.ApiRequest
 import com.example.core.model.GetPageResponse
-import com.example.core.model.TextCardData
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +24,7 @@ import kotlinx.coroutines.withContext
 class DiscoveryViewModel : ViewModel() {
 
     /** 开眼 API 接口实例，用于网络请求 */
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
     /** Gson 实例，用于 JSON 解析 */
     private val gson = Gson()
 
@@ -118,7 +117,7 @@ class DiscoveryViewModel : ViewModel() {
                                 val link = iconItem.link
                                 val apiRequest = parseApiRequest(link)
                                 if (apiRequest == null) continue
-                                val pageLabel = apiRequest.params["page_label"] ?: continue
+                                val pageLabel = apiRequest.params?.get("page_label") as? String ?: continue
                                 val name = iconItem.name
                                 if (name.isNotEmpty()) {
                                     categories.add(

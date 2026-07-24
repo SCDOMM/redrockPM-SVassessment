@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.UniversalApi
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,19 +27,17 @@ import kotlinx.coroutines.withContext
  */
 class VideoPlayerActivity : AppCompatActivity() {
 
-    /** 视频播放器 Activity 常量和启动方法 */
     companion object {
-        /** 视频 ID 的额外参数键 */
         const val EXTRA_VIDEO_ID = "video_id"
-        /** 资源类型的额外参数键 */
         private const val EXTRA_RESOURCE_TYPE = "resource_type"
+        const val EXTRA_VIDEO_URL = "video_url"
+        const val EXTRA_VIDEO_TITLE = "video_title"
+        const val EXTRA_VIDEO_COVER = "video_cover"
+        const val EXTRA_AUTHOR_NAME = "author_name"
+        const val EXTRA_AUTHOR_ICON = "author_icon"
+        const val EXTRA_CATEGORY = "category"
+        const val EXTRA_DESCRIPTION = "description"
 
-        /**
-         * 启动视频播放 Activity
-         * @param context 上下文
-         * @param videoId 视频 ID
-         * @param resourceType 资源类型，默认 "pgc_video"
-         */
         fun start(context: Context, videoId: String, resourceType: String = "pgc_video") {
             val intent = Intent(context, VideoPlayerActivity::class.java).apply {
                 putExtra(EXTRA_VIDEO_ID, videoId)
@@ -47,12 +47,9 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private val api = RetrofitClient.create<SpecficApi>()
+    private val api = RetrofitClient.create<UniversalApi>()
+    private val gson = Gson()
 
-    /**
-     * Activity 创建时调用
-     * 初始化窗口、状态栏，加载视频详情并显示播放器 Fragment
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -82,43 +79,96 @@ class VideoPlayerActivity : AppCompatActivity() {
                     val response = withContext(Dispatchers.IO) {
                         api.getItemDetail(videoId, resourceType).execute()
                     }
-                    val body = response.body()
-                    if (body?.code == 0) {
-                        val detail = body.result
-                        if (detail != null) {
-                            // 清理 play_url 中的转义字符
-                            val rawPlayUrl = detail.video?.play_url ?: ""
-                            val cleanPlayUrl = rawPlayUrl
-                                .replace("\\u003d", "=")
-                                .replace("\\u0026", "&")
-
-                            supportFragmentManager.beginTransaction()
-                                .replace(
-                                    R.id.fragment_container,
-                                    VideoPlayerFragment.newInstance(
-                                        videoId = videoId.toLongOrNull() ?: 0L,
-                                        videoUrl = cleanPlayUrl,
-                                        videoTitle = detail.video?.title ?: "",
-                                        videoCover = detail.video?.cover?.url ?: "",
-                                        authorName = detail.author?.nick ?: "",
-                                        authorIcon = detail.author?.avatar?.url ?: "",
-                                        category = detail.category?.name ?: "",
-                                        description = detail.text,
-                                        collectionCount = detail.consumption?.collection_count ?: 0,
-                                        replyCount = detail.consumption?.comment_count ?: 0,
-                                        playUrl = ""
-                                    )
-                                )
-                                .commit()
-                        } else {
-                            Toast.makeText(this@VideoPlayerActivity, "加载视频详情失败", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }
-                    } else {
-                        Toast.makeText(this@VideoPlayerActivity, "加载视频详情失败", Toast.LENGTH_SHORT).show()
+                    if (!response.isSuccessful) {
+                        Log.e("VideoPlayer", "HTTP ${response.code()}")
+                        Toast.makeText(this@VideoPlayerActivity, "网络错误", Toast.LENGTH_SHORT).show()
                         finish()
+                        return@launch
                     }
+
+                    val rawBody = response.body()?.string() ?: ""
+                    Log.d("VideoPlayer", "RAW_LEN=${rawBody.length}, preview=${rawBody.take(300)}")
+
+                    if (rawBody.isEmpty()) {
+                        Toast.makeText(this@VideoPlayerActivity, "响应体为空", Toast.LENGTH_SHORT).show()
+                        finish()
+                        return@launch
+                    }
+
+                    // 手动解析 JSON
+                    val topLevel = try {
+                        gson.fromJson(rawBody, Map::class.java) as? Map<String, Any>
+                    } catch (e: Exception) {
+                        Log.e("VideoPlayer", "JSON parse error", e)
+                        null
+                    }
+
+                    if (topLevel == null) {
+                        Toast.makeText(this@VideoPlayerActivity, "JSON解析失败", Toast.LENGTH_SHORT).show()
+                        finish()
+                        return@launch
+                    }
+
+                    val code = (topLevel["code"] as? Number)?.toInt() ?: -1
+                    if (code != 0) {
+                        Toast.makeText(this@VideoPlayerActivity, "接口错误: code=$code", Toast.LENGTH_SHORT).show()
+                        finish()
+                        return@launch
+                    }
+
+                    @Suppress("UNCHECKED_CAST")
+                    val result = topLevel["result"] as? Map<String, Any>
+                    if (result == null) {
+                        Toast.makeText(this@VideoPlayerActivity, "无结果数据", Toast.LENGTH_SHORT).show()
+                        finish()
+                        return@launch
+                    }
+
+                    // API 直接返回 result 作为视频数据（无 data 包裹）
+                    @Suppress("UNCHECKED_CAST")
+                    val dataMap = result["data"] as? Map<String, Any> ?: result
+                    if (dataMap == null) {
+                        Log.e("VideoPlayer", "result.data is null, result keys=${result.keys}")
+                        Toast.makeText(this@VideoPlayerActivity, "视频数据为空", Toast.LENGTH_SHORT).show()
+                        finish()
+                        return@launch
+                    }
+
+                    val videoInfo = dataMap["video"] as? Map<String, Any>
+                    val authorInfo = dataMap["author"] as? Map<String, Any>
+                    val consumptionInfo = dataMap["consumption"] as? Map<String, Any>
+                    val authorUid = authorInfo?.get("uid")?.toString() ?: ""
+
+                    val rawPlayUrl = videoInfo?.get("play_url") as? String ?: ""
+                    val cleanPlayUrl = rawPlayUrl
+                        .replace("\\u003d", "=")
+                        .replace("\\u0026", "&")
+
+                    Log.d("VideoPlayer", "title='${videoInfo?.get("title")}', playUrl=${cleanPlayUrl.take(50)}")
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragment_container,
+                            VideoPlayerFragment.newInstance(
+                                videoId = videoId.toLongOrNull() ?: 0L,
+                                videoUrl = cleanPlayUrl,
+                                videoTitle = videoInfo?.get("title") as? String ?: "",
+                                videoCover = (videoInfo?.get("cover") as? Map<String, Any>)?.get("url") as? String ?: "",
+                                authorName = authorInfo?.get("nick") as? String ?: "",
+                                authorIcon = (authorInfo?.get("avatar") as? Map<String, Any>)?.get("url") as? String ?: "",
+                                authorUid = authorUid,
+                                category = (dataMap["tags"] as? List<*>)?.firstOrNull()?.let {
+                                    (it as? Map<String, Any>)?.get("title") as? String
+                                } ?: "",
+                                description = dataMap["text"] as? String ?: "",
+                                collectionCount = (consumptionInfo?.get("collection_count") as? Number)?.toInt() ?: 0,
+                                replyCount = (consumptionInfo?.get("comment_count") as? Number)?.toInt() ?: 0,
+                                playUrl = ""
+                            )
+                        )
+                        .commit()
                 } catch (e: Exception) {
+                    Log.e("VideoPlayer", "加载失败", e)
                     Toast.makeText(this@VideoPlayerActivity, "网络错误: ${e.message}", Toast.LENGTH_SHORT).show()
                     finish()
                 }
@@ -126,7 +176,39 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
-    /** 设置状态栏外观，根据深色模式切换 */
+    /**
+     * 从任意类型中提取视频数据 Map
+     * 兼容: Map, LinkedTreeMap, String(JSON), null
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun extractVideoDataMap(data: Any?): Map<String, Any>? {
+        return when (data) {
+            is Map<*, *> -> data as Map<String, Any>
+            is String -> {
+                // data 可能是 JSON 字符串
+                try {
+                    gson.fromJson(data, Map::class.java) as? Map<String, Any>
+                } catch (e: Exception) {
+                    Log.e("VideoPlayer", "JSON string parse failed", e)
+                    null
+                }
+            }
+            else -> {
+                // 尝试通过序列化再反序列化
+                try {
+                    val json = gson.toJson(data)
+                    Log.d("VideoPlayer", "fallback serialize: ${json?.take(300)}")
+                    if (json != null && json != "null") {
+                        gson.fromJson(json, Map::class.java) as? Map<String, Any>
+                    } else null
+                } catch (e: Exception) {
+                    Log.e("VideoPlayer", "fallback parse failed", e)
+                    null
+                }
+            }
+        }
+    }
+
     private fun setupStatusBar() {
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES

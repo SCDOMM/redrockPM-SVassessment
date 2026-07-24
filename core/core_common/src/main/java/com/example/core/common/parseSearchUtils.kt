@@ -47,10 +47,10 @@ fun parseSearch(
     }
     return SearchResultData(
         videoList = videoList,
-        pgcList = creatorList,
-        graphicList = articleList,
+        creatorList = creatorList,
+        articleList = articleList,
         topicList = topicList,
-        ugcList = userList,
+        userList = userList,
         query
     )
 }
@@ -75,18 +75,18 @@ fun parseLoadSearch(response: ApiResponse<PaginatedResult<MetroItem>>): SearchRe
     }
     return SearchResultData(
         videoList = videoList,
-        pgcList = creatorList,
-        graphicList = articleList,
+        creatorList = creatorList,
+        articleList = articleList,
         topicList = topicList,
-        ugcList = userList,
+        userList = userList,
         ""
     )
 }
 data class SearchResultData(
     val videoList: List<MetroData> = emptyList(),
-    val pgcList: List<MetroData> = emptyList(),
-    val graphicList: List<MetroData> = emptyList(),
+    val creatorList: List<MetroData> = emptyList(),
+    val articleList: List<MetroData> = emptyList(),
     val topicList: List<MetroData> = emptyList(),
-    val ugcList: List<MetroData> = emptyList(),
+    val userList: List<MetroData> = emptyList(),
     val query: String
 )

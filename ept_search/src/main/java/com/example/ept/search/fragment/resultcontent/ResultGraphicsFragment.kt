@@ -40,7 +40,7 @@ class ResultGraphicsFragment : Fragment() {
         rvGraphicsDefault.layoutManager = LinearLayoutManager(requireContext())
         rvGraphicsDefault.adapter=adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->
-            graphicsViewModel.initLiveData(resultData.graphicList.toMutableList(),resultData.query)
+            graphicsViewModel.initLiveData(resultData.articleList.toMutableList(),resultData.query)
         }
         graphicsViewModel.liveData.observe(viewLifecycleOwner){ data ->
            when(data){

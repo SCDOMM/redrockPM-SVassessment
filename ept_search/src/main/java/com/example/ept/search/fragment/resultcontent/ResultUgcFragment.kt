@@ -38,7 +38,7 @@ class ResultUgcFragment : Fragment() {
         rvResultUgc.layoutManager= LinearLayoutManager(view.context)
         rvResultUgc.adapter=adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->
-            ugcViewModel.initLiveData(resultData.ugcList.toMutableList(),resultData.query)
+            ugcViewModel.initLiveData(resultData.userList.toMutableList(),resultData.query)
         }
         ugcViewModel.liveData.observe(viewLifecycleOwner){ data->
             when(data){

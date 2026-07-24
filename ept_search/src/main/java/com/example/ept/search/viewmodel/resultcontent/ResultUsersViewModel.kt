@@ -6,10 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
+import com.example.core.common.parseLoadSearch
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
 import kotlinx.coroutines.launch
 
 /**
@@ -26,7 +26,7 @@ class ResultUsersViewModel  (application: Application) : AndroidViewModel(applic
     private var lastItemId=2
     private var allUsers: List<MetroData> =emptyList()
     private lateinit var query: String
-    private val appService: SpecficApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
 
@@ -38,10 +38,10 @@ class ResultUsersViewModel  (application: Application) : AndroidViewModel(applic
     fun loadMore() {
         viewModelScope.launch {
             try {
-                val response=appService.searchLoad(query,"ugc",lastItemId,10).await()
-                val resultData= parseSearchResponseV2(response)
+                val response=appService.searchLoad(query,"ugc",lastItemId.toString(),10).await()
+                val resultData= parseLoadSearch(response)
                 allUsers=allUsers+resultData.userList
-                lastItemId=response.result?.last_item_id?:0
+                lastItemId=response.result?.lastItemId?.toIntOrNull()?:0
                 _liveData.value= UsersState.LoadingMoreState(allUsers.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

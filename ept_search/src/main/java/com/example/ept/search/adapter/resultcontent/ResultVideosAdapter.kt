@@ -21,7 +21,9 @@ import com.example.ept.search.R
  * 创建时间：2026-07-16 15:01
  *
  */
-class ResultVideosAdapter :
+class ResultVideosAdapter(
+    private val onItemClick: (MetroData) -> Unit = {}
+) :
     ListAdapter<MetroData, ResultVideosAdapter.VideosViewHolder>(VideosDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,7 +38,9 @@ class ResultVideosAdapter :
         holder: VideosViewHolder,
         position: Int
     ) {
-        holder.bindData(getItem(position))
+        val item = getItem(position)
+        holder.bindData(item)
+        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     inner class VideosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

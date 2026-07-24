@@ -45,7 +45,7 @@ class ResultUgcViewModel  (application: Application) : AndroidViewModel(applicat
                     return@launch
                 }
                 lastItemId=response.result?.lastItemId?:"0"
-                allUgc=allUgc+resultData.ugcList
+                allUgc=allUgc+resultData.userList
                 _liveData.value= UgcState.LoadingState(allUgc.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

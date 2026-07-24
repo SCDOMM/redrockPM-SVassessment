@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -31,8 +32,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.glide)
     implementation(libs.gson)
+    implementation(libs.therouter.api)
+    ksp(libs.therouter.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     implementation(libs.gsy.video.player)
+}
+ksp {
+    arg("therouter.moduleName", ":core_media")
 }

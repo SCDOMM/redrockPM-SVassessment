@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.TabItem
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 class TopicListViewModel : ViewModel() {
 
     /** 开眼 API 接口实例，用于网络请求 */
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<UniversalApi>()
 
     /** Tab 列表，展示话题分类 */
     private val _tabs = MutableLiveData<List<TabItem>>()
@@ -50,7 +50,7 @@ class TopicListViewModel : ViewModel() {
                 val response = withContext(Dispatchers.IO) {
                     api.getTagTabList().execute()
                 }
-                val tabList = response.body()?.tabInfo?.tabList ?: emptyList()
+                val tabList = response.body()?.result?.tabList ?: emptyList()
                 _tabs.value = tabList
                 Log.d("TopicListVM", "Loaded ${tabList.size} tabs")
                 _error.value = null

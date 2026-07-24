@@ -11,12 +11,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.core.model.GetPageMetroData
+import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.example.ept.dicover.R
 import com.example.ept.dicover.discovery.TopicItem
 import com.example.ept.dicover.topicdetail.TopicDetailActivity
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +44,8 @@ class TopicSquareFragment : Fragment() {
         }
     }
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
+    private val gson = Gson()
     private var pageLabel = ""
 
     /** 从 arguments 中读取页面标签 */
@@ -95,8 +97,11 @@ class TopicSquareFragment : Fragment() {
         swipeRefresh.isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = api.getPage(pageLabel = pageLabel).execute()
-                val body = response.body()
+                val response = api.getPageRaw(pageLabel = pageLabel).execute()
+                val rawBody = response.body()?.string() ?: ""
+                val body = if (response.isSuccessful && rawBody.isNotEmpty()) {
+                    gson.fromJson(rawBody, GetPageResponse::class.java)
+                } else null
 
                 val items = mutableListOf<TopicSquareItem>()
 

@@ -45,7 +45,7 @@ class ResultPgcViewModel  (application: Application) : AndroidViewModel(applicat
                     return@launch
                 }
                 lastItemId = response.result?.lastItemId ?: "0"
-                allPgc=allPgc+loadResult.pgcList
+                allPgc=allPgc+loadResult.creatorList
                 _liveData.value= PgcState.LoadingState(allPgc.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

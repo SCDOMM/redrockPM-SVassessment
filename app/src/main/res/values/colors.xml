@@ -21,4 +21,8 @@
     <color name="text_primary_dark">#FFFFFFFF</color>
     <color name="text_secondary_dark">#FFB0B0B0</color>
     <color name="text_hint_dark">#FF707070</color>
+
+    <!-- 底栏选中颜色 -->
+    <color name="bottom_nav_selected">#FF000000</color>
+    <color name="bottom_nav_unselected">#FF999999</color>
 </resources>

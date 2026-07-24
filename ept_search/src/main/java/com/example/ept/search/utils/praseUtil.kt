@@ -32,7 +32,7 @@ fun parseSearchResponse(response: SearchResponse,query: String): SearchResultDat
     response.result?.item_list?.forEach { category ->
         val navType = category.nav?.type ?: return@forEach
         val metroItems = category.card_list.flatMap { card ->
-            card.card_data?.body?.metro_list ?: emptyList()
+            card.cardData?.body?.metroList ?: emptyList()
         }
         when (navType) {
             "video" -> videoList.addAll(metroItems.filter { it.type == "video" }.mapNotNull { it.metroData })

@@ -6,8 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.MetroData
+import com.example.core.common.parseLoadSearch
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.SearchApi
 import com.example.core.network.await
 import com.example.ept.search.utils.parseSearchResponseV2
 import kotlinx.coroutines.launch
@@ -27,7 +28,7 @@ class ResultCreatorsViewModel  (application: Application) : AndroidViewModel(app
     private var lastItemId=2
     private var allCreators: List<MetroData> =emptyList()
     private var query=""
-    private val appService: SpecficApi by lazy {
+    private val appService: SearchApi by lazy {
         RetrofitClient.create()
     }
     fun initLiveData(allCreators: MutableList<MetroData>,query: String){
@@ -38,9 +39,9 @@ class ResultCreatorsViewModel  (application: Application) : AndroidViewModel(app
     fun loadMore(){
         viewModelScope.launch {
             try {
-                val response = appService.searchLoad(query, "pgc", lastItemId, 10).await()
-                val loadResult = parseSearchResponseV2(response)
-                lastItemId = response.result?.last_item_id ?: 0
+                val response = appService.searchLoad(query, "pgc", lastItemId.toString(), 10).await()
+                val loadResult = parseLoadSearch(response)
+                lastItemId = response.result?.lastItemId?.toIntOrNull() ?: 0
                 allCreators=allCreators+loadResult.creatorList
                 _liveData.value= CreatorsState.LoadingMoreState(allCreators.toMutableList())
             } catch (e: Exception) {

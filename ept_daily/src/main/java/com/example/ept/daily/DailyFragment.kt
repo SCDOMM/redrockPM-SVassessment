@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.core.media.VideoPlayerActivity
 import com.therouter.TheRouter
 
 class DailyFragment : Fragment() {
@@ -39,7 +40,9 @@ class DailyFragment : Fragment() {
     }
 
     fun initEvent() {
-        adapter = DailyAdapter()
+        adapter = DailyAdapter { video ->
+            video.videoId?.let { VideoPlayerActivity.start(requireContext(), it) }
+        }
         rvDailyDefault.adapter = adapter
         rvDailyDefault.layoutManager = LinearLayoutManager(requireContext())
         ivDailyNotify.setOnClickListener {

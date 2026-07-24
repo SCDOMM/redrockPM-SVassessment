@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import com.example.ept.dicover.R
 import com.example.ept.dicover.topicdetail.TopicDetailActivity
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +41,7 @@ class TopicListFragment : Fragment() {
     }
 
     /** 开眼 API 接口实例，用于网络请求 */
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<UniversalApi>()
     /** 协程作用域，用于管理异步任务 */
     private val scope = MainScope()
 
@@ -96,18 +96,21 @@ class TopicListFragment : Fragment() {
                 val response = withContext(Dispatchers.IO) {
                     api.getTabDetailByUrl(apiUrl).execute()
                 }
-                val items = response.body()?.itemList ?: emptyList()
-                Log.d("TopicListFrag", "API returned ${items.size} items, first type=${items.firstOrNull()?.type}")
-                // 解析 briefCard 类型的数据为 TagTopicItem
-                val topics = items.mapNotNull { item ->
-                    if (item.type != "briefCard") return@mapNotNull null
-                    val data = item.data as? Map<*, *> ?: return@mapNotNull null
-                    val id = (data["id"] as? Double)?.toLong() ?: return@mapNotNull null
-                    // 移除标题前的 # 符号
-                    val title = (data["title"] as? String)?.removePrefix("#") ?: return@mapNotNull null
-                    val description = data["description"] as? String ?: ""
-                    val icon = data["icon"] as? String ?: ""
-                    val actionUrl = data["actionUrl"] as? String ?: ""
+                val body = response.body()
+                val cardList = body?.result?.card_list ?: emptyList()
+                Log.d("TopicListFrag", "API returned ${cardList.size} cards")
+                // 解析 briefCard 类型的 card 为 TagTopicItem
+                val topics = cardList.mapNotNull { card ->
+                    if (card.type != "briefCard") return@mapNotNull null
+                    val cardData = card.card_data ?: return@mapNotNull null
+                    val metroList = cardData.body?.metro_list ?: emptyList()
+                    val metro = metroList.firstOrNull() ?: return@mapNotNull null
+                    val data = metro.metro_data ?: return@mapNotNull null
+                    val id = data.topic_id.toLongOrNull() ?: return@mapNotNull null
+                    val title = data.title?.removePrefix("#") ?: return@mapNotNull null
+                    val description = data.description
+                    val icon = data.icon
+                    val actionUrl = data.link
                     TagTopicItem(id, title, description, icon, actionUrl)
                 }
                 Log.d("TopicListFrag", "Parsed ${topics.size} topics")

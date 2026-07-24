@@ -16,13 +16,7 @@ data class GetPageResult(
     val card_list: List<GetPageCard> = emptyList()
 )
 
-data class PageInfo(
-    val page_id: Int = 0,
-    val title: String = "",
-    val page_label: String = "",
-    val enable_share: Boolean = false,
-    val show_the_end: Boolean = false
-)
+// PageInfo is defined in UniversalResponse.kt
 
 data class GetPageCard(
     val card_id: Int = 0,
@@ -190,10 +184,7 @@ data class GetPageNav(
     val title: String = ""
 )
 
-data class ApiRequest(
-    val url: String,
-    val params: Map<String, String>
-)
+// ApiRequest is defined in UniversalResponse.kt
 
 data class CallMetroListResponse(
     val code: Int = -1,

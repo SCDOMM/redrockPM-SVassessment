@@ -6,20 +6,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.GetPageCard
+import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * description ： 分类详情页 ViewModel — 只加载 header 信息
+ * description ： 分类详情页 ViewModel — 加载 header 信息和 nav tabs
  * email : 3014386984@qq.com
  * date : 2026/7/21
  */
 class CategoryDetailViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<SpecficApi>()
+    private val gson = Gson()
 
     /** 标签信息数据类 */
     data class TagInfo(
@@ -57,9 +60,19 @@ class CategoryDetailViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getPage(pageLabel = pageLabel).execute()
+                    api.getPageRaw(pageLabel = pageLabel).execute()
                 }
-                val body = response.body()
+                val rawBody = response.body()?.string() ?: ""
+                if (!response.isSuccessful()) {
+                    _error.value = "HTTP错误: ${response.code()}"
+                    return@launch
+                }
+                if (rawBody.isEmpty()) {
+                    _error.value = "响应体为空"
+                    return@launch
+                }
+
+                val body = gson.fromJson(rawBody, GetPageResponse::class.java)
                 if (body?.code != 0) {
                     _error.value = "接口返回错误: code=${body?.code}"
                     return@launch
@@ -86,7 +99,7 @@ class CategoryDetailViewModel : ViewModel() {
     }
 
     /**
-     * 从 card_list 中提取头图、描述和统计信息
+     * 从 card_list 中提取头图、描述、统计信息和 nav tabs
      */
     private fun findTagInfo(cardList: List<GetPageCard>) {
         var desc = ""
@@ -101,20 +114,26 @@ class CategoryDetailViewModel : ViewModel() {
 
                 // 从 topic 类型的 metro 中提取头图
                 if (headerImage.isEmpty()) {
-                    val bg = data.background
-                    if (bg != null && bg.url.isNotEmpty()) {
-                        headerImage = bg.url
+                    val coverUrl = data.cover?.url
+                    if (!coverUrl.isNullOrEmpty()) {
+                        headerImage = coverUrl
                     }
                 }
 
                 // 提取描述
                 if (desc.isEmpty()) {
-                    if (data.description.isNotEmpty()) {
-                        desc = data.description
+                    val description = data.description
+                    if (description.isNotEmpty()) {
+                        desc = description
                     } else {
-                        val sub = data.subtitle
-                        if (!sub.isNullOrEmpty()) {
-                            desc = sub
+                        val text = data.text
+                        if (text.isNotEmpty()) {
+                            desc = text
+                        } else {
+                            val subtitle = data.subtitle
+                            if (subtitle != null && subtitle.isNotEmpty()) {
+                                desc = subtitle
+                            }
                         }
                     }
                 }
@@ -130,18 +149,13 @@ class CategoryDetailViewModel : ViewModel() {
                 // 提取 nav tabs
                 if (metro.type == "nav") {
                     val navList = data.nav_list
-                    if (!navList.isNullOrEmpty()) {
+                    if (navList != null) {
                         for (nav in navList) {
-                            if (nav.page_label.isNotEmpty()) {
-                                feedTabs.add(nav.title to nav.page_label)
-                            }
+                            feedTabs.add(Pair(nav.title, nav.page_label))
                         }
                     }
                 }
-
-                if (headerImage.isNotEmpty() && desc.isNotEmpty() && stats.isNotEmpty() && feedTabs.isNotEmpty()) break
             }
-            if (headerImage.isNotEmpty() && desc.isNotEmpty() && stats.isNotEmpty() && feedTabs.isNotEmpty()) break
         }
 
         Log.d("CategoryDetail", "Found ${feedTabs.size} feed tabs: $feedTabs")

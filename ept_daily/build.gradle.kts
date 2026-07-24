@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
 }
 
@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.gsy.video.player)
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
+    implementation(project(":core:core_media"))
     implementation(project(":ept_notify"))
     implementation(project(":ept_search"))
     implementation(project(":core:core_common"))

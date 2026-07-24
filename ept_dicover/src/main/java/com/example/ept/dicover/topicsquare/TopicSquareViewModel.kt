@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.TabItem
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.UniversalApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
  */
 class TopicSquareViewModel : ViewModel() {
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<UniversalApi>()
 
     /** 是否已加载过 Tab 数据 */
     var loaded = false
@@ -55,7 +55,7 @@ class TopicSquareViewModel : ViewModel() {
 
                 val tabItems = navResult.nav_list.map { nav ->
                     TabItem(
-                        id = 0,
+                        id = "",
                         name = nav.title,
                         apiUrl = nav.page_label
                     )

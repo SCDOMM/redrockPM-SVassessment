@@ -1,6 +1,7 @@
 package com.example.core.network
 
 import com.example.core.network.NetworkConfig.BASE_URL
+import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeUnit
  * date : 2026/7/14 17:57
  */
 object RetrofitClient {
+    val gson = Gson()
+
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }

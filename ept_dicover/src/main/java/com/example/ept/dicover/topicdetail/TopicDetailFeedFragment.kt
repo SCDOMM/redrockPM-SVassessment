@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.example.ept.dicover.R
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +41,8 @@ class TopicDetailFeedFragment : Fragment() {
         }
     }
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
+    private val gson = Gson()
     private var pageLabel = ""
     private var adapter: TopicDetailFeedAdapter? = null
     private var swipeRefresh: SwipeRefreshLayout? = null
@@ -86,8 +89,11 @@ class TopicDetailFeedFragment : Fragment() {
         swipeRefresh?.isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = api.getPage(pageLabel = pageLabel).execute()
-                val body = response.body()
+                val response = api.getPageRaw(pageLabel = pageLabel).execute()
+                val rawBody = response.body()?.string() ?: ""
+                val body = if (response.isSuccessful && rawBody.isNotEmpty()) {
+                    gson.fromJson(rawBody, GetPageResponse::class.java)
+                } else null
 
                 val items = mutableListOf<TopicFeedItem>()
 
@@ -114,7 +120,7 @@ class TopicDetailFeedFragment : Fragment() {
 
                             val authorName = data.author?.nick ?: ""
                             val authorAvatar = data.author?.avatar?.url ?: ""
-                            val text = data.text ?: ""
+                            val text = data.text
                             val likeCount = data.consumption?.like_count ?: 0
                             val collectionCount = data.consumption?.collection_count ?: 0
                             val commentCount = data.consumption?.comment_count ?: 0
@@ -130,7 +136,7 @@ class TopicDetailFeedFragment : Fragment() {
                                     likeCount = likeCount,
                                     collectionCount = collectionCount,
                                     commentCount = commentCount,
-                                    publishTime = data.publish_time ?: ""
+                                    publishTime = data.publish_time
                                 )
                             )
                         }

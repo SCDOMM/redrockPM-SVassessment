@@ -46,7 +46,7 @@ class ResultGraphicsViewModel(application: Application) : AndroidViewModel(appli
                     return@launch
                 }
                 lastItemId = response.result?.lastItemId ?: "0"
-                allGraphics = allGraphics + loadResult.graphicList
+                allGraphics = allGraphics + loadResult.articleList
                 _liveData.value = GraphicsState.LoadingState(allGraphics.toMutableList())
             } catch (e: Exception) {
                 e.printStackTrace()

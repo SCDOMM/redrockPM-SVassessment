@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.core.media.VideoPlayerActivity
 import com.example.ept.search.R
 import com.example.ept.search.adapter.resultcontent.ResultVideosAdapter
 import com.example.ept.search.viewmodel.SearchViewModel
@@ -35,7 +36,14 @@ class ResultVideosFragment : Fragment() {
         return view
     }
     fun initEvent(){
-        adapter= ResultVideosAdapter()
+        adapter= ResultVideosAdapter { video ->
+            val id = video.videoId
+            if (!id.isNullOrEmpty()) {
+                VideoPlayerActivity.start(requireContext(), id)
+            } else {
+                Toast.makeText(requireContext(), "视频ID无效", Toast.LENGTH_SHORT).show()
+            }
+        }
         rvResultVideos.layoutManager = LinearLayoutManager(view.context)
         rvResultVideos.adapter=adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner){ resultData ->

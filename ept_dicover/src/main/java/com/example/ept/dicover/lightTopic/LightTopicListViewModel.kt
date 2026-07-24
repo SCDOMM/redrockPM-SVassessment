@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.GetPageCard
+import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.KaiyanApi
+import com.example.core.network.api.SpecficApi
 import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,7 +22,8 @@ import kotlinx.coroutines.withContext
  */
 class LightTopicListViewModel : ViewModel() {
 
-    private val api = RetrofitClient.create<KaiyanApi>()
+    private val api = RetrofitClient.create<SpecficApi>()
+    private val gson = Gson()
 
     var loaded = false
         private set
@@ -44,11 +47,24 @@ class LightTopicListViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getPage(pageLabel = "discover_special_topic").execute()
+                    api.getPageRaw(pageLabel = "discover_special_topic").execute()
                 }
                 Log.d("LightTopicListVM", "HTTP status=${response.code()}, isSuccessful=${response.isSuccessful()}")
-                val body = response.body()
-                Log.d("LightTopicListVM", "body=${body != null}, code=${body?.code}")
+                val rawBody = response.body()?.string() ?: ""
+                Log.d("LightTopicListVM", "RAW_LEN=${rawBody.length}")
+
+                if (!response.isSuccessful()) {
+                    _error.value = "HTTP错误: ${response.code()}"
+                    return@launch
+                }
+                if (rawBody.isEmpty()) {
+                    _error.value = "响应体为空"
+                    return@launch
+                }
+
+                val body = gson.fromJson(rawBody, GetPageResponse::class.java)
+                Log.d("LightTopicListVM", "Parsed code=${body?.code}, result=${body?.result != null}")
+
                 if (body?.code != 0) {
                     _error.value = "加载失败: code=${body?.code}"
                     return@launch

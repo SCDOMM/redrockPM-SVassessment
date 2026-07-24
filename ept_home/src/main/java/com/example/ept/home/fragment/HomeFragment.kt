@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.core.media.VideoPlayerActivity
 import com.example.ept.home.R
 import com.example.ept.home.adapter.HomeAdapter
 import com.example.ept.home.viewmodel.HomeState
@@ -40,7 +41,9 @@ class HomeFragment : Fragment() {
     }
 
     fun initEvent() {
-        adapter = HomeAdapter()
+        adapter = HomeAdapter { video ->
+            video.videoId?.let { VideoPlayerActivity.start(requireContext(), it) }
+        }
         rvHomeDefault.layoutManager = LinearLayoutManager(requireContext())
         val layoutManager = rvHomeDefault.layoutManager as LinearLayoutManager
         rvHomeDefault.adapter = adapter

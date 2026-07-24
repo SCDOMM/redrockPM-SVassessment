@@ -22,7 +22,9 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
  * 创建时间：2026-07-14 16:44
  *
  */
-class HomeAdapter : ListAdapter<MetroData, RecyclerView.ViewHolder>(HomeDiffCallback) {
+class HomeAdapter(
+    private val onItemClick: (MetroData) -> Unit = {}
+) : ListAdapter<MetroData, RecyclerView.ViewHolder>(HomeDiffCallback) {
     override fun getItemViewType(position: Int): Int {
         if (position == 0) {
             return VIEW_TYPE_HEADER
@@ -67,6 +69,7 @@ class HomeAdapter : ListAdapter<MetroData, RecyclerView.ViewHolder>(HomeDiffCall
             is SelectedViewHolder -> holder.bindData(video)
             is NormalViewHolder -> holder.bindData(video)
         }
+        holder.itemView.setOnClickListener { onItemClick(video) }
     }
 
     inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {

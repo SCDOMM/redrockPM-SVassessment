@@ -57,6 +57,7 @@ class VideoPlayerFragment : Fragment() {
     private var videoCover: String = ""
     private var authorName: String = ""
     private var authorIcon: String = ""
+    private var authorUid: String = ""
     private var category: String = ""
     private var description: String = ""
     private var collectionCount: Int = 0
@@ -72,6 +73,7 @@ class VideoPlayerFragment : Fragment() {
             videoCover = it.getString(ARG_VIDEO_COVER, "")
             authorName = it.getString(ARG_AUTHOR_NAME, "")
             authorIcon = it.getString(ARG_AUTHOR_ICON, "")
+            authorUid = it.getString(ARG_AUTHOR_UID, "")
             category = it.getString(ARG_CATEGORY, "")
             description = it.getString(ARG_DESCRIPTION, "")
             collectionCount = it.getInt(ARG_COLLECTION_COUNT, 0)
@@ -194,7 +196,7 @@ class VideoPlayerFragment : Fragment() {
     private fun initRelatedVideos() {
         relatedAdapter = RelatedVideoAdapter { item ->
             val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
-                putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, item.id)
+                putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, item.id.toString())
                 putExtra(VideoPlayerActivity.EXTRA_VIDEO_URL, item.playUrl)
                 putExtra(VideoPlayerActivity.EXTRA_VIDEO_TITLE, item.title)
                 putExtra(VideoPlayerActivity.EXTRA_VIDEO_COVER, item.coverUrl)
@@ -213,18 +215,89 @@ class VideoPlayerFragment : Fragment() {
      * 加载相关推荐视频数据
      */
     private fun loadRelatedVideos() {
-        if (videoId == 0L) return
+        Log.d("VideoPlayer", "loadRelatedVideos: videoId=$videoId")
+        if (videoId == 0L) {
+            Log.w("VideoPlayer", "videoId is 0, skip related")
+            return
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getVideoRelated(videoId).execute()
+                    api.getRelatedRecommend(videoId.toString()).execute()
                 }
+                Log.d("VideoPlayer", "related HTTP ${response.code()}")
                 if (response.isSuccessful) {
-                    relatedAdapter.submitList(relatedAdapter.parseItems(response.body()?.itemList ?: emptyList()))
+                    val rawBody = response.body()?.string() ?: ""
+                    Log.d("VideoPlayer", "related RAW_LEN=${rawBody.length}")
+                    if (rawBody.isNotEmpty()) {
+                        Log.d("VideoPlayer", "related preview=${rawBody.take(500)}")
+                    }
+
+                    val topLevel = try {
+                        com.google.gson.Gson().fromJson(rawBody, Map::class.java) as? Map<String, Any>
+                    } catch (e: Exception) {
+                        null
+                    }
+
+                    val code = (topLevel?.get("code") as? Number)?.toInt() ?: -1
+                    if (code != 0) {
+                        Log.e("VideoPlayer", "related API error: code=$code")
+                        return@launch
+                    }
+
+                    @Suppress("UNCHECKED_CAST")
+                    val result = topLevel?.get("result") as? Map<String, Any>
+                    @Suppress("UNCHECKED_CAST")
+                    val itemList = result?.get("item_list") as? List<Map<String, Any>> ?: emptyList()
+                    Log.d("VideoPlayer", "related itemList size=${itemList.size}")
+                    if (itemList.isNotEmpty()) {
+                        Log.d("VideoPlayer", "related first item type=${itemList[0]["type"]}, keys=${itemList[0].keys}")
+                    }
+
+                    val videoItems = mutableListOf<RelatedVideoAdapter.RelatedVideoItem>()
+                    for (itemMap in itemList) {
+                        // API 返回的 item 是扁平结构，video 信息直接在 item 中
+                        @Suppress("UNCHECKED_CAST")
+                        val videoMap = itemMap["video"] as? Map<String, Any> ?: continue
+
+                        val id = when (val v = videoMap["video_id"] ?: itemMap["item_id"]) {
+                            is Number -> v.toLong()
+                            is String -> v.toLongOrNull() ?: 0L
+                            else -> 0L
+                        }
+                        if (id == 0L) continue
+
+                        @Suppress("UNCHECKED_CAST")
+                        val coverMap = videoMap["cover"] as? Map<String, Any>
+                        @Suppress("UNCHECKED_CAST")
+                        val authorMap = itemMap["author"] as? Map<String, Any>
+                        val duration = videoMap["duration"]
+                        val durationLong = when (duration) {
+                            is Map<*, *> -> (duration["value"] as? Number)?.toLong() ?: 0L
+                            is Number -> duration.toLong()
+                            else -> 0L
+                        }
+
+                        videoItems.add(
+                            RelatedVideoAdapter.RelatedVideoItem(
+                                id = id,
+                                title = videoMap["title"] as? String ?: "",
+                                coverUrl = coverMap?.get("feed") as? String ?: coverMap?.get("url") as? String ?: "",
+                                duration = durationLong,
+                                authorName = authorMap?.get("nick") as? String ?: "",
+                                authorIcon = (authorMap?.get("avatar") as? Map<String, Any>)?.get("url") as? String ?: "",
+                                category = (itemMap["category"] as? Map<String, Any>)?.get("name") as? String ?: "",
+                                description = itemMap["text"] as? String ?: "",
+                                playUrl = videoMap["play_url"] as? String ?: ""
+                            )
+                        )
+                    }
+
+                    relatedAdapter.submitList(videoItems)
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("VideoPlayer", "loadRelatedVideos failed", e)
             }
         }
     }
@@ -245,6 +318,24 @@ class VideoPlayerFragment : Fragment() {
                 .load(authorIcon)
                 .transform(CircleCrop())
                 .into(ivAuthor)
+        }
+
+        // 点击头像跳转作者页
+        ivAuthor.setOnClickListener {
+            if (authorUid.isNotEmpty()) {
+                com.therouter.TheRouter.build("http://therouter.com/person")
+                    .withString("uid", authorUid)
+                    .navigation()
+            }
+        }
+
+        // 点击作者名也跳转
+        tvAuthorName.setOnClickListener {
+            if (authorUid.isNotEmpty()) {
+                com.therouter.TheRouter.build("http://therouter.com/person")
+                    .withString("uid", authorUid)
+                    .navigation()
+            }
         }
 
         // 分享按钮
@@ -300,6 +391,8 @@ class VideoPlayerFragment : Fragment() {
         private const val ARG_AUTHOR_NAME = "author_name"
         /** 作者头像参数键名 */
         private const val ARG_AUTHOR_ICON = "author_icon"
+        /** 作者 UID 参数键名 */
+        private const val ARG_AUTHOR_UID = "author_uid"
         /** 视频分类参数键名 */
         private const val ARG_CATEGORY = "category"
         /** 视频描述参数键名 */
@@ -322,6 +415,7 @@ class VideoPlayerFragment : Fragment() {
             videoCover: String,
             authorName: String,
             authorIcon: String,
+            authorUid: String = "",
             category: String,
             description: String,
             collectionCount: Int = 0,
@@ -335,6 +429,7 @@ class VideoPlayerFragment : Fragment() {
                 putString(ARG_VIDEO_COVER, videoCover)
                 putString(ARG_AUTHOR_NAME, authorName)
                 putString(ARG_AUTHOR_ICON, authorIcon)
+                putString(ARG_AUTHOR_UID, authorUid)
                 putString(ARG_CATEGORY, category)
                 putString(ARG_DESCRIPTION, description)
                 putInt(ARG_COLLECTION_COUNT, collectionCount)

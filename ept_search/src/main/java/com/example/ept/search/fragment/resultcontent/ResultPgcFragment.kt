@@ -40,7 +40,7 @@ class ResultPgcFragment : Fragment() {
         rvPgcDefault.layoutManager = LinearLayoutManager(view.context)
         rvPgcDefault.adapter = adapter
         searchViewModel.resultLiveData.observe(viewLifecycleOwner) { resultData ->
-            pgcViewModel.initLiveData(resultData.pgcList.toMutableList(), resultData.query)
+            pgcViewModel.initLiveData(resultData.creatorList.toMutableList(), resultData.query)
         }
         pgcViewModel.liveData.observe(viewLifecycleOwner) { data ->
             when (data) {

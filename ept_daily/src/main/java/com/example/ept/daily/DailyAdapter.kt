@@ -20,13 +20,16 @@ import com.example.core.model.MetroData
  * 创建时间：2026-07-15 21:11
  *
  */
-class DailyAdapter : ListAdapter<MetroData, DailyAdapter.DailyViewHolder>(DailyDiffCallback) {
+class DailyAdapter(
+    private val onItemClick: (MetroData) -> Unit = {}
+) : ListAdapter<MetroData, DailyAdapter.DailyViewHolder>(DailyDiffCallback) {
     override fun onBindViewHolder(
         holder: DailyViewHolder,
         position: Int
     ) {
         val video = getItem(position)
         holder.bindData(video)
+        holder.itemView.setOnClickListener { onItemClick(video) }
     }
 
     override fun onCreateViewHolder(

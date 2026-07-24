@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.GetPageCard
 import com.example.core.model.GetPageMetroItem
+import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
+import com.example.core.network.api.UniversalApi
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +23,8 @@ import kotlinx.coroutines.withContext
  */
 class CategoryFeedViewModel : ViewModel() {
 
-    private val api = RetrofitClient.create<SpecficApi>()
+    private val specApi = RetrofitClient.create<SpecficApi>()
+    private val api = RetrofitClient.create<UniversalApi>()
     private val gson = Gson()
 
     private val allItems = mutableListOf<CategoryItem>()
@@ -56,7 +59,7 @@ class CategoryFeedViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getPageRaw(pageLabel = pageLabel).execute()
+                    specApi.getPageRaw(pageLabel = pageLabel).execute()
                 }
                 val rawBody = response.body()?.string() ?: ""
                 val body = gson.fromJson(rawBody, GetPageResponse::class.java)
@@ -173,13 +176,6 @@ class CategoryFeedViewModel : ViewModel() {
                 // 更新 lastItemId 用于下次分页
                 if (result.last_item_id.isNotEmpty()) {
                     lastItemId = result.last_item_id
-                }
-
-                if (newItems.isEmpty()) {
-                    hasNextPage = false
-                } else {
-                    allItems.addAll(newItems)
-                    hasNextPage = lastItemId.isNotEmpty()
                 }
 
                 if (newItems.isEmpty()) {

@@ -1,11 +1,17 @@
 package com.example.core.network.api
 
 import com.example.core.model.ApiResponse
+import com.example.core.model.CallMetroListResponse
 import com.example.core.model.Card
-import com.example.core.model.PaginatedResult
+import com.example.core.model.GetNavResponse
+import com.example.core.model.GetPageResponse
+import com.example.core.model.ItemDetailResponse
 import com.example.core.model.MetroItem
 import com.example.core.model.NoticeItem
 import com.example.core.model.PageResult
+import com.example.core.model.PaginatedResult
+import com.example.core.model.RelatedRecommendResponse
+import com.example.core.model.TabListResponse
 import com.example.core.model.UserInfo
 import retrofit2.Call
 import retrofit2.http.Field
@@ -25,7 +31,7 @@ interface UniversalApi {
     fun getPage(
         @Field("page_label") pageLabel: String,
         @Field("page_type") pageType: String = "card",
-    ): Call<ApiResponse< PageResult>>
+    ): Call<ApiResponse<PageResult>>
 
     @GET("v1/common/notice/get_push_list")
     fun getPushList(
@@ -44,10 +50,10 @@ interface UniversalApi {
     @FormUrlEncoded
     @POST("v1/card/metro/call_metro_list_v2")
     fun getMorePage(
-        @Field("data_source") dataSource: String="",
-        @Field("page_label") pageLabel: String="",
+        @Field("data_source") dataSource: String = "",
+        @Field("page_label") pageLabel: String = "",
         @Field("material") materialJSON: String,
-        @Field("card") cardJSON: String="",
+        @Field("card") cardJSON: String = "",
         @Field("last_item_id") lastItemId: String,
     ): Call<ApiResponse<PaginatedResult<MetroItem>>>
 
@@ -56,4 +62,57 @@ interface UniversalApi {
         @Query("uid") uid: String,
         @Query("user_type") userType: String = ""
     ): Call<ApiResponse<UserInfo>>
+
+    // ========== 从 KaiyanApi 整合的方法 ==========
+
+    @GET("v7/tag/tabList")
+    fun getTagTabList(): Call<TabListResponse>
+
+    @FormUrlEncoded
+    @POST("v1/card/page/get_page")
+    fun getTabDetailByUrl(
+        @Field("url") url: String
+    ): Call<GetPageResponse>
+
+    @FormUrlEncoded
+    @POST("v1/card/page/get_nav")
+    fun getNav(
+        @Field("tab_label") tabLabel: String
+    ): Call<GetNavResponse>
+
+    @FormUrlEncoded
+    @POST("v1/content/item/get_item_detail_v2")
+    fun getItemDetail(
+        @Field("resource_id") resourceId: String,
+        @Field("resource_type") resourceType: String = "pgc_video"
+    ): Call<okhttp3.ResponseBody>
+
+    @FormUrlEncoded
+    @POST("v1/content/item/get_related_recommend")
+    fun getRelatedRecommend(
+        @Field("resource_id") resourceId: String,
+        @Field("resource_type") resourceType: String = "pgc_video"
+    ): Call<okhttp3.ResponseBody>
+
+    // ========== 社区相关方法 ==========
+
+    @GET("v7/community/tab/rec")
+    fun getCommunityRec(): Call<ApiResponse<PaginatedResult<MetroItem>>>
+
+    @GET
+    fun getRankListByUrl(@retrofit2.http.Url url: String): Call<ApiResponse<PaginatedResult<MetroItem>>>
+
+    // ========== Metro 列表加载更多 ==========
+
+    @FormUrlEncoded
+    @POST("v1/card/metro/call_metro_list_v2")
+    fun callMetroListV2(
+        @Field("card_index") cardIndex: Int,
+        @Field("material") material: String,
+        @Field("last_item_id") lastItemId: String,
+        @Field("page_params") pageParams: String,
+        @Field("page_label") pageLabel: String,
+        @Field("card") card: String,
+        @Field("data_source") dataSource: String
+    ): Call<CallMetroListResponse>
 }

@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.MetroItem
 import com.example.core.network.RetrofitClient
-import com.example.core.network.api.SpecficApi
-import com.google.gson.Gson
+import com.example.core.network.api.UniversalApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,9 +20,7 @@ import kotlinx.coroutines.withContext
 class CommunityViewModel : ViewModel() {
 
     /** 开眼 API 接口实例，用于网络请求 */
-    private val api = RetrofitClient.create<SpecficApi>()
-    /** Gson 实例，用于 JSON 解析 */
-    private val gson = Gson()
+    private val api = RetrofitClient.create<UniversalApi>()
 
     /** 所有已加载的数据项，用于分页累加 */
     private val allItems = mutableListOf<CommunityItem>()
@@ -64,10 +62,10 @@ class CommunityViewModel : ViewModel() {
                 val body = response.body()
                 // 清空并重新加载数据
                 allItems.clear()
-                allItems.addAll(parseItems(body?.itemList ?: emptyList()))
+                allItems.addAll(parseItems(body?.result?.itemList ?: emptyList()))
                 // 更新分页信息
-                nextPageUrl = body?.nextPageUrl
-                hasNextPage = nextPageUrl != null
+                nextPageUrl = null
+                hasNextPage = false
                 _items.value = allItems.toList()
                 _error.value = null
                 Log.d("CommunityVM", "Loaded ${allItems.size} items, hasNext=$hasNextPage")
@@ -95,12 +93,12 @@ class CommunityViewModel : ViewModel() {
                     api.getRankListByUrl(url).execute()
                 }
                 val body = response.body()
-                val newItems = parseItems(body?.itemList ?: emptyList())
+                val newItems = parseItems(body?.result?.itemList ?: emptyList())
                 // 累加新数据到列表
                 allItems.addAll(newItems)
                 // 更新分页信息
-                nextPageUrl = body?.nextPageUrl
-                hasNextPage = nextPageUrl != null
+                nextPageUrl = null
+                hasNextPage = false
                 _items.value = allItems.toList()
                 _error.value = null
                 Log.d("CommunityVM", "Loaded ${newItems.size} more, total=${allItems.size}")
@@ -117,60 +115,42 @@ class CommunityViewModel : ViewModel() {
      * 解析 API 返回的原始数据为 CommunityItem 列表
      * 支持两种卡片类型：入口卡片和社区内容卡片
      */
-    private fun parseItems(rawItems: List<com.example.core.model.Item>): List<CommunityItem> {
+    private fun parseItems(rawItems: List<MetroItem>): List<CommunityItem> {
         val result = mutableListOf<CommunityItem>()
 
         for (item in rawItems) {
-            val data = item.data as? Map<*, *> ?: continue
+            val metroData = item.metroData ?: continue
 
             when (item.type) {
                 // 入口卡片：横向滚动的推荐入口（如主题创作广场、话题讨论大厅）
                 "horizontalScrollCard" -> {
-                    val dataType = data["dataType"] as? String ?: ""
-                    if (dataType == "ItemCollection") {
-                        val innerItems = data["itemList"] as? List<*> ?: continue
-                        for (inner in innerItems) {
-                            val innerMap = inner as? Map<*, *> ?: continue
-                            val innerData = innerMap["data"] as? Map<*, *> ?: continue
-                            val title = innerData["title"] as? String ?: continue
-                            val subTitle = innerData["subTitle"] as? String ?: ""
-                            val bgPicture = innerData["bgPicture"] as? String ?: ""
-                            result.add(CommunityItem.EntryCard(title, subTitle, bgPicture))
-                        }
-                    }
+                    // MetroItem 不支持 horizontalScrollCard，跳过
+                    continue
                 }
                 // 社区内容卡片：视频或图片帖子
                 "communityColumnsCard" -> {
-                    val header = data["header"] as? Map<*, *> ?: continue
-                    val content = data["content"] as? Map<*, *> ?: continue
-                    val contentData = content["data"] as? Map<*, *> ?: continue
-                    val contentType = content["type"] as? String ?: ""
-
-                    // 解析基础信息
-                    val id = (contentData["id"] as? Double)?.toLong() ?: continue
-                    val description = contentData["description"] as? String ?: ""
-                    val cover = contentData["cover"] as? Map<*, *>
-                    val coverUrl = cover?.get("feed") as? String ?: ""
+                    // 使用 MetroData 中的字段解析
+                    val id = metroData.videoId?.toLongOrNull() ?: metroData.itemId?.toLongOrNull() ?: continue
+                    val description = metroData.description ?: metroData.text ?: ""
+                    val coverUrl = metroData.cover?.url ?: ""
 
                     // 解析作者信息
-                    val owner = contentData["owner"] as? Map<*, *>
-                    val nickname = owner?.get("nickname") as? String ?: ""
-                    val avatar = owner?.get("avatar") as? String ?: ""
+                    val nickname = metroData.author?.nick ?: metroData.nick ?: ""
+                    val avatar = metroData.author?.avatar?.url ?: metroData.avatar?.url ?: ""
 
                     // 解析互动数据（收藏数、评论数）
-                    val consumption = contentData["consumption"] as? Map<*, *>
-                    val collectionCount = (consumption?.get("collectionCount") as? Double)?.toInt() ?: 0
-                    val replyCount = (consumption?.get("replyCount") as? Double)?.toInt() ?: 0
+                    val collectionCount = metroData.consumption?.collectionCount ?: 0
+                    val replyCount = metroData.consumption?.commentCount ?: 0
 
                     // 判断是视频还是图片
-                    val isVideo = contentType == "video"
-                    val duration = if (isVideo) (contentData["duration"] as? Double)?.toLong() ?: 0 else 0
-                    val playUrl = if (isVideo) contentData["playUrl"] as? String ?: "" else ""
+                    val isVideo = metroData.videoId != null
+                    val duration = metroData.duration?.value?.toLong() ?: 0
+                    val playUrl = metroData.playUrl ?: ""
 
                     // 图片可能有多张
-                    val urls = contentData["urls"] as? List<*>
-                    val imageUrls = if (!isVideo && urls != null && urls.isNotEmpty()) {
-                        urls.mapNotNull { it as? String }
+                    val imagesList = metroData.images
+                    val imageUrls = if (!isVideo && !imagesList.isNullOrEmpty()) {
+                        imagesList.mapNotNull { it.cover?.url }
                     } else {
                         if (coverUrl.isNotEmpty()) listOf(coverUrl) else emptyList()
                     }
