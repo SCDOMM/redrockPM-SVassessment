@@ -41,7 +41,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
         <activity
-            android:name="com.example.ept.dicover.topicsquare.TopicSquareActivity"
+            android:name="com.example.ept.dicover.topicsquare.TopicSquareListActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
         <activity

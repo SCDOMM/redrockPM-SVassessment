@@ -25,4 +25,17 @@
     <!-- 底栏选中颜色 -->
     <color name="bottom_nav_selected">#FF000000</color>
     <color name="bottom_nav_unselected">#FF999999</color>
+
+    <!-- 通用色名（DayNight 切换用） — background/surface/text_primary/text_secondary/text_hint 定义在 colors_theme.xml -->
+    <color name="divider">#FFE0E0E0</color>
+    <color name="stroke">#FFE0E0E0</color>
+    <color name="icon_default">#FF2c2c2c</color>
+    <color name="accent">#FF1E90FF</color>
+    <color name="overlay_white">#FFFFFFFF</color>
+    <color name="overlay_white_80">#CCFFFFFF</color>
+    <color name="tab_indicator">#FFA9A9A9</color>
+    <color name="tab_selected">#FF000000</color>
+    <color name="tab_unselected">#FF808080</color>
+    <color name="search_link">#FF0066CC</color>
+    <color name="category_item_bg">#FFFFFFFF</color>
 </resources>

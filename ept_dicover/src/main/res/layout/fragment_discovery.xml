@@ -40,6 +40,7 @@
                     android:layout_height="wrap_content"
                     android:padding="2dp"
                     android:src="@drawable/ic_daily_notify"
+                    app:tint="@color/icon_default"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -50,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:padding="2dp"
                     android:src="@drawable/ic_daily_search"
+                    app:tint="@color/icon_default"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +73,7 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/actx_doscovery_category"
+                android:id="@+id/actx_discovery_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -80,7 +82,7 @@
                 android:textSize="20sp" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_doscovery_category"
+                android:id="@+id/rv_discovery_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -109,7 +111,7 @@
                     android:layout_weight="1" />
 
                 <ImageView
-                    android:id="@+id/iv_doscovery_lightTopicMore"
+                    android:id="@+id/iv_discovery_lightTopicMore"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -156,7 +158,7 @@
                     android:textSize="13sp" />
 
                 <ImageView
-                    android:id="@+id/iv_doscovery_topicMore"
+                    android:id="@+id/iv_discovery_topicMore"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"

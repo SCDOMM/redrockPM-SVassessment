@@ -1,6 +1,9 @@
-package com.example.ept.dicover.topiclist
+package com.example.ept.dicover.topicsquare
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -12,54 +15,56 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 /**
- * description ： 话题列表页（TabLayout + ViewPager2）
+ * description ： 话题广场列表页，带 TabLayout + ViewPager2
  * email : 3014386984@qq.com
- * date : 2026/7/18
+ * date : 2026/7/22
  */
-/** 话题列表 Activity：TabLayout + ViewPager2 展示多个话题分类 */
-class TopicListActivity : AppCompatActivity() {
+class TopicSquareListActivity : AppCompatActivity() {
 
-    /** 话题列表 ViewModel */
-    private lateinit var viewModel: TopicListViewModel
+    /** 启动话题广场页面 */
+    companion object {
+        fun start(context: Context) {
+            val intent = Intent(context, TopicSquareListActivity::class.java)
+            context.startActivity(intent)
+        }
+    }
 
-    /** 页面初始化：沉浸式状态栏、Toolbar 返回键、ViewPager + Tab 配置、数据观察 */
+    private lateinit var viewModel: TopicSquareViewModel
+
+    /** 初始化页面：沉浸式状态栏、Toolbar、TabLayout + ViewPager2 联动 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_topic_list)
 
-        // AppBar 适配系统状态栏高度
-        val appBar = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar)
+        val appBar = findViewById<android.view.View>(R.id.app_bar)
         ViewCompat.setOnApplyWindowInsetsListener(appBar) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(0, bars.top, 0, 0)
+            view.setPadding(bars.left, bars.top, bars.right, 0)
             insets
         }
-        // Toolbar 导航按钮点击返回
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).setNavigationOnClickListener { finish() }
 
-        // 初始化 ViewModel
-        viewModel = ViewModelProvider(this)[TopicListViewModel::class.java]
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
+        supportActionBar?.title = "话题广场"
+
+        viewModel = ViewModelProvider(this)[TopicSquareViewModel::class.java]
 
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
 
-        // 观察 Tab 数据变化，设置 ViewPager 适配器并关联 TabLayout
         viewModel.tabs.observe(this) { tabs ->
-            viewPager.adapter = TopicTabAdapter(this, tabs)
+            val adapter = TopicSquareTabAdapter(this, tabs)
+            viewPager.adapter = adapter
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = tabs[position].name
             }.attach()
         }
 
-        // 观察错误信息，弹出 Toast 提示
         viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let {
-                android.widget.Toast.makeText(this, it, android.widget.Toast.LENGTH_SHORT).show()
-            }
+            errorMsg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 
-        // 首次进入时加载 Tab 数据
         if (!viewModel.loaded) {
             viewModel.loadTabs()
         }

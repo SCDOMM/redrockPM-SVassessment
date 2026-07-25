@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,15 +27,15 @@ import kotlinx.coroutines.withContext
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
-class TopicSquareFragment : Fragment() {
+class TopicSquareListFragment : Fragment() {
 
     companion object {
         /** 页面标签参数键 */
         private const val ARG_PAGE_LABEL = "page_label"
 
         /** 通过页面标签创建 Fragment 实例 */
-        fun newInstance(pageLabel: String): TopicSquareFragment {
-            val fragment = TopicSquareFragment()
+        fun newInstance(pageLabel: String): TopicSquareListFragment {
+            val fragment = TopicSquareListFragment()
             val args = Bundle()
             args.putString(ARG_PAGE_LABEL, pageLabel)
             fragment.arguments = args
@@ -69,7 +68,7 @@ class TopicSquareFragment : Fragment() {
         val rvTopics = view.findViewById<RecyclerView>(R.id.rv_topics)
 
         val topicItems = mutableListOf<TopicItem>()
-        val adapter = TopicSquareAdapter { item ->
+        val adapter = TopicSquareListAdapter { item ->
             // 点击话题卡片跳转详情
             Log.d("TopicSquareFragment", "Click: title=${item.title}, pageLabel=${item.pageLabel}")
             if (item.pageLabel.isNotEmpty()) {
@@ -91,7 +90,7 @@ class TopicSquareFragment : Fragment() {
     /** 加载话题广场数据，解析 API 返回的卡片列表 */
     private fun loadContent(
         swipeRefresh: SwipeRefreshLayout,
-        adapter: TopicSquareAdapter,
+        adapter: TopicSquareListAdapter,
         topicItems: MutableList<TopicItem>
     ) {
         swipeRefresh.isRefreshing = true
@@ -103,7 +102,7 @@ class TopicSquareFragment : Fragment() {
                     gson.fromJson(rawBody, GetPageResponse::class.java)
                 } else null
 
-                val items = mutableListOf<TopicSquareItem>()
+                val items = mutableListOf<TopicSquareListItem>()
 
                 if (body?.code == 0 && body.result != null) {
                     val result = body.result!!
@@ -126,7 +125,7 @@ class TopicSquareFragment : Fragment() {
                             val pageLabel = extractPageLabel(metro.link)
 
                             items.add(
-                                TopicSquareItem(
+                                TopicSquareListItem(
                                     id = topicId,
                                     title = data.title ?: "",
                                     description = data.description,

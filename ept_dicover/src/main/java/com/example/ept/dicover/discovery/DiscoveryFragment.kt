@@ -24,9 +24,12 @@ import com.example.ept.category.CategoryDetailActivity
 import com.example.ept.dicover.R
 import com.example.ept.dicover.lightTopic.LightTopicListActivity
 import com.example.ept.dicover.lightTopic.LightTopicsActivity
-import com.example.ept.dicover.topiclist.TopicListActivity
-import com.example.ept.dicover.topicsquare.TopicSquareActivity
-
+import com.example.ept.dicover.topicsquare.TopicSquareListActivity
+/**
+ * description ： 发现页 Fragment，
+ * email : 3014386984@qq.com
+ * date : 2026/7/21 11:39
+ */
 class DiscoveryFragment : Fragment() {
 
     /** 发现页 ViewModel */
@@ -56,22 +59,23 @@ class DiscoveryFragment : Fragment() {
 
         swipeRefresh = view.findViewById(R.id.swipe_refresh)
 
-        // === 分类网格 ===
-        val rvCategory = view.findViewById<RecyclerView>(R.id.rv_doscovery_category)
+        // 分类
+        val rvCategory = view.findViewById<RecyclerView>(R.id.rv_discovery_category)
         rvCategory.layoutManager = GridLayoutManager(requireContext(), 3)
         val categoryAdapter = CategoryAdapter { category ->
             CategoryDetailActivity.start(requireContext(), category.pageLabel, category.name)
         }
         rvCategory.adapter = categoryAdapter
 
-        // === 主题播单 ===
-        view.findViewById<android.widget.ImageView>(R.id.iv_doscovery_topicMore).setOnClickListener {
-            startActivity(android.content.Intent(requireContext(), TopicListActivity::class.java))
+        // 主题播单
+        view.findViewById<android.widget.ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
+            TopicSquareListActivity.start(requireContext())
         }
-        // 主题播单"更多"按钮 → 跳转主题播单列表页
-        view.findViewById<android.widget.ImageView>(R.id.iv_doscovery_lightTopicMore).setOnClickListener {
+        // 主题播单更多
+        view.findViewById<android.widget.ImageView>(R.id.iv_discovery_lightTopicMore).setOnClickListener {
             LightTopicListActivity.start(requireContext())
         }
+        // 横向卡片展示rv
         val rvTopic = view.findViewById<RecyclerView>(R.id.rv_discovery_topic)
         rvTopic.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         val topicAdapter = TopicAdapter { topic ->
@@ -81,17 +85,17 @@ class DiscoveryFragment : Fragment() {
         }
         rvTopic.adapter = topicAdapter
 
-        // === 话题广场 ===
+        //话题广场
         cardStackView = view.findViewById(R.id.card_stack_view)
         tvIndicator = view.findViewById(R.id.tv_square_indicator)
 
-        // 滑动回调：更新指示器
+        // 滑动更新指示器
         cardStackView.onCardSwiped = { _ ->
             currentSquareIndex++
             updateIndicator()
         }
 
-        // 卡片回收回调：为回收到底部的卡片重新绑定数据
+        // 为回收到底部的卡片重新绑定数据
         cardStackView.onCardRecycled = { recycledView ->
             // 回收的卡片应显示"当前位置 + 可见层数 - 1"的 item，避免与已显示的重复
             val nextIndex = (currentSquareIndex + 2) % squareItems.size
@@ -112,9 +116,9 @@ class DiscoveryFragment : Fragment() {
             cardView
         }
 
-        // 话题广场"更多"按钮 → 跳转话题广场列表页
-        view.findViewById<android.widget.ImageView>(R.id.iv_doscovery_topicMore).setOnClickListener {
-            TopicSquareActivity.start(requireContext())
+        // 话题广场更多
+        view.findViewById<android.widget.ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
+            TopicSquareListActivity.start(requireContext())
         }
 
         // === 观察数据 ===
@@ -125,7 +129,7 @@ class DiscoveryFragment : Fragment() {
             squareItems.clear()
             squareItems.addAll(list)
 
-            // 预加载前几张卡片的图片，避免滑动时触发网络/磁盘加载
+            // 加载前几张卡片的图片
             for (i in 0 until minOf(5, squareItems.size)) {
                 Glide.with(this)
                     .load(squareItems[i].icon)

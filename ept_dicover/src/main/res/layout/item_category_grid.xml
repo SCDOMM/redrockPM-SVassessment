@@ -13,6 +13,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
     app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/category_item_bg"
 
 
     >

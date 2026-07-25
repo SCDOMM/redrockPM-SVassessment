@@ -10,21 +10,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.ept.dicover.R
-import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
 
 /**
- * description ： 预览视频适配器（主题播单列表中的横向视频列表）
+ * description ： 主题播单列表页中的横向视频适配器
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
 class PreviewVideoAdapter(
-    private val onItemClick: (TopicPlaylistVideo) -> Unit = {}
+    private val onItemClick: (LightTopicPlaylistVideo) -> Unit = {}
 ) : RecyclerView.Adapter<PreviewVideoAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<TopicPlaylistVideo>()
+    private val items = mutableListOf<LightTopicPlaylistVideo>()
 
     /** 设置预览视频数据 */
-    fun setData(list: List<TopicPlaylistVideo>) {
+    fun setData(list: List<LightTopicPlaylistVideo>) {
         items.clear()
         items.addAll(list)
         notifyDataSetChanged()

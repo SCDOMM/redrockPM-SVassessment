@@ -40,7 +40,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="测试测试"
-                android:textColor="	#000000"
+                android:textColor="@color/text_primary"
                 android:textSize="15sp"
                 app:layout_constraintStart_toEndOf="@id/iv_home_default_item1"
                 app:layout_constraintTop_toTopOf="@+id/iv_home_default_item1" />
@@ -53,7 +53,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="测试测试"
-                android:textColor="#808080"
+                android:textColor="@color/tab_unselected"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@id/tv_home_title_item1"
                 app:layout_constraintTop_toBottomOf="@+id/tv_home_title_item1" />
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="#标签"
-                android:textColor="#808080"
+                android:textColor="@color/tab_unselected"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@id/tv_home_author_item1"
                 app:layout_constraintTop_toTopOf="@+id/tv_home_author_item1" />
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="114:00"
-                android:textColor="#808080"
+                android:textColor="@color/tab_unselected"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@id/tv_home_label_item1"
                 app:layout_constraintTop_toTopOf="@+id/tv_home_label_item1" />
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="15dp"
-                android:background="#E0E0E0"
+                android:background="@color/divider"
 
                 app:layout_constraintTop_toBottomOf="@+id/iv_home_default_item1"
 

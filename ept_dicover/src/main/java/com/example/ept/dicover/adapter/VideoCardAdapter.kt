@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.ept.dicover.R
-import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
+import com.example.ept.dicover.lightTopic.LightTopicPlaylistVideo
 
 /**
  * description ： 视频卡片适配器（详情页视频列表）
@@ -20,8 +20,8 @@ import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
  * date : 2026/7/22
  */
 class VideoCardAdapter(
-    private val onItemClick: (TopicPlaylistVideo) -> Unit = {}
-) : ListAdapter<TopicPlaylistVideo, VideoCardAdapter.ViewHolder>(DIFF_CALLBACK) {
+    private val onItemClick: (LightTopicPlaylistVideo) -> Unit = {}
+) : ListAdapter<LightTopicPlaylistVideo, VideoCardAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     /** 视图持有者，持有视频卡片各控件引用 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -71,9 +71,9 @@ class VideoCardAdapter(
 
     /** DiffUtil 回调，用于列表差量更新 */
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicPlaylistVideo>() {
-            override fun areItemsTheSame(old: TopicPlaylistVideo, new: TopicPlaylistVideo) = old.id == new.id
-            override fun areContentsTheSame(old: TopicPlaylistVideo, new: TopicPlaylistVideo) = old == new
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LightTopicPlaylistVideo>() {
+            override fun areItemsTheSame(old: LightTopicPlaylistVideo, new: LightTopicPlaylistVideo) = old.id == new.id
+            override fun areContentsTheSame(old: LightTopicPlaylistVideo, new: LightTopicPlaylistVideo) = old == new
         }
     }
 }

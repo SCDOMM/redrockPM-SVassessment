@@ -55,7 +55,7 @@ class TopicDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContentView(R.layout.activity_topic_detail_2)
+        setContentView(R.layout.activity_topic_detail)
 
         val rootLayout = findViewById<android.view.View>(R.id.root_layout)
         ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { view, insets ->

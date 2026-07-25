@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="10dp"
-    android:fitsSystemWindows="true"
     tools:context=".PersonActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -26,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
-                app:contentScrim="@color/surface"
+                app:contentScrim="#FFFFFF"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,7 +79,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="田所浩二"
-                                android:textColor="@color/text_primary"
+                                android:textColor="#000000"
                                 android:textSize="16dp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/iv_creator_profile" />
@@ -155,8 +154,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
                                 android:text="+"
-                                android:textColor="@color/overlay_white"
-                                android:backgroundTint="@color/text_primary"
+                                android:textColor="#FFFFFF"
+                                android:backgroundTint="#000000"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/iv_creator_background" />
 
@@ -166,9 +165,9 @@
                                 android:layout_height="wrap_content"
                                 app:tabMode="fixed"
                                 app:tabGravity="fill"
-                                app:tabIndicatorColor="@color/tab_indicator"
-                                app:tabSelectedTextColor="@color/tab_selected"
-                                app:tabTextColor="@color/tab_unselected"
+                                app:tabIndicatorColor="#A9A9A9"
+                                app:tabSelectedTextColor="#000000"
+                                app:tabTextColor="#808080"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_creator_popular"
                                 app:layout_constraintEnd_toEndOf="parent" />

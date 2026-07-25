@@ -102,6 +102,16 @@ interface UniversalApi {
     @GET
     fun getRankListByUrl(@retrofit2.http.Url url: String): Call<ApiResponse<PaginatedResult<MetroItem>>>
 
+    // ========== 主题播单加载更多 ==========
+
+    @FormUrlEncoded
+    @POST("v1/card/card/call_card_list")
+    fun callCardList(
+        @Field("last_item_id") lastItemId: String,
+        @Field("card_list") cardList: String,
+        @Field("page_label") pageLabel: String
+    ): Call<okhttp3.ResponseBody>
+
     // ========== Metro 列表加载更多 ==========
 
     @FormUrlEncoded

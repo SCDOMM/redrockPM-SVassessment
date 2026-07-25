@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.dicover.R
-import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
 
 /**
  * description ： 主题播单列表适配器
@@ -18,7 +17,7 @@ import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
  */
 class LightTopicListAdapter(
     private val onTopicClick: (LightTopicItem) -> Unit,
-    private val onVideoClick: (TopicPlaylistVideo) -> Unit
+    private val onVideoClick: (LightTopicPlaylistVideo) -> Unit
 ) : ListAdapter<LightTopicItem, LightTopicListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     /** 视图持有者，持有标题、描述和预览视频列表控件 */

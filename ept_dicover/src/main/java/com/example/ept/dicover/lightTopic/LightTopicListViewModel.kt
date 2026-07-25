@@ -5,24 +5,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.CallCardListResponse
 import com.example.core.model.GetPageCard
 import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
+import com.example.core.network.api.UniversalApi
 import com.example.core.network.api.SpecficApi
-import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * description ： 主题播单列表页 ViewModel
+ * description ： 主题播单列表页 ViewModel，支持下滑加载更多
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
 class LightTopicListViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<SpecficApi>()
+    private val universalApi = RetrofitClient.create<UniversalApi>()
     private val gson = Gson()
 
     var loaded = false
@@ -40,14 +42,29 @@ class LightTopicListViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    /** 加载主题播单列表数据 */
+    /** 分页状态 */
+    private var lastItemId: String = ""
+    private var cardListJson: String = ""
+    private val pageLabel = "discover_special_topic"
+    private var isLoadingMore = false
+    private var hasMore = true
+
+    /** 已加载的全部主题列表 */
+    private val allItems = mutableListOf<LightTopicItem>()
+
+    /** 加载主题播单列表数据（首次加载） */
     fun loadTopics() {
         loaded = true
+        allItems.clear()
+        lastItemId = "0"
+        cardListJson = ""
+        hasMore = true
+
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
-                    api.getPageRaw(pageLabel = "discover_special_topic").execute()
+                    api.getPageRaw(pageLabel = pageLabel).execute()
                 }
                 Log.d("LightTopicListVM", "HTTP status=${response.code()}, isSuccessful=${response.isSuccessful()}")
                 val rawBody = response.body()?.string() ?: ""
@@ -79,13 +96,115 @@ class LightTopicListViewModel : ViewModel() {
 
                 val topicItems = parseTopics(result.card_list)
                 Log.d("LightTopicListVM", "parsed ${topicItems.size} topics")
-                _items.value = topicItems
+
+                allItems.clear()
+                allItems.addAll(topicItems)
+                _items.value = allItems.toList()
+
+                // 提取 call_card_list 卡片中的分页参数
+                extractPaginationParams(result.card_list)
                 _error.value = null
             } catch (e: Exception) {
                 Log.e("LightTopicListVM", "loadTopics failed", e)
                 _error.value = e.message
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    /** 从 card_list 中提取 call_card_list 卡片的分页参数 */
+    private fun extractPaginationParams(cards: List<GetPageCard>) {
+        val callCard = cards.firstOrNull { it.type == "call_card_list" }
+        if (callCard != null) {
+            val params = callCard.card_data?.body?.api_request?.params
+            if (params != null) {
+                lastItemId = (params["last_item_id"] ?: "0").toString()
+                // card_list 参数可能是序列化的 JSON 字符串或已解析的对象
+                val rawCardList = params["card_list"]
+                cardListJson = when (rawCardList) {
+                    is String -> rawCardList
+                    else -> try { gson.toJson(rawCardList) } catch (e: Exception) { "" }
+                }
+                Log.d("LightTopicListVM", "Found call_card_list: lastItemId=$lastItemId, cardListJson length=${cardListJson.length}")
+            }
+        } else {
+            lastItemId = "0"
+            cardListJson = "[]"
+            Log.d("LightTopicListVM", "No call_card_list card found")
+        }
+    }
+
+    /** 加载更多 */
+    fun loadMore() {
+        if (isLoadingMore || !hasMore) return
+        if (cardListJson.isEmpty() && lastItemId == "0") return
+        isLoadingMore = true
+        Log.d("LightTopicListVM", "loadMore: lastItemId=$lastItemId, cardListJson length=${cardListJson.length}")
+
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    universalApi.callCardList(
+                        lastItemId = lastItemId,
+                        cardList = cardListJson,
+                        pageLabel = pageLabel
+                    ).execute()
+                }
+                val rawBody = response.body()?.string() ?: ""
+                Log.d("LightTopicListVM", "loadMore HTTP status=${response.code()}, body length=${rawBody.length}")
+
+                if (!response.isSuccessful() || rawBody.isEmpty()) {
+                    hasMore = false
+                    return@launch
+                }
+
+                val body = gson.fromJson(rawBody, CallCardListResponse::class.java)
+                if (body?.code != 0 || body?.result == null) {
+                    hasMore = false
+                    return@launch
+                }
+
+                val result = body.result!!
+                val newCards = result.itemList
+                Log.d("LightTopicListVM", "loadMore returned ${newCards.size} cards, lastItemId=${result.lastItemId}")
+
+                // 解析新卡片中的主题（复用 parseTopics）
+                val newTopics = parseTopics(newCards)
+
+                if (newTopics.isNotEmpty()) {
+                    allItems.addAll(newTopics)
+                    _items.value = allItems.toList()
+                }
+
+                // 更新分页状态
+                val newLastItemId = result.lastItemId
+                if (newLastItemId.isNotEmpty() && newLastItemId != lastItemId) {
+                    lastItemId = newLastItemId
+                    // 从新卡片中提取 call_card_list 的 card_list 参数
+                    val callCard = newCards.firstOrNull { it.type == "call_card_list" }
+                    if (callCard != null) {
+                        val params = callCard.card_data?.body?.api_request?.params
+                        if (params != null) {
+                            val rawCardList = params["card_list"]
+                            cardListJson = when (rawCardList) {
+                                is String -> rawCardList
+                                else -> try { gson.toJson(rawCardList) } catch (e: Exception) { cardListJson }
+                            }
+                        }
+                    }
+                } else {
+                    hasMore = false
+                }
+
+                if (newTopics.isEmpty() || newCards.isEmpty()) {
+                    hasMore = false
+                }
+                Log.d("LightTopicListVM", "loadMore done: totalItems=${allItems.size}, hasMore=$hasMore, lastItemId=$lastItemId")
+            } catch (e: Exception) {
+                Log.e("LightTopicListVM", "loadMore failed", e)
+            } finally {
+                isLoadingMore = false
             }
         }
     }
@@ -114,26 +233,21 @@ class LightTopicListViewModel : ViewModel() {
                 continue
             }
 
-            // 获取标题
             val titleText = header.left?.firstOrNull()?.metro_data?.text
             if (titleText == null) {
                 Log.w("LightTopicListVM", "card[$index] title is null, left=${header.left?.size}")
                 continue
             }
 
-            // 获取描述
             val description = body.metro_list?.firstOrNull { it.type == "text" }
                 ?.metro_data?.text ?: ""
 
-            // 获取详情链接
             val detailLink = header.right?.firstOrNull()?.metro_data?.link ?: ""
 
-            // 从链接中提取 topicId
             val topicId = Regex("lightTopic/detail/(\\d+)").find(detailLink)
                 ?.groupValues?.get(1)?.toIntOrNull() ?: 0
 
-            // 获取预览视频（最多2个）
-            val videos = mutableListOf<TopicPlaylistVideo>()
+            val videos = mutableListOf<LightTopicPlaylistVideo>()
             val videoItems = body.metro_list?.filter { it.type == "video" } ?: emptyList()
             for (metro in videoItems.take(2)) {
                 val metroData = metro.metro_data ?: continue
@@ -141,11 +255,11 @@ class LightTopicListViewModel : ViewModel() {
                 if (videoId == 0L) continue
 
                 videos.add(
-                    TopicPlaylistVideo(
+                    LightTopicPlaylistVideo(
                         id = videoId,
                         title = metroData.title ?: "",
                         coverUrl = metroData.cover?.url ?: "",
-                        duration = metroData.duration?.value ?: 0L,
+                        duration = metroData.duration?.value?.toLong() ?: 0L,
                         authorName = metroData.author?.nick ?: "",
                         authorIcon = metroData.author?.avatar?.url ?: "",
                         description = "",

@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":core:core_model"))
     implementation(project(":core:core_network"))
     implementation(project(":core:core_common"))
+    implementation(project(":ept_person"))
     implementation(libs.androidx.appcompat)
     implementation(libs.therouter.api)
     ksp(libs.therouter.compiler)

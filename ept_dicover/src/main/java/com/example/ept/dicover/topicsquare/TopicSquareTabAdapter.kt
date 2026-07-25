@@ -20,6 +20,6 @@ class TopicSquareTabAdapter(
 
     /** 根据位置创建对应的 TopicSquareFragment */
     override fun createFragment(position: Int): Fragment {
-        return TopicSquareFragment.newInstance(tabs[position].apiUrl)
+        return TopicSquareListFragment.newInstance(tabs[position].apiUrl)
     }
 }

@@ -43,7 +43,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="测试测试"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@id/iv_video_author_profile_item"
                 app:layout_constraintTop_toTopOf="@id/iv_video_author_profile_item" />
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1919.8.10"
-                android:textColor="#808080"
+                android:textColor="@color/tab_unselected"
                 android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="@id/iv_video_author_profile_item"
                 app:layout_constraintStart_toStartOf="@id/tv_video_author_name_item" />
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="你说的对，但是3G芯片是由重庆邮电大学自主研发..."
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:textSize="13sp"
                 android:ellipsize="end"
                 android:maxLines="2"
@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:visibility="gone"
-                android:textColor="#1E90FF"
+                android:textColor="@color/accent"
                 android:text="展开"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_desc_item"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -142,13 +142,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="#标签"
-                android:textColor="#808080"
+                android:textColor="@color/tab_unselected"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_fold_item" />
             <ImageView
                 android:id="@+id/iv_video_topic_item"
                 android:src="@drawable/ic_person_topic"
+                app:tint="@color/icon_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -161,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="#话题"
-                android:textColor="#808080"
+                android:textColor="@color/tab_unselected"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@id/iv_video_topic_item"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_label_item" />
@@ -169,6 +170,7 @@
             <ImageView
                 android:id="@+id/iv_video_like_item"
                 android:src="@drawable/ic_person_like"
+                app:tint="@color/icon_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
@@ -187,6 +189,7 @@
             <ImageView
                 android:id="@+id/iv_video_collection_item"
                 android:src="@drawable/ic_person_favor"
+                app:tint="@color/icon_default"
                 android:layout_marginStart="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -206,6 +209,7 @@
             <ImageView
                 android:id="@+id/iv_video_comment_item"
                 android:src="@drawable/ic_person_comment"
+                app:tint="@color/icon_default"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_height="wrap_content"
@@ -225,6 +229,7 @@
             <ImageView
                 android:id="@+id/iv_video_forward_item"
                 android:src="@drawable/ic_person_forward"
+                app:tint="@color/icon_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/tv_video_topic_item"
@@ -237,7 +242,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginVertical="5dp"
-        android:background="#808080"
+        android:background="@color/tab_unselected"
         android:alpha="0.2"
         app:layout_constraintTop_toBottomOf="@id/cv3_video_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,17 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.LightTopicsResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
-import com.example.ept.dicover.topicdetail.TopicPlaylistVideo
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * description ： lightTopics 接口 ViewModel
+ * description ： 主题播单详情页 ViewModel
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
@@ -36,8 +34,8 @@ class LightTopicsViewModel : ViewModel() {
     private val _text = MutableLiveData<String>()
     val text: LiveData<String> = _text
 
-    private val _items = MutableLiveData<List<TopicPlaylistVideo>>()
-    val items: LiveData<List<TopicPlaylistVideo>> = _items
+    private val _items = MutableLiveData<List<LightTopicPlaylistVideo>>()
+    val items: LiveData<List<LightTopicPlaylistVideo>> = _items
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -69,7 +67,7 @@ class LightTopicsViewModel : ViewModel() {
 
                 // 先解析顶层结构
                 val topLevel = try {
-                    gson.fromJson(rawBody, Map::class.java) as? Map<String, Any>
+                    gson.fromJson(rawBody, Map::class.java)
                 } catch (e: Exception) {
                     Log.e("LightTopicsVM", "JSON parse error", e)
                     _error.value = "JSON解析失败: ${e.message}"
@@ -89,7 +87,7 @@ class LightTopicsViewModel : ViewModel() {
                 val itemList = topLevel["itemList"] as? List<Map<String, Any>> ?: emptyList()
                 Log.d("LightTopicsVM", "itemList.size=${itemList.size}")
 
-                val videoItems = mutableListOf<TopicPlaylistVideo>()
+                val videoItems = mutableListOf<LightTopicPlaylistVideo>()
 
                 for ((index, itemMap) in itemList.withIndex()) {
                     val type = itemMap["type"] as? String ?: ""
@@ -144,7 +142,7 @@ class LightTopicsViewModel : ViewModel() {
                     Log.d("LightTopicsVM", "item[$index] title='$title', id=$id")
 
                     videoItems.add(
-                        TopicPlaylistVideo(
+                        LightTopicPlaylistVideo(
                             id = id,
                             title = title,
                             coverUrl = coverMap?.get("feed") as? String ?: "",

@@ -23,7 +23,7 @@
             app:cardMaxElevation="0dp"
             app:strokeWidth="0.5dp"
             app:cardCornerRadius="10dp"
-            app:strokeColor="#E0E0E0"
+            app:strokeColor="@color/stroke"
             >
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -51,7 +51,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="标题测试"
-                android:textColor="#1A1A1A"
+                android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/iv_result_users_cover_item"
                 app:layout_constraintTop_toTopOf="@id/iv_result_users_cover_item"

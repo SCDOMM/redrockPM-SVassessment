@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 深色模式 -->
-    <color name="background">@color/background_dark</color>
-    <color name="surface">@color/surface_dark</color>
-    <color name="text_primary">@color/text_primary_dark</color>
-    <color name="text_secondary">@color/text_secondary_dark</color>
-    <color name="text_hint">@color/text_hint_dark</color>
     <color name="ic_launcher_background">#FF1E1E1E</color>
+
+    <!-- 深色覆盖 -->
+    <color name="bottom_nav_selected">#FFFFFFFF</color>
+    <color name="bottom_nav_unselected">#FF707070</color>
+    <color name="divider">#FF333333</color>
+    <color name="stroke">#FF333333</color>
+    <color name="icon_default">#FFB0B0B0</color>
+    <color name="tab_indicator">#FFB0B0B0</color>
+    <color name="tab_selected">#FFFFFFFF</color>
+    <color name="tab_unselected">#FF707070</color>
+    <color name="search_link">#FF4DA3FF</color>
 </resources>

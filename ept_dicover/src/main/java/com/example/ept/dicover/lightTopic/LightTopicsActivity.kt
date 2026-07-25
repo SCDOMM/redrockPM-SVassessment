@@ -21,7 +21,7 @@ import com.example.ept.dicover.R
 import com.example.ept.dicover.adapter.VideoCardAdapter
 
 /**
- * description ： lightTopics 详情页，使用 v3/lightTopics/internal 接口
+ * description ： 主题播单详情页
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */

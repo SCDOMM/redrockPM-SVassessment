@@ -18,9 +18,9 @@ import com.example.ept.dicover.R
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
-class TopicSquareAdapter(
-    private val onItemClick: (TopicSquareItem) -> Unit = {}
-) : ListAdapter<TopicSquareItem, TopicSquareAdapter.ViewHolder>(DIFF_CALLBACK) {
+class TopicSquareListAdapter(
+    private val onItemClick: (TopicSquareListItem) -> Unit = {}
+) : ListAdapter<TopicSquareListItem, TopicSquareListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     /** 话题卡片视图持有者 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -53,9 +53,9 @@ class TopicSquareAdapter(
 
     /** 差异比较回调，用于局部刷新列表 */
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicSquareItem>() {
-            override fun areItemsTheSame(old: TopicSquareItem, new: TopicSquareItem) = old.id == new.id
-            override fun areContentsTheSame(old: TopicSquareItem, new: TopicSquareItem) = old == new
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicSquareListItem>() {
+            override fun areItemsTheSame(old: TopicSquareListItem, new: TopicSquareListItem) = old.id == new.id
+            override fun areContentsTheSame(old: TopicSquareListItem, new: TopicSquareListItem) = old == new
         }
     }
 }

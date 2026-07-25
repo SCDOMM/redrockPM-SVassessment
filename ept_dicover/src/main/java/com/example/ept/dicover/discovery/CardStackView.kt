@@ -14,9 +14,9 @@ import android.widget.FrameLayout
 import kotlin.math.abs
 
 /**
- * description ： 原生层叠式循环卡片 View
+ * description ： 话题广场卡片堆叠自定义 View
  * email : 3014386984@qq.com
- * date : 2026/7/22
+ * date : 2026/7/22  13:23
  */
 class LoopingCardStackView @JvmOverloads constructor(
     context: Context,

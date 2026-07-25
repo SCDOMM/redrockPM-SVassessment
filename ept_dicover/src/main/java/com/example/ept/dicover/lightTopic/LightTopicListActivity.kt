@@ -3,6 +3,8 @@ package com.example.ept.dicover.lightTopic
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -83,6 +85,21 @@ class LightTopicListActivity : AppCompatActivity() {
         swipeRefresh.setOnRefreshListener {
             viewModel.loadTopics()
         }
+
+        // 下滑加载更多
+        rvTopics.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy <= 0) return
+                val lm = recyclerView.layoutManager as LinearLayoutManager
+                val total = lm.itemCount
+                val lastVisible = lm.findLastVisibleItemPosition()
+                Log.d("LightTopicList", "onScrolled: total=$total, lastVisible=$lastVisible")
+                if (total > 0 && lastVisible >= total - 2) {
+                    viewModel.loadMore()
+                }
+            }
+        })
 
         if (!viewModel.loaded) {
             viewModel.loadTopics()

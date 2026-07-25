@@ -1,11 +1,11 @@
-package com.example.ept.dicover.topicdetail
+package com.example.ept.dicover.lightTopic
 
 /**
  * description ： 主题播单视频项
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
-data class TopicPlaylistVideo(
+data class LightTopicPlaylistVideo(
     val id: Long,
     val title: String,
     val coverUrl: String,

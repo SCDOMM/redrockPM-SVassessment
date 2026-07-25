@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * description ： 发现页 ViewModel，加载分类列表和推荐主题
+ * description ： 发现页 ViewModel，加载分类列表、主题播单、话题广场
  * email : 3014386984@qq.com
  * date : 2026/7/16 11:39
  */

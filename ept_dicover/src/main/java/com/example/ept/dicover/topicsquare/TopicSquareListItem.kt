@@ -5,7 +5,7 @@ package com.example.ept.dicover.topicsquare
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
-data class TopicSquareItem(
+data class TopicSquareListItem(
     val id: Long,
     val title: String,
     val description: String,

@@ -14,11 +14,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.ept.dicover.R
 
 /**
- * description ： 推荐主题横向列表适配器
+ * description ： 主题播单横向列表适配器
  * email : 3014386984@qq.com
  * date : 2026/7/17  13:28
  */
-/** 话题横向列表适配器 */
 class TopicAdapter(
     private val onItemClick: (TopicItem) -> Unit = {}
 ) : ListAdapter<TopicItem, TopicAdapter.ViewHolder>(DIFF_CALLBACK) {

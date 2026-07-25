@@ -9,12 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.ept.community.CommunityFragment
 import com.example.ept.daily.DailyFragment
 import com.example.ept.dicover.discovery.DiscoveryFragment
 import com.example.ept.home.fragment.HomeFragment
+import com.example.ept.person.fragment.MyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+/**
+ * description ： MainActivity
+ * email : 3014386984@qq.com
+ * date : 2026/7/23 16:53
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var bottomNavigation: BottomNavigationView
@@ -30,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setupViewPager()
         setupBottomNavigation()
 
-        // Apply window insets to the root layout
+        // 避开状态栏
         val root = findViewById<android.view.View>(R.id.fragment_container)
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -73,8 +77,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Set initial selected item
-        bottomNavigation.selectedItemId = R.id.nav_discovery
+        // 设置初始界面
+        bottomNavigation.selectedItemId = R.id.nav_home
     }
 
     private inner class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
@@ -85,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                 0 -> HomeFragment()
                 1 -> DailyFragment()
                 2 -> DiscoveryFragment()
-                3 -> CommunityFragment()
+                3 -> MyFragment()
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
         }

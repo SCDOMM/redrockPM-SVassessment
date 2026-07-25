@@ -198,6 +198,23 @@ data class CallMetroListResult(
     val last_item_id: String = ""
 )
 
+// ========== call_card_list 接口响应模型 ==========
+
+data class CallCardListResponse(
+    val code: Int = -1,
+    val message: Any? = null,
+    val result: CallCardListResult? = null
+)
+
+data class CallCardListResult(
+    @com.google.gson.annotations.SerializedName("item_list")
+    val itemList: List<GetPageCard> = emptyList(),
+    @com.google.gson.annotations.SerializedName("item_count")
+    val itemCount: Int = 0,
+    @com.google.gson.annotations.SerializedName("last_item_id")
+    val lastItemId: String = ""
+)
+
 // ========== get_nav 接口响应模型 ==========
 
 data class GetNavResponse(

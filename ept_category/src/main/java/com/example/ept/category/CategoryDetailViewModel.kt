@@ -54,7 +54,7 @@ class CategoryDetailViewModel : ViewModel() {
     /**
      * 加载分类详情 header 信息
      */
-    fun loadCategoryDetail(pageLabel: String, categoryName: String) {
+    fun loadCategoryDetail(pageLabel: String) {
         loaded = true
         viewModelScope.launch {
             _isLoading.value = true
@@ -78,7 +78,7 @@ class CategoryDetailViewModel : ViewModel() {
                     return@launch
                 }
 
-                val result = body?.result
+                val result = body.result
                 if (result == null) {
                     _error.value = "接口返回数据为空"
                     return@launch
@@ -107,16 +107,25 @@ class CategoryDetailViewModel : ViewModel() {
         var stats = ""
         val feedTabs = mutableListOf<Pair<String, String>>() // (title, page_label)
 
-        for (card in cardList) {
+        for ((cardIndex, card) in cardList.withIndex()) {
             val metroList = card.card_data?.body?.metro_list ?: continue
-            for (metro in metroList) {
+            Log.d("CategoryDetail", "Card[$cardIndex] type=${card.type}, metroCount=${metroList.size}")
+            for ((metroIndex, metro) in metroList.withIndex()) {
                 val data = metro.metro_data ?: continue
+                Log.d("CategoryDetail", "  Metro[$metroIndex] type=${metro.type}, cover=${data.cover?.url}, bg=${data.background?.url}, text=${data.text.take(30)}, desc=${data.description.take(30)}")
 
-                // 从 topic 类型的 metro 中提取头图
+                // 提取头图：优先 cover.url，其次 background.url
                 if (headerImage.isEmpty()) {
                     val coverUrl = data.cover?.url
                     if (!coverUrl.isNullOrEmpty()) {
                         headerImage = coverUrl
+                        Log.d("CategoryDetail", "  Found header image from cover: $coverUrl")
+                    } else {
+                        val bgUrl = data.background?.url
+                        if (!bgUrl.isNullOrEmpty()) {
+                            headerImage = bgUrl
+                            Log.d("CategoryDetail", "  Found header image from background: $bgUrl")
+                        }
                     }
                 }
 

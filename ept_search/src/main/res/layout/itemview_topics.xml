@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardCornerRadius="10dp"
-            app:strokeColor="#E0E0E0"
+            app:strokeColor="@color/stroke"
             app:strokeWidth="0.5dp">
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -44,7 +44,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="标题测试"
-                android:textColor="#1A1A1A"
+                android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_topics_cover_item"
@@ -80,7 +80,7 @@
         android:layout_height="1dp"
         android:layout_marginVertical="5dp"
         android:alpha="0.1"
-        android:background="#333333"
+        android:background="@color/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cv_topics_item" />
