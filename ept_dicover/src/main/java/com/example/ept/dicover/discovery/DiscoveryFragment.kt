@@ -25,6 +25,7 @@ import com.example.ept.dicover.R
 import com.example.ept.dicover.lightTopic.LightTopicListActivity
 import com.example.ept.dicover.lightTopic.LightTopicsActivity
 import com.example.ept.dicover.topicsquare.TopicSquareListActivity
+import com.therouter.TheRouter
 /**
  * description ： 发现页 Fragment，
  * email : 3014386984@qq.com
@@ -58,6 +59,17 @@ class DiscoveryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         swipeRefresh = view.findViewById(R.id.swipe_refresh)
+
+        // 通知和搜索图标
+        val ivNotify = view.findViewById<ImageView>(R.id.iv_daily_notify)
+        val ivSearch = view.findViewById<ImageView>(R.id.iv_daily_search)
+
+        ivNotify.setOnClickListener {
+            TheRouter.build("http://therouter.com/notify").navigation(requireContext())
+        }
+        ivSearch.setOnClickListener {
+            TheRouter.build("http://therouter.com/search").navigation(requireContext())
+        }
 
         // 分类
         val rvCategory = view.findViewById<RecyclerView>(R.id.rv_discovery_category)

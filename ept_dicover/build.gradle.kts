@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.glide)
     implementation(libs.gson)
+    implementation(libs.therouter.api)
     annotationProcessor(libs.glide.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
