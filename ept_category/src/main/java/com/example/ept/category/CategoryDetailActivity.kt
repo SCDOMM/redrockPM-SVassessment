@@ -148,7 +148,7 @@ class CategoryDetailActivity : AppCompatActivity() {
         }
 
         if (!viewModel.loaded) {
-            viewModel.loadCategoryDetail(pageLabel, categoryName)
+            viewModel.loadCategoryDetail(pageLabel)
         }
     }
 }
