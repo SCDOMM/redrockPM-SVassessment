@@ -26,7 +26,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Autowired
 import com.therouter.router.Route
 
-@Route(path = "http://therouter.com/person", params =["uid","000000000"] )
+@Route(path = "http://therouter.com/person", params = ["uid", "000000000"])
 class PersonActivity : AppCompatActivity() {
     private lateinit var aplCreatorDefault: AppBarLayout
     private lateinit var ivCreatorBack: ImageView
@@ -53,7 +53,7 @@ class PersonActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_person)
         aplCreatorDefault = findViewById(R.id.apl_creator_default)
-        ivCreatorBack=findViewById(R.id.iv_creator_back)
+        ivCreatorBack = findViewById(R.id.iv_creator_back)
         ivCreatorBackground = findViewById(R.id.iv_creator_background)
         ivCreatorProfile = findViewById(R.id.iv_creator_profile)
         tvCreatorName = findViewById(R.id.tv_creator_name)
@@ -77,6 +77,7 @@ class PersonActivity : AppCompatActivity() {
         initViewModel()
         initRefresh()
     }
+
     fun initRefresh() {
         aplCreatorDefault.addOnOffsetChangedListener { layout, i ->
             val isExpanded = i == 0
@@ -88,12 +89,13 @@ class PersonActivity : AppCompatActivity() {
         }
     }
 
-    fun initViewModel(){
+    fun initViewModel() {
         creatorViewModel.liveData.observe(this) { state ->
             when (state) {
                 is CreatorState.FailedState -> {
                     Toast.makeText(this, state.msg, Toast.LENGTH_SHORT).show()
                 }
+
                 is CreatorState.InitState -> {
                     initVP2(state.length)
                     initTabs(state.length)
@@ -114,9 +116,10 @@ class PersonActivity : AppCompatActivity() {
                     tvCreatorBadge.text = "${state.userInfo.medalCount}勋章"
                     tvCreatorPopular.text =
                         "被收藏${state.userInfo.collectedCount}次，被分享${state.userInfo.sharedCount}次"
-                    srlCreatorDefault.isRefreshing=false
+                    srlCreatorDefault.isRefreshing = false
                 }
-                is CreatorState.RefreshState->{
+
+                is CreatorState.RefreshState -> {
                     Glide.with(ivCreatorBackground.context)
                         .load(state.userInfo.cover)
                         .error(R.drawable.eyepetater)
@@ -134,24 +137,28 @@ class PersonActivity : AppCompatActivity() {
                     tvCreatorBadge.text = "${state.userInfo.medalCount}勋章"
                     tvCreatorPopular.text =
                         "被收藏${state.userInfo.collectedCount}次，被分享${state.userInfo.sharedCount}次"
-                    srlCreatorDefault.isRefreshing=false
+                    srlCreatorDefault.isRefreshing = false
                 }
             }
         }
     }
+
     fun initVP2(length: Int) {
-        when(length){
-            0->{
+        fragmentList.clear()
+        when (length) {
+            0 -> {
 
             }
-            1->{
+
+            1 -> {
                 fragmentList.add(object : FragmentInterface {
                     override fun back(): Fragment {
                         return WorkFragment()
                     }
                 })
             }
-            2->{
+
+            2 -> {
                 fragmentList.add(object : FragmentInterface {
                     override fun back(): Fragment {
                         return IndexFragment()
@@ -163,7 +170,8 @@ class PersonActivity : AppCompatActivity() {
                     }
                 })
             }
-            3->{
+
+            3 -> {
                 fragmentList.add(object : FragmentInterface {
                     override fun back(): Fragment {
                         return IndexFragment()
@@ -185,18 +193,20 @@ class PersonActivity : AppCompatActivity() {
         val adapter = PersonAdapter(fragmentList, this)
         vp2CreatorDefault.adapter = adapter
     }
+
     fun initTabs(length: Int) {
         TabLayoutMediator(tlCreatorDefault, vp2CreatorDefault) { p0, p1 ->
-            when(length){
-                0->{}
-                1->{
+            when (length) {
+                0 -> {}
+                1 -> {
                     when (p1) {
                         0 -> {
                             p0.text = "作品"
                         }
                     }
                 }
-                2->{
+
+                2 -> {
                     when (p1) {
                         0 -> {
                             p0.text = "主页"
@@ -207,7 +217,8 @@ class PersonActivity : AppCompatActivity() {
                         }
                     }
                 }
-                3->{
+
+                3 -> {
                     when (p1) {
                         0 -> {
                             p0.text = "主页"
