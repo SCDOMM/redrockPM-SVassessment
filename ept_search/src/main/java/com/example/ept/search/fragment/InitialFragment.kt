@@ -16,6 +16,7 @@ import com.example.core.common.addSearchHistory
 import com.example.core.common.clearSearchHistory
 import com.example.core.common.getHistoryFromPrefs
 import com.example.ept.search.viewmodel.SearchViewModel
+import com.example.ept.hot.fragment.HotActivity
 import com.google.android.flexbox.FlexboxLayout
 
 class InitialFragment : Fragment() {
@@ -82,6 +83,12 @@ class InitialFragment : Fragment() {
                     .into(ivCover)
                 tvTitle.text = data[i].title
             }
+        }
+
+        // 点击"视频周榜 >"跳转到热门排行榜页面
+        val tvRanking = view.findViewById<TextView>(R.id.tv_initial_ranking)
+        tvRanking.setOnClickListener {
+            HotActivity.start(requireContext())
         }
 
     }

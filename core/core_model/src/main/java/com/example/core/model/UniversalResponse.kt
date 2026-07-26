@@ -16,9 +16,12 @@ data class ApiResponse<T>(
     val result: T? = null
 )
 data class PaginatedResult<T>(
-    @SerializedName("item_list") val itemList: List<T> = emptyList(),
-    @SerializedName("item_count") val itemCount: Int = 0,
-    @SerializedName("last_item_id") val lastItemId: String? = ""
+    val itemList: List<T> = emptyList(),
+    val count: Int = 0,
+    val total: Int = 0,
+    val nextPageUrl: String? = null,
+    @SerializedName("last_item_id") val lastItemId: String? = "",
+    @SerializedName("item_count") val itemCount: Int = 0
 )
 data class Card(
     @SerializedName("card_id") val cardId: Long = 0,

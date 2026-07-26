@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core:core_common"))
     implementation(project(":core:core_media"))
     implementation(project(":ept_person"))
+    implementation(project(":ept_hot"))
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.glide)
     androidTestImplementation(libs.androidx.espresso.core)

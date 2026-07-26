@@ -43,6 +43,10 @@
             android:name="com.example.ept.dicover.topicdetail.TopicDetailActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Eyepetater" />
+        <activity
+            android:name="com.example.ept.hot.fragment.HotActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+            android:theme="@style/Theme.Eyepetater" />
     </application>
 
 </manifest>

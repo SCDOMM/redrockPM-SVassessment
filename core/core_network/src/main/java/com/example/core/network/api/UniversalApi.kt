@@ -4,7 +4,7 @@ import com.example.core.model.ApiResponse
 import com.example.core.model.CallMetroListResponse
 import com.example.core.model.Card
 import com.example.core.model.GetNavResponse
-import com.example.core.model.GetPageResponse
+import com.example.core.model.Item
 import com.example.core.model.MetroItem
 import com.example.core.model.NoticeItem
 import com.example.core.model.PageResult
@@ -17,6 +17,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 /**
  * description ： api接口
@@ -105,4 +106,12 @@ interface UniversalApi {
         @Field("card") card: String,
         @Field("data_source") dataSource: String
     ): Call<CallMetroListResponse>
+
+    // ========== 排行榜 ==========
+
+    @GET("v4/rankList")
+    fun getRankListTabs(): Call<TabListResponse>
+
+    @GET
+    fun getRankListByUrl(@Url url: String): Call<PaginatedResult<Item>>
 }

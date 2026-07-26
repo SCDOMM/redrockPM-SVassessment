@@ -55,7 +55,7 @@ class TopicSquareViewModel : ViewModel() {
 
                 val tabItems = navResult.nav_list.map { nav ->
                     TabItem(
-                        id = "",
+                        id = 0,
                         name = nav.title,
                         apiUrl = nav.page_label
                     )
