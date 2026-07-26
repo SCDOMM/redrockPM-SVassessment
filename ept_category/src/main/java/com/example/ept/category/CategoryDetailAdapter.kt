@@ -1,5 +1,6 @@
-package com.example.ept.category
+﻿package com.example.ept.category
 
+import com.example.core.model.FeedCategoryItem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,41 +21,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
  * email : 3014386984@qq.com
  * date : 2026/7/21 15:53
  */
-sealed class CategoryItem {
-    data class Header(val text: String) : CategoryItem()
-    data class Video(
-        val videoId: Long,
-        val title: String,
-        val coverUrl: String,
-        val duration: Long,
-        val authorName: String,
-        val authorIcon: String,
-        val description: String,
-        val playUrl: String = "",
-        val category: String = "",
-        val collectionCount: Int = 0,
-        val shareCount: Int = 0,
-        val replyCount: Int = 0,
-        val webUrl: String = ""
-    ) : CategoryItem()
-    data class Image(
-        val id: Long,
-        val title: String,
-        val imageUrls: List<String>,
-        val authorName: String,
-        val authorIcon: String,
-        val description: String = "",
-        val likeCount: Int = 0,
-        val commentCount: Int = 0,
-        val collectionCount: Int = 0,
-        val shareCount: Int = 0
-    ) : CategoryItem()
-}
+
 
 class CategoryDetailAdapter(
-    private val onVideoClick: (CategoryItem.Video) -> Unit = {},
-    private val onShareClick: (CategoryItem.Video) -> Unit = {}
-) : ListAdapter<CategoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    private val onVideoClick: (FeedCategoryItem.Video) -> Unit = {},
+    private val onShareClick: (FeedCategoryItem.Video) -> Unit = {}
+) : ListAdapter<FeedCategoryItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         /** 分区标题类型 */
@@ -64,17 +36,17 @@ class CategoryDetailAdapter(
         /** 图片帖子类型 */
         private const val TYPE_IMAGE = 2
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CategoryItem>() {
-            override fun areItemsTheSame(old: CategoryItem, new: CategoryItem): Boolean {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FeedCategoryItem>() {
+            override fun areItemsTheSame(old: FeedCategoryItem, new: FeedCategoryItem): Boolean {
                 return when {
-                    old is CategoryItem.Header && new is CategoryItem.Header -> old.text == new.text
-                    old is CategoryItem.Video && new is CategoryItem.Video -> old.videoId == new.videoId
-                    old is CategoryItem.Image && new is CategoryItem.Image -> old.id == new.id
+                    old is FeedCategoryItem.Header && new is FeedCategoryItem.Header -> old.text == new.text
+                    old is FeedCategoryItem.Video && new is FeedCategoryItem.Video -> old.videoId == new.videoId
+                    old is FeedCategoryItem.Image && new is FeedCategoryItem.Image -> old.id == new.id
                     else -> false
                 }
             }
 
-            override fun areContentsTheSame(old: CategoryItem, new: CategoryItem): Boolean {
+            override fun areContentsTheSame(old: FeedCategoryItem, new: FeedCategoryItem): Boolean {
                 return old == new
             }
         }
@@ -112,9 +84,9 @@ class CategoryDetailAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CategoryItem.Header -> TYPE_HEADER
-            is CategoryItem.Video -> TYPE_VIDEO
-            is CategoryItem.Image -> TYPE_IMAGE
+            is FeedCategoryItem.Header -> TYPE_HEADER
+            is FeedCategoryItem.Video -> TYPE_VIDEO
+            is FeedCategoryItem.Image -> TYPE_IMAGE
         }
     }
 
@@ -142,10 +114,10 @@ class CategoryDetailAdapter(
     /** 绑定视图数据 */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
-            is CategoryItem.Header -> {
+            is FeedCategoryItem.Header -> {
                 (holder as HeaderViewHolder).text.text = item.text
             }
-            is CategoryItem.Video -> {
+            is FeedCategoryItem.Video -> {
                 val vh = holder as VideoViewHolder
                 vh.title.text = item.title
                 vh.description.text = item.authorName
@@ -173,7 +145,7 @@ class CategoryDetailAdapter(
                 vh.itemView.setOnClickListener { onVideoClick(item) }
                 vh.shareIcon.setOnClickListener { onShareClick(item) }
             }
-            is CategoryItem.Image -> {
+            is FeedCategoryItem.Image -> {
                 val vh = holder as ImageViewHolder
                 vh.authorName.text = item.authorName
                 vh.title.text = item.title
@@ -237,3 +209,4 @@ class CategoryImageAdapter(
 
     override fun getItemCount() = imageUrls.size
 }
+

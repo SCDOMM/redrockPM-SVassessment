@@ -1,5 +1,6 @@
 package com.example.ept.dicover.topicsquare
 
+import com.example.core.model.TopicSquareListItem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -1,5 +1,6 @@
 package com.example.ept.dicover.discovery
 
+import com.example.core.model.DiscoverCategoryItem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +18,6 @@ import com.example.ept.dicover.R
  * @param pageLabel 分类页面标识符 (如 "topic_detail-2034431085")
  * @param iconUrl 分类图标网络 URL
  */
-data class CategoryItem(
-    val name: String,
-    val pageLabel: String,
-    val iconUrl: String
-)
 /**
  * description ： 分类网格Adapter
  * email : 3014386984@qq.com
@@ -30,8 +26,8 @@ data class CategoryItem(
 
 class CategoryAdapter(
     /** 分类点击回调，跳转到分类详情页 */
-    private val onItemClick: (CategoryItem) -> Unit = {}
-) : ListAdapter<CategoryItem, CategoryAdapter.ViewHolder>(DIFF_CALLBACK) {
+    private val onItemClick: (DiscoverCategoryItem) -> Unit = {}
+) : ListAdapter<DiscoverCategoryItem, CategoryAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     /** ViewHolder，包含分类图标和名称 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -57,9 +53,9 @@ class CategoryAdapter(
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<CategoryItem>() {
-            override fun areItemsTheSame(old: CategoryItem, new: CategoryItem) = old.name == new.name
-            override fun areContentsTheSame(old: CategoryItem, new: CategoryItem) = old == new
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DiscoverCategoryItem>() {
+            override fun areItemsTheSame(old: DiscoverCategoryItem, new: DiscoverCategoryItem) = old.name == new.name
+            override fun areContentsTheSame(old: DiscoverCategoryItem, new: DiscoverCategoryItem) = old == new
         }
     }
 }

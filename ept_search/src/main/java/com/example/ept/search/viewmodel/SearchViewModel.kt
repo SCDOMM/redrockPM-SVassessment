@@ -10,7 +10,7 @@ import com.example.core.model.MetroData
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.core.common.SearchResultData
+import com.example.core.model.SearchResultData
 import com.example.core.common.parseSearch
 import kotlinx.coroutines.launch
 

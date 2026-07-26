@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.core.model.ApiResponse
 import com.example.core.model.MetroData
 import com.example.core.model.PageResult
+import com.example.core.model.WorkListResult
 
 /**   
  * 包名称： com.example.ept.daily
@@ -32,11 +33,6 @@ private inline fun extractMetroDataFromPageResult(
     return result
 }
 
-data class WorkListResult(
-    val title: String?,
-    val items: List<MetroData>
-)
-
 fun parseVideosFromCardList(response: ApiResponse<PageResult>) = extractMetroDataFromPageResult(
     response,
     cardTypeFilter = { it == "set_metro_list" },
@@ -62,7 +58,6 @@ fun parseWorkListFromCardList(response: ApiResponse<PageResult>): WorkListResult
     )
     return WorkListResult(title, list)
 }
-
 
 fun findDelimiterIndex(text: String?, delimiter: String): Int {
     if (text == null) return -1

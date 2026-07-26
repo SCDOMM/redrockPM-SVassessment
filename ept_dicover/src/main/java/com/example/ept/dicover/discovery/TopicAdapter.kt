@@ -1,5 +1,6 @@
 package com.example.ept.dicover.discovery
 
+import com.example.core.model.TopicItem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -8,9 +8,6 @@ package com.example.core.model.utils
  * 创建时间：2026-07-20 18:00
  *
  */
-fun Map<String, Any?>.safeInt(key: String, default: Int = 0): Int {
-    return (this[key] as? Number)?.toInt() ?: default
-}
 fun Map<String, Any?>.safeString(key: String, default: String = ""): String {
     return when (val v = this[key]) {
         is String -> v

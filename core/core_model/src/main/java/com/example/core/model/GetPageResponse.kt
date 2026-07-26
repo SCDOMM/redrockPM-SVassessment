@@ -2,8 +2,6 @@ package com.example.core.model
 
 /**
  * description ： get_page 接口响应模型
- * email : 3014386984@qq.com
- * date : 2026/7/21
  */
 
 data class GetPageResponse(
@@ -16,7 +14,6 @@ data class GetPageResult(
     val card_list: List<GetPageCard> = emptyList()
 )
 
-// PageInfo is defined in UniversalResponse.kt
 
 data class GetPageCard(
     val card_id: Int = 0,
@@ -184,7 +181,6 @@ data class GetPageNav(
     val title: String = ""
 )
 
-// ApiRequest is defined in UniversalResponse.kt
 
 data class CallMetroListResponse(
     val code: Int = -1,

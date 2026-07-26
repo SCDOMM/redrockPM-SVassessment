@@ -9,7 +9,7 @@ import com.example.core.model.NavTab
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
-import com.example.core.common.UserHomeItem
+import com.example.core.model.UserHomeItem
 import com.example.core.common.parseUserItemFromCard
 import kotlinx.coroutines.launch
 
@@ -49,3 +49,5 @@ sealed class IndexState{
     data class RefreshState(val indexList: MutableList<UserHomeItem> ) : IndexState()
     data class FailedState(val msg: String) : IndexState()
 }
+
+

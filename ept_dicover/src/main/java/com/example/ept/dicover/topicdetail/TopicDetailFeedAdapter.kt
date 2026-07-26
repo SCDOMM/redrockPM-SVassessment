@@ -1,5 +1,6 @@
 package com.example.ept.dicover.topicdetail
 
+import com.example.core.model.TopicFeedItem
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

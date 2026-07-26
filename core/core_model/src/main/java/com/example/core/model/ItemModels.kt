@@ -12,7 +12,6 @@ data class Item(
 
 /**
  * autoPlayFollowCard 类型的 data 字段
- * content 可能是 Map（Gson 默认）或嵌套对象
  */
 data class FollowCardData(
     val header: FollowCardHeader? = null,

@@ -1,11 +1,11 @@
 package com.example.ept.dicover.topicdetail
 
+import com.example.core.model.TopicTagInfo
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.model.GetPageCard
 import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
@@ -132,10 +132,3 @@ class TopicDetailViewModel : ViewModel() {
 }
 
 /** 话题信息数据类 */
-data class TopicTagInfo(
-    val title: String,
-    val headerImage: String,
-    val description: String,
-    val stats: String,
-    val feedPageLabels: List<Pair<String, String>>
-)

@@ -5,6 +5,7 @@
  */
 package com.example.ept.dicover.discovery
 
+import com.example.core.model.TopicItem
 import android.os.Bundle
 import android.net.Uri
 import android.view.LayoutInflater

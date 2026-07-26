@@ -1,12 +1,13 @@
 package com.example.core.common
 
 import com.example.core.model.AlbumData
+import com.example.core.model.AlbumSection
 import com.example.core.model.AlbumVideoPreview
 import com.example.core.model.ApiResponse
 import com.example.core.model.Card
-import com.example.core.model.MetroData
 import com.example.core.model.MetroItem
 import com.example.core.model.PageResult
+import com.example.core.model.UserHomeItem
 
 /**   
  * 包名称： com.example.core.common
@@ -22,7 +23,6 @@ fun parseUserItemFromCard(response: ApiResponse<PageResult>): List<UserHomeItem>
         .flatMap { card -> parseCardToItems(card) }
 }
 
-// 根据卡片类型分发到对应的处理函数
 private fun parseCardToItems(card: Card): List<UserHomeItem> {
     return when (card.type) {
         "set_metro_list" -> parseSetMetroListCard(card)
@@ -31,10 +31,8 @@ private fun parseCardToItems(card: Card): List<UserHomeItem> {
     }
 }
 
-// 处理 "set_metro_list" 类型的卡片
 private fun parseSetMetroListCard(card: Card): List<UserHomeItem> {
     val items = mutableListOf<UserHomeItem>()
-    // 检查是否有标题头（第一个元素为 text）
     val headerLefts = card.cardData?.header?.left
     if (!headerLefts.isNullOrEmpty() && headerLefts.firstOrNull()?.type == "text") {
         val title = headerLefts.first().metroData?.text ?: ""
@@ -42,7 +40,6 @@ private fun parseSetMetroListCard(card: Card): List<UserHomeItem> {
         items.add(UserHomeItem.SectionTitle(title, moreLink))
         return items
     }
-    // 否则尝试解析正文中的 "item" 或 "video" 内容
     val bodyItems = card.cardData?.body?.metroList
     if (!bodyItems.isNullOrEmpty() && bodyItems.firstOrNull()?.type == "item") {
         for (metroItem in bodyItems) {
@@ -59,11 +56,9 @@ private fun parseSetMetroListCard(card: Card): List<UserHomeItem> {
     return items
 }
 
-// 处理 "set_slide_metro_list" 类型的卡片
 private fun parseSetSlideMetroListCard(card: Card): List<UserHomeItem> {
     val items = mutableListOf<UserHomeItem>()
     val hasFooter = !card.cardData?.footer?.left.isNullOrEmpty()
-    // 无 footer -> 最近更新的视频
     if (!hasFooter) {
         val videoItems = card.cardData?.body?.metroList?.mapNotNull { item ->
             item.metroData?.takeIf { d ->
@@ -75,33 +70,30 @@ private fun parseSetSlideMetroListCard(card: Card): List<UserHomeItem> {
         }
         return items
     }
-    // 有 footer -> 专辑卡片
     val album = extractAlbumFromCard(card)
     if (album != null) {
         items.add(UserHomeItem.Album(album, album.videos))
     }
     return items
 }
-data class AlbumSection(
-    val title: String?,
-    val albums: List<AlbumData>
-)
-fun parseAlbumCards(cardList: List<Card>): AlbumSection{
+
+fun parseAlbumCards(cardList: List<Card>): AlbumSection {
     val titleCard = cardList.firstOrNull { it.type == "set_metro_list" }
     val title = titleCard?.cardData?.header?.left
         ?.firstOrNull { it.type == "text" }
         ?.metroData?.text
-    val list=cardList.filter { it.type == "set_slide_metro_list" }
-    .mapNotNull { extractAlbumFromCard(it) }
-    return AlbumSection(title,list)
+    val list = cardList.filter { it.type == "set_slide_metro_list" }
+        .mapNotNull { extractAlbumFromCard(it) }
+    return AlbumSection(title, list)
 }
+
 private fun extractAlbumFromCard(card: Card): AlbumData? {
     val albumMeta = card.cardData?.footer?.left
         ?.firstOrNull { it is MetroItem && it.type == "user" }
         ?.let { it as MetroItem }?.metroData ?: return null
     val videoPreviews = extractAlbumVideoPreviews(card)
     return AlbumData(
-        albumName = albumMeta.nick ?: "未知专辑",
+        albumName = albumMeta.nick ?: "δ֪ר��",
         albumDescription = albumMeta.description ?: "",
         albumCoverUrl = albumMeta.avatar?.url ?: "",
         albumLink = albumMeta.link ?: "",
@@ -120,15 +112,4 @@ fun extractAlbumVideoPreviews(card: Card): List<AlbumVideoPreview> {
                 duration = video.metroData?.duration?.value ?: 0
             )
         } ?: emptyList()
-}
-
-sealed class UserHomeItem {
-    data class SectionTitle(val text: String, val moreLink: String? = null) : UserHomeItem()
-
-    data class VideoRecent(val videoItems: List<MetroData>) : UserHomeItem()
-
-    data class VideoPopular(val data: MetroData) : UserHomeItem()
-
-    data class Album(val albumData: AlbumData, val videoPreviews: List<AlbumVideoPreview>) :
-        UserHomeItem()
 }

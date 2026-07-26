@@ -5,12 +5,10 @@ import com.example.core.model.CallMetroListResponse
 import com.example.core.model.Card
 import com.example.core.model.GetNavResponse
 import com.example.core.model.GetPageResponse
-import com.example.core.model.ItemDetailResponse
 import com.example.core.model.MetroItem
 import com.example.core.model.NoticeItem
 import com.example.core.model.PageResult
 import com.example.core.model.PaginatedResult
-import com.example.core.model.RelatedRecommendResponse
 import com.example.core.model.TabListResponse
 import com.example.core.model.UserInfo
 import retrofit2.Call
@@ -22,8 +20,6 @@ import retrofit2.http.Query
 
 /**
  * description ： api接口
- * email : 3014386984@qq.com
- * date : 2026/7/14 19:57
  */
 interface UniversalApi {
     @FormUrlEncoded
@@ -65,15 +61,6 @@ interface UniversalApi {
 
     // ========== 从 KaiyanApi 整合的方法 ==========
 
-    @GET("v7/tag/tabList")
-    fun getTagTabList(): Call<TabListResponse>
-
-    @FormUrlEncoded
-    @POST("v1/card/page/get_page")
-    fun getTabDetailByUrl(
-        @Field("url") url: String
-    ): Call<GetPageResponse>
-
     @FormUrlEncoded
     @POST("v1/card/page/get_nav")
     fun getNav(
@@ -94,13 +81,6 @@ interface UniversalApi {
         @Field("resource_type") resourceType: String = "pgc_video"
     ): Call<okhttp3.ResponseBody>
 
-    // ========== 社区相关方法 ==========
-
-    @GET("v7/community/tab/rec")
-    fun getCommunityRec(): Call<ApiResponse<PaginatedResult<MetroItem>>>
-
-    @GET
-    fun getRankListByUrl(@retrofit2.http.Url url: String): Call<ApiResponse<PaginatedResult<MetroItem>>>
 
     // ========== 主题播单加载更多 ==========
 

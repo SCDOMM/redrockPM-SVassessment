@@ -1,5 +1,6 @@
 package com.example.ept.dicover.lightTopic
 
+import com.example.core.model.LightTopicPlaylistVideo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

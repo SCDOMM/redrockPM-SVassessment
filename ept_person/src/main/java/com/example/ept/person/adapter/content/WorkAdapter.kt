@@ -226,4 +226,3 @@ object WorkDiffCallback : DiffUtil.ItemCallback<MetroData>() {
     }
 }
 
-

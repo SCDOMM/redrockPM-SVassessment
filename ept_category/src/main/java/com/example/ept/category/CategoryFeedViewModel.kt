@@ -1,5 +1,6 @@
 package com.example.ept.category
 
+import com.example.core.model.FeedCategoryItem
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,10 +28,10 @@ class CategoryFeedViewModel : ViewModel() {
     private val api = RetrofitClient.create<UniversalApi>()
     private val gson = Gson()
 
-    private val allItems = mutableListOf<CategoryItem>()
+    private val allItems = mutableListOf<FeedCategoryItem>()
 
-    private val _items = MutableLiveData<List<CategoryItem>>()
-    val items: LiveData<List<CategoryItem>> = _items
+    private val _items = MutableLiveData<List<FeedCategoryItem>>()
+    val items: LiveData<List<FeedCategoryItem>> = _items
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -168,7 +169,7 @@ class CategoryFeedViewModel : ViewModel() {
                 }
 
                 val metroItems = result.item_list
-                val newItems = mutableListOf<CategoryItem>()
+                val newItems = mutableListOf<FeedCategoryItem>()
                 for (metro in metroItems) {
                     parseMetroItem(metro)?.let { newItems.add(it) }
                 }
@@ -200,11 +201,11 @@ class CategoryFeedViewModel : ViewModel() {
     /**
      * 从 card_list 中解析视频项
      */
-    private fun parseVideoCard(card: GetPageCard): List<CategoryItem> {
+    private fun parseVideoCard(card: GetPageCard): List<FeedCategoryItem> {
         if (card.type != "set_metro_list" && card.type != "call_metro_list") return emptyList()
 
         val metroList = card.card_data?.body?.metro_list ?: return emptyList()
-        val result = mutableListOf<CategoryItem>()
+        val result = mutableListOf<FeedCategoryItem>()
 
         for (metro in metroList) {
             parseMetroItem(metro)?.let { result.add(it) }
@@ -215,7 +216,7 @@ class CategoryFeedViewModel : ViewModel() {
     /**
      * 解析单个 metro item 为 CategoryItem
      */
-    private fun parseMetroItem(metro: GetPageMetroItem): CategoryItem? {
+    private fun parseMetroItem(metro: GetPageMetroItem): FeedCategoryItem? {
         val data = metro.metro_data ?: return null
         if (metro.type == "nav") return null
 
@@ -232,7 +233,7 @@ class CategoryFeedViewModel : ViewModel() {
             val title = video?.title ?: ""
             if (title.isEmpty()) return null
 
-            return CategoryItem.Video(
+            return FeedCategoryItem.Video(
                 videoId = video?.video_id?.toLongOrNull() ?: 0L,
                 title = title,
                 coverUrl = video?.cover?.url ?: "",
@@ -257,7 +258,7 @@ class CategoryFeedViewModel : ViewModel() {
 
             val itemId = data.item_id.toLongOrNull() ?: 0L
 
-            return CategoryItem.Image(
+            return FeedCategoryItem.Image(
                 id = itemId,
                 title = data.text ?: "",
                 imageUrls = imageUrls,
@@ -272,3 +273,4 @@ class CategoryFeedViewModel : ViewModel() {
         }
     }
 }
+

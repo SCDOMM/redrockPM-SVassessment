@@ -1,5 +1,6 @@
 package com.example.ept.dicover.adapter
 
+import com.example.core.model.LightTopicPlaylistVideo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.ept.dicover.R
-import com.example.ept.dicover.lightTopic.LightTopicPlaylistVideo
 
 /**
  * description ： 视频卡片适配器（详情页视频列表）

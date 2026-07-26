@@ -1,5 +1,7 @@
 package com.example.ept.dicover.lightTopic
 
+import com.example.core.model.LightTopicItem
+import com.example.core.model.LightTopicPlaylistVideo
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

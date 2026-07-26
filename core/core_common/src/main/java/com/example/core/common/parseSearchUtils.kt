@@ -5,6 +5,7 @@ import com.example.core.model.MetroData
 import com.example.core.model.MetroItem
 import com.example.core.model.PageResult
 import com.example.core.model.PaginatedResult
+import com.example.core.model.SearchResultData
 
 /**   
  * 包名称： com.example.core.common
@@ -31,16 +32,12 @@ fun parseSearch(
         when (navType) {
             "video" -> videoList.addAll(metroItems.filter { it.type == "video" }
                 .mapNotNull { it.metroData })
-
             "pgc" -> creatorList.addAll(metroItems.filter { it.type == "user" }
                 .mapNotNull { it.metroData })
-
             "graphic" -> articleList.addAll(metroItems.filter { it.type == "image" }
                 .mapNotNull { it.metroData })
-
             "topic" -> topicList.addAll(metroItems.filter { it.type == "topic" }
                 .mapNotNull { it.metroData })
-
             "ugc" -> userList.addAll(metroItems.filter { it.type == "user" }
                 .mapNotNull { it.metroData })
         }
@@ -64,10 +61,10 @@ fun parseLoadSearch(response: ApiResponse<PaginatedResult<MetroItem>>): SearchRe
     response.result?.itemList?.forEach { item ->
         val data = item.metroData ?: return@forEach
         when (item.type) {
-            "video" -> videoList.add(data)          // 视频 -> videoList
-            "image" -> articleList.add(data)        // 图文 -> articleList
-            "topic" -> topicList.add(data)          // 话题 -> topicList
-            "user" -> {                             // 用户需要进一步区分
+            "video" -> videoList.add(data)
+            "image" -> articleList.add(data)
+            "topic" -> topicList.add(data)
+            "user" -> {
                 val target = if (data.type == "pgc") creatorList else userList
                 target.add(data)
             }
@@ -82,11 +79,3 @@ fun parseLoadSearch(response: ApiResponse<PaginatedResult<MetroItem>>): SearchRe
         ""
     )
 }
-data class SearchResultData(
-    val videoList: List<MetroData> = emptyList(),
-    val creatorList: List<MetroData> = emptyList(),
-    val articleList: List<MetroData> = emptyList(),
-    val topicList: List<MetroData> = emptyList(),
-    val userList: List<MetroData> = emptyList(),
-    val query: String
-)

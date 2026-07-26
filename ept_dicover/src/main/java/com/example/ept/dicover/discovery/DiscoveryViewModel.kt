@@ -1,5 +1,7 @@
 package com.example.ept.dicover.discovery
 
+import com.example.core.model.TopicItem
+import com.example.core.model.DiscoverCategoryItem
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -29,8 +31,8 @@ class DiscoveryViewModel : ViewModel() {
     private val gson = Gson()
 
     /** 分类列表，展示视频分类入口 */
-    private val _categories = MutableLiveData<List<CategoryItem>>()
-    val categories: LiveData<List<CategoryItem>> = _categories
+    private val _categories = MutableLiveData<List<DiscoverCategoryItem>>()
+    val categories: LiveData<List<DiscoverCategoryItem>> = _categories
 
     /** 主题播单列表，水平滚动展示 */
     private val _topics = MutableLiveData<List<TopicItem>>()
@@ -98,7 +100,7 @@ class DiscoveryViewModel : ViewModel() {
                 val cardList = result.card_list
                 Log.d("DiscoveryViewModel", "card_list size=${cardList.size}")
 
-                val categories = mutableListOf<CategoryItem>()
+                val categories = mutableListOf<DiscoverCategoryItem>()
                 val topics = mutableListOf<TopicItem>()
                 val squareItems = mutableListOf<TopicItem>()
 
@@ -121,7 +123,7 @@ class DiscoveryViewModel : ViewModel() {
                                 val name = iconItem.name
                                 if (name.isNotEmpty()) {
                                     categories.add(
-                                        CategoryItem(name = name, pageLabel = pageLabel, iconUrl = iconItem.icon)
+                                        DiscoverCategoryItem(name = name, pageLabel = pageLabel, iconUrl = iconItem.icon)
                                     )
                                 }
                             }
@@ -181,10 +183,3 @@ class DiscoveryViewModel : ViewModel() {
  * @param icon 图标 URL
  * @param actionUrl 点击跳转的 URL
  */
-data class TopicItem(
-    val id: Long,
-    val title: String,
-    val description: String,
-    val icon: String,
-    val actionUrl: String
-)

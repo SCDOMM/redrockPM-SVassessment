@@ -1,5 +1,7 @@
 package com.example.ept.dicover.topicsquare
 
+import com.example.core.model.TopicItem
+import com.example.core.model.TopicSquareListItem
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +16,6 @@ import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
 import com.example.ept.dicover.R
-import com.example.ept.dicover.discovery.TopicItem
 import com.example.ept.dicover.topicdetail.TopicDetailActivity
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -159,7 +160,6 @@ class TopicSquareListFragment : Fragment() {
     /** 从 link 参数中通过正则提取 page_label 值 */
     private fun extractPageLabel(link: String): String {
         // 从 link 中提取 page_label
-        // 格式: ...&api_request={"url":"...","params":{"page_label":"topic_detail-xxx",...}}
         try {
             val decoded = java.net.URLDecoder.decode(link, "UTF-8")
             // 直接用正则提取 page_label 的值
