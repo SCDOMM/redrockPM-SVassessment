@@ -25,6 +25,7 @@ class HotListFragment : Fragment() {
     private lateinit var adapter: HotVideoAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private var isLoading=false
 
     private var apiUrl: String = ""
 
@@ -89,8 +90,32 @@ class HotListFragment : Fragment() {
      * 观察 ViewModel 数据变化，更新列表、刷新状态和错误提示
      */
     private fun observeData() {
-        viewModel.hotList.observe(viewLifecycleOwner) { list ->
-            adapter.submitList(adapter.parseItems(list))
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (isLoading) return
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalCount = layoutManager.itemCount
+                if (totalCount <= 0) return
+                val lastVisible = layoutManager.findLastVisibleItemPosition()
+                val preloadThreshold = 5
+                val remainingItems = totalCount - lastVisible - 1
+                if (remainingItems <= preloadThreshold) {
+                    isLoading = true
+                    viewModel.loadMore()
+                }
+            }
+        })
+        viewModel.hotList.observe(viewLifecycleOwner) { state ->
+            when(state){
+                is HotState.LoadState ->{
+                    isLoading=false
+                    adapter.submitList(adapter.parseItems(state.newList))
+                }
+                is HotState.RefreshState -> {
+                    adapter.submitList(adapter.parseItems(state.list))
+                }
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->

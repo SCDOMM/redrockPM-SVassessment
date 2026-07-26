@@ -24,6 +24,14 @@ data class PaginatedResult<T>(
     @SerializedName("last_item_id") val lastItemId: String? = "",
     @SerializedName("item_count") val itemCount: Int = 0
 )
+data class PaginatedResult1<T>(
+    val itemList: List<T> = emptyList(),
+    val count: Int = 0,
+    val total: Int = 0,
+    val nextPageUrl: String? = null,
+    @SerializedName("last_item_id") val lastItemId: String? = "",
+    @SerializedName("item_count") val itemCount: Int = 0
+)
 data class Card(
     @SerializedName("card_id") val cardId: Long = 0,
     @SerializedName("card_unique_id") val cardUniqueId: String? = null,
