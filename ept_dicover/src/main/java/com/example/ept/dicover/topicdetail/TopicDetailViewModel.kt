@@ -22,19 +22,15 @@ class TopicDetailViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<SpecficApi>()
 
-    /** 是否已加载过 */
     var loaded = false
         private set
 
-    /** 话题标签信息 */
     private val _tagInfo = MutableLiveData<TopicTagInfo>()
     val tagInfo: LiveData<TopicTagInfo> = _tagInfo
 
-    /** 错误信息 */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    /** 加载话题详情数据 */
     fun loadDetail(pageLabel: String) {
         loaded = true
         viewModelScope.launch {

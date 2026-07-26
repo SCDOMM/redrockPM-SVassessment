@@ -16,5 +16,5 @@ object NetworkConfig {
     const val X_THEFAIR_CID = "12a50409f39708370d69ee9951505c2c"
     const val X_THEFAIR_UA = "EYEPETIZER/7090000 (V2410A;android;15;zh_CN;android;7.9.0;cn-bj;huawei;12a50409f39708370d69ee9951505c2c;NONE;1080*2163) native/1.0"
     const val USER_AGENT = "EYEPETIZER/7090000 (V2410A;android;15;zh_CN;android;7.9.0;cn-bj;huawei;12a50409f39708370d69ee9951505c2c;NONE;1080*2163) native/1.0"
-    const val COOKIE = "ky_udid=58d1cf919db5480fbf33d4e306642a4e;ky_auth=;APPID=ahpagrcrf2p7m6rg;PHPSESSID=a8ee7bee9cce9d3c1f8bdb0602d17781"
+    const val COOKIE = "ky_udid=58d1cf919db5480fbf33d4e306642a4e;ky_auth=;APPID=ahpagrcrf2p7m6rg;PHPSESSID=80ed5e0c50935dc45cc7bc0182c33755"
 }

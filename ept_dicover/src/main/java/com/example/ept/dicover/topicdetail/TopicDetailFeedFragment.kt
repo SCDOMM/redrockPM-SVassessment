@@ -80,12 +80,10 @@ class TopicDetailFeedFragment : Fragment() {
         loadFeed()
     }
 
-    /** 刷新 Feed 数据 */
     fun refresh() {
         loadFeed()
     }
 
-    /** 加载 Feed 列表数据 */
     private fun loadFeed() {
         swipeRefresh?.isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {

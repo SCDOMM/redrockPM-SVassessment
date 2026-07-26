@@ -29,6 +29,7 @@ rootProject.name = "Eyepetater"
 include(":app")
 include(":ept_home")
 include(":ept_daily")
+include(":ept_hot")
 include(":ept_dicover")
 include(":core")
 include(":core:core_model")

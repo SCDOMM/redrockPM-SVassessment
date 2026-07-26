@@ -1,6 +1,7 @@
 package com.example.ept.person.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +12,8 @@ import com.example.core.network.RetrofitClient
 import com.example.core.network.api.UniversalApi
 import com.example.core.network.await
 import com.example.core.common.parseWorkListFromCardList
+import com.example.core.network.api.defaultCardJSON
+import com.example.core.network.api.defaultMaterialJSON
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
@@ -45,6 +48,9 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
                 lastItemId = params?.get("last_item_id") as? String ?: ""
                 materialJson = params?.get("material") as? String ?: ""
                 cardJSON = Gson().toJson(firstCard)
+                Log.d("测试mj",materialJson)
+                Log.d("测试cj",cardJSON)
+
                 _liveData.value = WorkState.InitState(result.items.toMutableList(),result.title.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -55,6 +61,13 @@ class WorkViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadMore() {
         viewModelScope.launch {
+            if (materialJson.isNullOrEmpty()){
+                materialJson= defaultMaterialJSON
+            }
+            if (cardJSON.isNullOrEmpty()){
+                cardJSON= defaultCardJSON
+            }
+
             val response=appService.getMorePage(
                 dataSource= "home_user_work_list",
                 materialJSON = materialJson,

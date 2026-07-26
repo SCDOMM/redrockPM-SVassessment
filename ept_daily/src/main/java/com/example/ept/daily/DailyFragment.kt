@@ -62,8 +62,7 @@ class DailyFragment : Fragment() {
                 }
                 is DailyState.LoadingMoreState -> {
                     isLoading = false
-                  adapter.submitList(state.videoList)
-
+                    adapter.submitList(state.videoList)
                 }
                 is DailyState.ErrorState -> {
                     Toast.makeText(

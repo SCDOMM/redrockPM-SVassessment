@@ -16,6 +16,7 @@ data class ApiResponse<T>(
     val result: T? = null
 )
 data class PaginatedResult<T>(
+    @SerializedName("item_list")
     val itemList: List<T> = emptyList(),
     val count: Int = 0,
     val total: Int = 0,

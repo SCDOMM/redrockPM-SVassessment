@@ -69,7 +69,9 @@ class DailyViewModel(application: Application) : AndroidViewModel(application) {
                 val newVideos: List<MetroData> = response.result?.itemList
                     ?.mapNotNull { it.metroData }
                     ?: emptyList()
+
                 allVideos = allVideos + newVideos
+
 
                 _liveData.postValue(DailyState.LoadingMoreState(allVideos.toMutableList()))
             } catch (e: Exception) {
