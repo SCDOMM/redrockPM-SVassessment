@@ -41,14 +41,18 @@ class LightTopicListActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_light_topic_list)
 
-        val root = findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
+        val root = findViewById<android.view.View>(R.id.root_layout)
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(bars.left, bars.top, bars.right, 0)
+            view.setPadding(0, bars.top, 0, 0)
             insets
         }
 
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "主题播单"
+        toolbar.setNavigationOnClickListener { finish() }
 
         viewModel = ViewModelProvider(this)[LightTopicListViewModel::class.java]
 
