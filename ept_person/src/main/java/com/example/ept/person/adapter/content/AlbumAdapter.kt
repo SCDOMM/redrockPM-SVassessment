@@ -22,7 +22,9 @@ import com.example.ept.person.R
  * 创建时间：2026-07-21 11:22
  *
  */
-class AlbumAdapter : ListAdapter<AlbumData, AlbumAdapter.AlbumViewHolder>(AlbumDiffCallBack) {
+class AlbumAdapter(
+    private val onAlbumVideoClick: (String) -> Unit = {}
+) : ListAdapter<AlbumData, AlbumAdapter.AlbumViewHolder>(AlbumDiffCallBack) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -76,6 +78,8 @@ class AlbumAdapter : ListAdapter<AlbumData, AlbumAdapter.AlbumViewHolder>(AlbumD
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 llAlbumContainerItem.addView(videoView)
+
+                ivCover.setOnClickListener { onAlbumVideoClick(video.videoId) }
             }
         }
     }

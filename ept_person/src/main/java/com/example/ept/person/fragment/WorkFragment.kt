@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.person.R
 import com.example.ept.person.adapter.content.WorkAdapter
+import com.example.core.media.VideoPlayerActivity
 import com.example.ept.person.viewmodel.CreatorViewModel
 import com.example.ept.person.viewmodel.WorkState
 import com.example.ept.person.viewmodel.WorkViewModel
@@ -42,7 +43,9 @@ class WorkFragment : Fragment() {
         return view
     }
     fun initEvent(){
-        adapter= WorkAdapter()
+        adapter= WorkAdapter { video ->
+            video.itemId?.let { VideoPlayerActivity.start(requireContext(), it) }
+        }
         rvWorkDefault.layoutManager= LinearLayoutManager(view.context)
         rvWorkDefault.adapter=adapter
         creatorViewModel.workLiveData.observe(viewLifecycleOwner){tab->

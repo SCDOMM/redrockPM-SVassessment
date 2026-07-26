@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.person.R
 import com.example.ept.person.adapter.content.AlbumAdapter
+import com.example.core.media.VideoPlayerActivity
 import com.example.ept.person.viewmodel.AlbumState
 import com.example.ept.person.viewmodel.AlbumViewModel
 import com.example.ept.person.viewmodel.CreatorViewModel
@@ -40,7 +41,9 @@ class AlbumFragment : Fragment() {
         return view
     }
     fun initEvent(){
-        adapter= AlbumAdapter()
+        adapter= AlbumAdapter { videoId ->
+            VideoPlayerActivity.start(requireContext(), videoId)
+        }
         rvAlbumDefault.layoutManager= LinearLayoutManager(view.context)
         rvAlbumDefault.adapter=adapter
         creatorViewModel.albumLiveData.observe(viewLifecycleOwner){tab ->

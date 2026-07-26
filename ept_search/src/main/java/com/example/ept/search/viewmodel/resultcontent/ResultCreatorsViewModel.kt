@@ -10,7 +10,6 @@ import com.example.core.common.parseLoadSearch
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SearchApi
 import com.example.core.network.await
-import com.example.ept.search.utils.parseSearchResponseV2
 import kotlinx.coroutines.launch
 
 /**   

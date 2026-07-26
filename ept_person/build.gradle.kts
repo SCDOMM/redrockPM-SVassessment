@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core:core_network"))
     implementation(project(":core:core_model"))
     implementation(project(":core:core_common"))
+    implementation(project(":core:core_media"))
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 

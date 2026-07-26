@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ept.person.R
-import com.example.core.common.UserHomeItem
+import com.example.core.model.MetroData
+import com.example.core.model.UserHomeItem
 import com.google.android.material.imageview.ShapeableImageView
 
 /**   
@@ -30,7 +31,10 @@ private const val TYPE_VIDEO_RECENT = 1
 private const val TYPE_VIDEO_POPULAR = 2
 private const val TYPE_ALBUM = 3
 
-class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDiffCallback) {
+class IndexAdapter(
+    private val onVideoClick: (MetroData) -> Unit = {},
+    private val onAlbumVideoClick: (String) -> Unit = {}
+) : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDiffCallback) {
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         return when (item) {
@@ -99,7 +103,7 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
 
     inner class RecentVideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val rvNewItem: RecyclerView = itemView.findViewById(R.id.rv_new_item)
-        val recentAdapter = RecentAdapter()
+        val recentAdapter = RecentAdapter(onVideoClick)
         fun bindData(item: UserHomeItem.VideoRecent) {
             rvNewItem.adapter = recentAdapter
             val manager =
@@ -166,6 +170,8 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
                 }
                 isExpanded=!isExpanded
             }
+
+            ivVideoCover.setOnClickListener { onVideoClick(data) }
         }
     }
 
@@ -213,6 +219,8 @@ class IndexAdapter : ListAdapter<UserHomeItem, RecyclerView.ViewHolder>(IndexDif
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 llAlbumContainerItem.addView(videoView)
+
+                ivNewCoverItemItem.setOnClickListener { onAlbumVideoClick(video.videoId) }
             }
         }
     }

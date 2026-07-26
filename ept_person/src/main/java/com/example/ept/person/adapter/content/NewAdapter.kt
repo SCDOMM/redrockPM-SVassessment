@@ -22,7 +22,9 @@ import com.google.android.material.imageview.ShapeableImageView
  * 创建时间：2026-07-22 15:22
  *
  */
-class RecentAdapter : ListAdapter<MetroData, RecentAdapter.RecentVideoViewHolder>(
+class RecentAdapter(
+    private val onVideoClick: (MetroData) -> Unit = {}
+) : ListAdapter<MetroData, RecentAdapter.RecentVideoViewHolder>(
     NewDiffCallback
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentVideoViewHolder {
@@ -65,6 +67,7 @@ class RecentAdapter : ListAdapter<MetroData, RecentAdapter.RecentVideoViewHolder
             tvNewLabelItemItem.text = data.tags?.firstOrNull()?.title ?: ""
             tvNewDurationItemItem.text = data.duration?.text ?: ""
 
+            itemView.setOnClickListener { onVideoClick(data) }
         }
     }
 }

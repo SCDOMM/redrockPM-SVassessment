@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ept.person.R
 import com.example.ept.person.adapter.content.IndexAdapter
+import com.example.core.media.VideoPlayerActivity
 import com.example.ept.person.viewmodel.CreatorViewModel
 import com.example.ept.person.viewmodel.IndexState
 import com.example.ept.person.viewmodel.IndexViewModel
@@ -34,7 +35,15 @@ class IndexFragment : Fragment() {
         return view
     }
     fun initEvent(){
-        adapter= IndexAdapter()
+        adapter= IndexAdapter(
+            onVideoClick = { video ->
+                val videoId = video.videoId ?: video.itemId
+                videoId?.let { VideoPlayerActivity.start(requireContext(), it) }
+            },
+            onAlbumVideoClick = { videoId ->
+                VideoPlayerActivity.start(requireContext(), videoId)
+            }
+        )
         rvIndexDefault.layoutManager= LinearLayoutManager(view.context)
         rvIndexDefault.adapter=adapter
         creatorViewModel.indexLiveData.observe(viewLifecycleOwner){ tab ->

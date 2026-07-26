@@ -29,7 +29,9 @@ private const val TYPE_VIDEO = 0
 private const val TYPE_GRAPHIC = 1
 private const val TYPE_UNKNOWN = 2
 
-class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallback) {
+class WorkAdapter(
+    private val onVideoClick: (MetroData) -> Unit = {}
+) : ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallback) {
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
         return when (item.resourceType) {
@@ -136,6 +138,8 @@ class WorkAdapter: ListAdapter<MetroData, RecyclerView.ViewHolder>(WorkDiffCallb
                 }
                 isExpanded=!isExpanded
             }
+
+            ivVideoCover.setOnClickListener { onVideoClick(metroData) }
         }
     }
 
