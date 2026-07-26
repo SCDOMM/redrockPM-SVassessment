@@ -151,12 +151,6 @@ class VideoPlayerFragment : Fragment() {
 
                 override fun onQuitFullscreen(url: String, vararg objects: Any) {
                     super.onQuitFullscreen(url, *objects)
-                    Log.e("VideoFragment",
-                          "***** onQuitFullscreen **** ${objects[0]}") // title
-                    Log.e(
-                        "VideoFragment",
-                        "***** onQuitFullscreen **** ${objects[1]}"
-                    ) // 当前非全屏player
                     orientationUtils?.backToProtVideo()
                 }
             })
@@ -166,7 +160,7 @@ class VideoPlayerFragment : Fragment() {
             .build(videoPlayer)
         //全屏时返回键
         videoPlayer.setBackFromFullScreenListener {
-
+            if (!isAdded) return@setBackFromFullScreenListener
             backFromWindowFull(requireActivity())
         }
 
@@ -174,14 +168,14 @@ class VideoPlayerFragment : Fragment() {
 
         orientationUtils = OrientationUtils(requireActivity(), videoPlayer)
         videoPlayer.fullscreenButton.setOnClickListener {
-
+            if (!isAdded) return@setOnClickListener
             orientationUtils?.resolveByClick()
             videoPlayer.startWindowFullscreen(requireActivity(), true, true)
-
         }
         //非全屏返回键
         videoPlayer.backButton.setOnClickListener {
-            if(!videoPlayer.isIfCurrentIsFullscreen() ){
+            if (!isAdded) return@setOnClickListener
+            if (!videoPlayer.isIfCurrentIsFullscreen()) {
                 requireActivity().finish()
             }
         }
@@ -195,6 +189,7 @@ class VideoPlayerFragment : Fragment() {
      */
     private fun initRelatedVideos() {
         relatedAdapter = RelatedVideoAdapter { item ->
+            if (!isAdded) return@RelatedVideoAdapter
             val intent = Intent(requireContext(), VideoPlayerActivity::class.java).apply {
                 putExtra(VideoPlayerActivity.EXTRA_VIDEO_ID, item.id.toString())
                 putExtra(VideoPlayerActivity.EXTRA_VIDEO_URL, item.playUrl)
@@ -215,45 +210,29 @@ class VideoPlayerFragment : Fragment() {
      * 加载相关推荐视频数据
      */
     private fun loadRelatedVideos() {
-        Log.d("VideoPlayer", "loadRelatedVideos: videoId=$videoId")
-        if (videoId == 0L) {
-            Log.w("VideoPlayer", "videoId is 0, skip related")
-            return
-        }
+        if (videoId == 0L) return
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) {
                     api.getRelatedRecommend(videoId.toString()).execute()
                 }
-                Log.d("VideoPlayer", "related HTTP ${response.code()}")
                 if (response.isSuccessful) {
                     val rawBody = response.body()?.string() ?: ""
-                    Log.d("VideoPlayer", "related RAW_LEN=${rawBody.length}")
-                    if (rawBody.isNotEmpty()) {
-                        Log.d("VideoPlayer", "related preview=${rawBody.take(500)}")
-                    }
 
                     val topLevel = try {
-                        com.google.gson.Gson().fromJson(rawBody, Map::class.java) as? Map<String, Any>
+                        gson.fromJson(rawBody, Map::class.java) as? Map<String, Any>
                     } catch (e: Exception) {
                         null
                     }
 
                     val code = (topLevel?.get("code") as? Number)?.toInt() ?: -1
-                    if (code != 0) {
-                        Log.e("VideoPlayer", "related API error: code=$code")
-                        return@launch
-                    }
+                    if (code != 0) return@launch
 
                     @Suppress("UNCHECKED_CAST")
                     val result = topLevel?.get("result") as? Map<String, Any>
                     @Suppress("UNCHECKED_CAST")
                     val itemList = result?.get("item_list") as? List<Map<String, Any>> ?: emptyList()
-                    Log.d("VideoPlayer", "related itemList size=${itemList.size}")
-                    if (itemList.isNotEmpty()) {
-                        Log.d("VideoPlayer", "related first item type=${itemList[0]["type"]}, keys=${itemList[0].keys}")
-                    }
 
                     val videoItems = mutableListOf<RelatedVideoAdapter.RelatedVideoItem>()
                     for (itemMap in itemList) {
@@ -320,23 +299,9 @@ class VideoPlayerFragment : Fragment() {
                 .into(ivAuthor)
         }
 
-        // 点击头像跳转作者页
-        ivAuthor.setOnClickListener {
-            if (authorUid.isNotEmpty()) {
-                com.therouter.TheRouter.build("http://therouter.com/person")
-                    .withString("uid", authorUid)
-                    .navigation()
-            }
-        }
-
-        // 点击作者名也跳转
-        tvAuthorName.setOnClickListener {
-            if (authorUid.isNotEmpty()) {
-                com.therouter.TheRouter.build("http://therouter.com/person")
-                    .withString("uid", authorUid)
-                    .navigation()
-            }
-        }
+        // 点击头像或作者名跳转作者页
+        ivAuthor.setOnClickListener { navigateToAuthor() }
+        tvAuthorName.setOnClickListener { navigateToAuthor() }
 
         // 分享按钮
         val shareUrl = playUrl.ifEmpty { videoUrl }
@@ -356,6 +321,13 @@ class VideoPlayerFragment : Fragment() {
             count >= 10000 -> String.format("%.1f万", count / 10000.0)
             else -> count.toString()
         }
+    }
+
+    private fun navigateToAuthor() {
+        if (!isAdded || authorUid.isEmpty()) return
+        com.therouter.TheRouter.build("http://therouter.com/person")
+            .withString("uid", authorUid)
+            .navigation()
     }
 
 
@@ -379,6 +351,8 @@ class VideoPlayerFragment : Fragment() {
 
 
     companion object {
+        private val gson = com.google.gson.Gson()
+
         /** 视频 ID 参数键名 */
         private const val ARG_VIDEO_ID = "video_id"
         /** 视频播放地址参数键名 */

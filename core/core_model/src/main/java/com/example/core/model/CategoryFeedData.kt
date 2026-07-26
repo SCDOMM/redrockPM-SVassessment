@@ -13,8 +13,6 @@ sealed class FeedCategoryItem {
         val authorName: String,
         val authorIcon: String,
         val description: String,
-        val playUrl: String = "",
-        val category: String = "",
         val collectionCount: Int = 0,
         val shareCount: Int = 0,
         val replyCount: Int = 0,

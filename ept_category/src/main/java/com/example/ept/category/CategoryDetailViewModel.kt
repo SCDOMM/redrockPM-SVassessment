@@ -88,7 +88,6 @@ class CategoryDetailViewModel : ViewModel() {
                 findTagInfo(cardList)
 
                 _error.value = null
-                Log.d("CategoryDetail", "Loaded header info")
             } catch (e: Exception) {
                 Log.e("CategoryDetail", "loadCategoryDetail failed", e)
                 _error.value = e.message
@@ -105,69 +104,40 @@ class CategoryDetailViewModel : ViewModel() {
         var desc = ""
         var headerImage = ""
         var stats = ""
-        val feedTabs = mutableListOf<Pair<String, String>>() // (title, page_label)
+        val feedTabs = mutableListOf<Pair<String, String>>()
 
-        for ((cardIndex, card) in cardList.withIndex()) {
+        for (card in cardList) {
             val metroList = card.card_data?.body?.metro_list ?: continue
-            Log.d("CategoryDetail", "Card[$cardIndex] type=${card.type}, metroCount=${metroList.size}")
-            for ((metroIndex, metro) in metroList.withIndex()) {
+            for (metro in metroList) {
                 val data = metro.metro_data ?: continue
-                Log.d("CategoryDetail", "  Metro[$metroIndex] type=${metro.type}, cover=${data.cover?.url}, bg=${data.background?.url}, text=${data.text.take(30)}, desc=${data.description.take(30)}")
 
-                // 提取头图：优先 cover.url，其次 background.url
+                // 头图：cover → background
                 if (headerImage.isEmpty()) {
-                    val coverUrl = data.cover?.url
-                    if (!coverUrl.isNullOrEmpty()) {
-                        headerImage = coverUrl
-                        Log.d("CategoryDetail", "  Found header image from cover: $coverUrl")
-                    } else {
-                        val bgUrl = data.background?.url
-                        if (!bgUrl.isNullOrEmpty()) {
-                            headerImage = bgUrl
-                            Log.d("CategoryDetail", "  Found header image from background: $bgUrl")
-                        }
-                    }
+                    headerImage = data.cover?.url?.takeIf { it.isNotEmpty() }
+                        ?: data.background?.url?.takeIf { it.isNotEmpty() }
+                        ?: ""
                 }
 
-                // 提取描述
+                // 描述：description → text → subtitle
                 if (desc.isEmpty()) {
-                    val description = data.description
-                    if (description.isNotEmpty()) {
-                        desc = description
-                    } else {
-                        val text = data.text
-                        if (text.isNotEmpty()) {
-                            desc = text
-                        } else {
-                            val subtitle = data.subtitle
-                            if (subtitle != null && subtitle.isNotEmpty()) {
-                                desc = subtitle
-                            }
-                        }
-                    }
+                    desc = data.description.takeIf { it.isNotEmpty() }
+                        ?: data.text.takeIf { it.isNotEmpty() }
+                        ?: data.subtitle?.takeIf { it.isNotEmpty() }
+                        ?: ""
                 }
 
-                // 提取统计信息
+                // 统计
                 if (stats.isEmpty()) {
-                    val tags = data.tags
-                    if (!tags.isNullOrEmpty()) {
-                        stats = tags.joinToString(" · ") { it.title }
-                    }
+                    stats = data.tags?.joinToString(" · ") { it.title } ?: ""
                 }
 
-                // 提取 nav tabs
+                // nav tabs
                 if (metro.type == "nav") {
-                    val navList = data.nav_list
-                    if (navList != null) {
-                        for (nav in navList) {
-                            feedTabs.add(Pair(nav.title, nav.page_label))
-                        }
-                    }
+                    data.nav_list?.forEach { feedTabs.add(Pair(it.title, it.page_label)) }
                 }
             }
         }
 
-        Log.d("CategoryDetail", "Found ${feedTabs.size} feed tabs: $feedTabs")
         _tagInfo.value = TagInfo(desc, headerImage, stats, feedTabs)
     }
 }

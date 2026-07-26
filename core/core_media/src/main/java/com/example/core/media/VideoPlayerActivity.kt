@@ -87,7 +87,6 @@ class VideoPlayerActivity : AppCompatActivity() {
                     }
 
                     val rawBody = response.body()?.string() ?: ""
-                    Log.d("VideoPlayer", "RAW_LEN=${rawBody.length}, preview=${rawBody.take(300)}")
 
                     if (rawBody.isEmpty()) {
                         Toast.makeText(this@VideoPlayerActivity, "响应体为空", Toast.LENGTH_SHORT).show()
@@ -144,8 +143,6 @@ class VideoPlayerActivity : AppCompatActivity() {
                         .replace("\\u003d", "=")
                         .replace("\\u0026", "&")
 
-                    Log.d("VideoPlayer", "title='${videoInfo?.get("title")}', playUrl=${cleanPlayUrl.take(50)}")
-
                     supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragment_container,
@@ -171,39 +168,6 @@ class VideoPlayerActivity : AppCompatActivity() {
                     Log.e("VideoPlayer", "加载失败", e)
                     Toast.makeText(this@VideoPlayerActivity, "网络错误: ${e.message}", Toast.LENGTH_SHORT).show()
                     finish()
-                }
-            }
-        }
-    }
-
-    /**
-     * 从任意类型中提取视频数据 Map
-     * 兼容: Map, LinkedTreeMap, String(JSON), null
-     */
-    @Suppress("UNCHECKED_CAST")
-    private fun extractVideoDataMap(data: Any?): Map<String, Any>? {
-        return when (data) {
-            is Map<*, *> -> data as Map<String, Any>
-            is String -> {
-                // data 可能是 JSON 字符串
-                try {
-                    gson.fromJson(data, Map::class.java) as? Map<String, Any>
-                } catch (e: Exception) {
-                    Log.e("VideoPlayer", "JSON string parse failed", e)
-                    null
-                }
-            }
-            else -> {
-                // 尝试通过序列化再反序列化
-                try {
-                    val json = gson.toJson(data)
-                    Log.d("VideoPlayer", "fallback serialize: ${json?.take(300)}")
-                    if (json != null && json != "null") {
-                        gson.fromJson(json, Map::class.java) as? Map<String, Any>
-                    } else null
-                } catch (e: Exception) {
-                    Log.e("VideoPlayer", "fallback parse failed", e)
-                    null
                 }
             }
         }

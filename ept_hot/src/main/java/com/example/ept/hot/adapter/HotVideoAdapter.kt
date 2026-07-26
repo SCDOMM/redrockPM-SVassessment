@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -12,12 +14,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.core.model.Item
 import com.example.ept.hot.R
-import com.google.gson.Gson
 
-/**
- * description �?视频列表项数据模�? * email : 3014386984@qq.com
- * date : 2026/7/15 15:23
- */
 data class VideoItem(
     val id: Long,
     val title: String,
@@ -25,26 +22,18 @@ data class VideoItem(
     val duration: Long,
     val authorName: String,
     val authorIcon: String,
-    val category: String = "",
-    val playUrl: String = "",
-    val description: String = ""
+    val category: String = ""
 )
 
-/**
- * description �?热门视频列表适配器，负责视频卡片展示和点击事�? * email : 3014386984@qq.com
- * date : 2026/7/15 15:23
- */
 class HotVideoAdapter(
     private val onItemClick: (VideoItem) -> Unit = {}
-) : RecyclerView.Adapter<HotVideoAdapter.VideoViewHolder>() {
+) : ListAdapter<VideoItem, HotVideoAdapter.VideoViewHolder>(DIFF_CALLBACK) {
 
-    private var items: List<VideoItem> = emptyList()
-
-    /**
-     * 提交数据列表并刷�?     */
-    fun submitList(newItems: List<VideoItem>) {
-        items = newItems
-        notifyDataSetChanged()
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<VideoItem>() {
+            override fun areItemsTheSame(old: VideoItem, new: VideoItem) = old.id == new.id
+            override fun areContentsTheSame(old: VideoItem, new: VideoItem) = old == new
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
@@ -53,28 +42,17 @@ class HotVideoAdapter(
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = items.size
-
-    /**
-     * 将Item列表解析为VideoItem
-     */
     fun parseItems(rawItems: List<Item>): List<VideoItem> {
-        return rawItems.mapNotNull { item ->
-            parseVideoItem(item)
-        }
+        return rawItems.mapNotNull { parseVideoItem(it) }
     }
 
-    /**
-     * 根据item.type解析video、videoSmallCard或followCard类型数据
-     */
     private fun parseVideoItem(item: Item): VideoItem? {
         return try {
             when (item.type) {
-                "video" -> parseVideoData(item.data)
-                "videoSmallCard" -> parseVideoData(item.data)
+                "video", "videoSmallCard" -> parseVideoData(item.data)
                 "followCard" -> {
                     val data = item.data as? Map<*, *> ?: return null
                     val content = data["content"] as? Map<*, *> ?: return null
@@ -88,8 +66,6 @@ class HotVideoAdapter(
         }
     }
 
-    /**
-     * �?Map 中解析视频数�?     */
     @Suppress("UNCHECKED_CAST")
     private fun parseVideoData(data: Any?): VideoItem? {
         val map = data as? Map<*, *> ?: return null
@@ -116,8 +92,6 @@ class HotVideoAdapter(
         val authorIcon = authorMap?.get("icon") as? String ?: ""
 
         val category = map["category"] as? String ?: ""
-        val playUrl = map["play_url"] as? String ?: map["playUrl"] as? String ?: ""
-        val description = map["description"] as? String ?: ""
 
         return VideoItem(
             id = id,
@@ -126,15 +100,10 @@ class HotVideoAdapter(
             duration = duration,
             authorName = authorName,
             authorIcon = authorIcon,
-            category = category,
-            playUrl = playUrl,
-            description = description
+            category = category
         )
     }
 
-    /**
-     * 视频卡片 ViewHolder，绑定封面图、时长、作者、标题到 itemView
-     */
     inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivCover: ImageView = itemView.findViewById(R.id.iv_hot_title)
         private val tvDuration: TextView = itemView.findViewById(R.id.actv_hot_geration)
@@ -142,9 +111,6 @@ class HotVideoAdapter(
         private val tvTitle: TextView = itemView.findViewById(R.id.actv_hot_description)
         private val tvAuthor: TextView = itemView.findViewById(R.id.actv_hot_author)
 
-        /**
-         * 绑定封面图、时长、作者、标题到 itemView
-         */
         fun bind(item: VideoItem) {
             Glide.with(itemView.context)
                 .load(item.coverUrl)
@@ -177,9 +143,6 @@ class HotVideoAdapter(
             }
         }
 
-        /**
-         * 将秒数格式化�?mm:ss
-         */
         private fun formatDuration(seconds: Long): String {
             val mins = seconds / 60
             val secs = seconds % 60

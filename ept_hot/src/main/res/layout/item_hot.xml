@@ -34,6 +34,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_daily_play"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_hot_title"
+                    app:layout_constraintEnd_toEndOf="@id/iv_hot_title"
+                    app:layout_constraintStart_toStartOf="@id/iv_hot_title"
+                    app:layout_constraintTop_toTopOf="@id/iv_hot_title" />
+
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/actv_hot_geration"
@@ -100,15 +109,6 @@
                 android:textSize="10sp" />
 
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/ibtn_hot_share"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="centerInside"
-            android:src="@android:drawable/ic_menu_share" />
 
     </LinearLayout>
 

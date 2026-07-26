@@ -56,12 +56,14 @@ class CategoryFeedFragment : Fragment() {
 
         adapter = CategoryDetailAdapter(
             onVideoClick = { video ->
+                if (!isAdded) return@CategoryDetailAdapter
                 val videoId = video.videoId.toString()
                 if (videoId != "0") {
                     VideoPlayerActivity.start(requireContext(), videoId)
                 }
             },
             onShareClick = { video ->
+                if (!isAdded) return@CategoryDetailAdapter
                 if (video.webUrl.isNotEmpty()) {
                     val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
                         type = "text/plain"

@@ -62,9 +62,16 @@ class CategoryFeedViewModel : ViewModel() {
                 val response = withContext(Dispatchers.IO) {
                     specApi.getPageRaw(pageLabel = pageLabel).execute()
                 }
+                if (!response.isSuccessful) {
+                    _error.value = "HTTP错误: ${response.code()}"
+                    return@launch
+                }
                 val rawBody = response.body()?.string() ?: ""
+                if (rawBody.isEmpty()) {
+                    _error.value = "响应体为空"
+                    return@launch
+                }
                 val body = gson.fromJson(rawBody, GetPageResponse::class.java)
-
                 if (body?.code != 0) {
                     _error.value = "加载失败: code=${body?.code}"
                     return@launch
@@ -90,7 +97,6 @@ class CategoryFeedViewModel : ViewModel() {
                 hasNextPage = lastItemId.isNotEmpty()
                 _items.value = allItems.toList()
                 _error.value = null
-                Log.d("CategoryFeed", "Loaded ${allItems.size} items, hasNext=$hasNextPage, page=$pageLabel")
             } catch (e: Exception) {
                 Log.e("CategoryFeed", "loadFeed failed", e)
                 _error.value = e.message
@@ -123,7 +129,6 @@ class CategoryFeedViewModel : ViewModel() {
                 val cardIndexStr = params["card_index"]
                 lastCardIndex = cardIndexStr?.toIntOrNull() ?: card.card_id
 
-                Log.d("CategoryFeed", "Extracted pagination: dataSource=$lastDataSource, pageLabel=$currentPageLabel, lastItemId=$lastItemId")
                 return
             }
         }
@@ -188,7 +193,6 @@ class CategoryFeedViewModel : ViewModel() {
 
                 _items.value = allItems.toList()
                 _error.value = null
-                Log.d("CategoryFeed", "Loaded ${newItems.size} more, total=${allItems.size}, hasNext=$hasNextPage")
             } catch (e: Exception) {
                 Log.e("CategoryFeed", "loadNextPage failed", e)
                 hasNextPage = false
@@ -241,8 +245,6 @@ class CategoryFeedViewModel : ViewModel() {
                 authorName = authorName,
                 authorIcon = authorIcon,
                 description = data.text ?: "",
-                playUrl = video?.play_url ?: "",
-                category = "",
                 collectionCount = consumption?.collection_count ?: 0,
                 shareCount = consumption?.share_count ?: 0,
                 replyCount = consumption?.comment_count ?: 0,

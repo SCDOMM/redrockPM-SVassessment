@@ -1,36 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/surface">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="热门"
-            android:textColor="@color/on_surface"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/background"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="热门"
+        app:titleTextColor="@color/text_primary" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/mTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/surface"
-        app:tabIndicatorColor="@color/primary"
+        android:background="@color/background"
+        app:tabIndicatorColor="@color/text_primary"
         app:tabIndicatorFullWidth="false"
         app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextColor="@color/primary"
-        app:tabTextColor="@color/on_surface" />
+        app:tabSelectedTextColor="@color/text_primary"
+        app:tabTextColor="@color/text_secondary" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/mViewPager"

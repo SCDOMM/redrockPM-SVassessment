@@ -48,7 +48,7 @@ class LightTopicListAdapter(
         val previewAdapter = PreviewVideoAdapter { video ->
             onVideoClick(video)
         }
-        previewAdapter.setData(item.videos)
+        previewAdapter.submitList(item.videos)
 
         holder.rvPreviewVideos.apply {
             layoutManager = LinearLayoutManager(

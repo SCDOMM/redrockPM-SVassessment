@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -45,6 +46,7 @@ class CategoryDetailActivity : AppCompatActivity() {
     private lateinit var viewModel: CategoryDetailViewModel
     private var currentTabPosition = 0
     private val feedFragments = mutableMapOf<Int, CategoryFeedFragment>()
+    private var refreshObserver: Observer<Boolean>? = null
 
     /** 页面创建 */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,12 +138,15 @@ class CategoryDetailActivity : AppCompatActivity() {
         swipeRefresh.setOnRefreshListener {
             val currentFragment = feedFragments[currentTabPosition]
             if (currentFragment != null) {
-                currentFragment.refresh()
-                currentFragment.viewModel.isLoading.observe(this) { loading ->
+                // 移除旧的 observer 防止泄漏
+                refreshObserver?.let { currentFragment.viewModel.isLoading.removeObserver(it) }
+                refreshObserver = Observer<Boolean> { loading ->
                     if (!loading) {
                         swipeRefresh.isRefreshing = false
                     }
                 }
+                currentFragment.viewModel.isLoading.observe(this, refreshObserver!!)
+                currentFragment.refresh()
             } else {
                 swipeRefresh.isRefreshing = false
             }

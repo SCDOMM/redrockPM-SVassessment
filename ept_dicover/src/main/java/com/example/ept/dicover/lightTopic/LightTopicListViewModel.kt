@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.model.CallCardListResponse
 import com.example.core.model.GetPageCard
+import com.example.core.model.GetPageMetroItem
 import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.UniversalApi
 import com.example.core.network.api.SpecficApi
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,7 +27,6 @@ class LightTopicListViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<SpecficApi>()
     private val universalApi = RetrofitClient.create<UniversalApi>()
-    private val gson = Gson()
 
     var loaded = false
         private set
@@ -81,7 +80,7 @@ class LightTopicListViewModel : ViewModel() {
                     return@launch
                 }
 
-                val body = gson.fromJson(rawBody, GetPageResponse::class.java)
+                val body = RetrofitClient.gson.fromJson(rawBody, GetPageResponse::class.java)
                 Log.d("LightTopicListVM", "Parsed code=${body?.code}, result=${body?.result != null}")
 
                 if (body?.code != 0) {
@@ -126,7 +125,7 @@ class LightTopicListViewModel : ViewModel() {
                 val rawCardList = params["card_list"]
                 cardListJson = when (rawCardList) {
                     is String -> rawCardList
-                    else -> try { gson.toJson(rawCardList) } catch (e: Exception) { "" }
+                    else -> try { RetrofitClient.gson.toJson(rawCardList) } catch (e: Exception) { "" }
                 }
                 Log.d("LightTopicListVM", "Found call_card_list: lastItemId=$lastItemId, cardListJson length=${cardListJson.length}")
             }
@@ -161,7 +160,7 @@ class LightTopicListViewModel : ViewModel() {
                     return@launch
                 }
 
-                val body = gson.fromJson(rawBody, CallCardListResponse::class.java)
+                val body = RetrofitClient.gson.fromJson(rawBody, CallCardListResponse::class.java)
                 if (body?.code != 0 || body?.result == null) {
                     hasMore = false
                     return@launch
@@ -191,7 +190,7 @@ class LightTopicListViewModel : ViewModel() {
                             val rawCardList = params["card_list"]
                             cardListJson = when (rawCardList) {
                                 is String -> rawCardList
-                                else -> try { gson.toJson(rawCardList) } catch (e: Exception) { cardListJson }
+                                else -> try { RetrofitClient.gson.toJson(rawCardList) } catch (e: Exception) { cardListJson }
                             }
                         }
                     }
@@ -213,75 +212,57 @@ class LightTopicListViewModel : ViewModel() {
 
     /** 解析 API 返回的卡片列表，提取主题信息 */
     private fun parseTopics(cards: List<GetPageCard>): List<LightTopicItem> {
-        val result = mutableListOf<LightTopicItem>()
+        return cards.mapNotNull { parseTopicFromCard(it) }
+    }
 
-        for ((index, card) in cards.withIndex()) {
-            Log.d("LightTopicListVM", "card[$index] type=${card.type}")
-            if (card.type != "set_metro_list") continue
+    /** 从单个卡片中解析主题信息 */
+    private fun parseTopicFromCard(card: GetPageCard): LightTopicItem? {
+        if (card.type != "set_metro_list") return null
 
-            val cardData = card.card_data
-            if (cardData == null) {
-                Log.w("LightTopicListVM", "card[$index] cardData is null")
-                continue
-            }
-            val header = cardData.header
-            if (header == null) {
-                Log.w("LightTopicListVM", "card[$index] header is null")
-                continue
-            }
-            val body = cardData.body
-            if (body == null) {
-                Log.w("LightTopicListVM", "card[$index] body is null")
-                continue
-            }
+        val cardData = card.card_data ?: return null
+        val header = cardData.header ?: return null
+        val body = cardData.body ?: return null
 
-            val titleText = header.left?.firstOrNull()?.metro_data?.text
-            if (titleText == null) {
-                Log.w("LightTopicListVM", "card[$index] title is null, left=${header.left?.size}")
-                continue
-            }
+        val titleText = header.left?.firstOrNull()?.metro_data?.text ?: return null
 
-            val description = body.metro_list?.firstOrNull { it.type == "text" }
-                ?.metro_data?.text ?: ""
+        val description = body.metro_list?.firstOrNull { it.type == "text" }
+            ?.metro_data?.text ?: ""
 
-            val detailLink = header.right?.firstOrNull()?.metro_data?.link ?: ""
+        val detailLink = header.right?.firstOrNull()?.metro_data?.link ?: ""
+        val topicId = Regex("lightTopic/detail/(\\d+)").find(detailLink)
+            ?.groupValues?.get(1)?.toIntOrNull() ?: 0
 
-            val topicId = Regex("lightTopic/detail/(\\d+)").find(detailLink)
-                ?.groupValues?.get(1)?.toIntOrNull() ?: 0
+        val videos = body.metro_list
+            ?.filter { it.type == "video" }
+            ?.take(2)
+            ?.mapNotNull { parseVideoFromMetro(it) }
+            ?: emptyList()
 
-            val videos = mutableListOf<LightTopicPlaylistVideo>()
-            val videoItems = body.metro_list?.filter { it.type == "video" } ?: emptyList()
-            for (metro in videoItems.take(2)) {
-                val metroData = metro.metro_data ?: continue
-                val videoId = metroData.video_id?.toLongOrNull() ?: continue
-                if (videoId == 0L) continue
+        return if (topicId > 0) {
+            LightTopicItem(
+                topicId = topicId,
+                title = titleText,
+                description = description,
+                videos = videos
+            )
+        } else null
+    }
 
-                videos.add(
-                    LightTopicPlaylistVideo(
-                        id = videoId,
-                        title = metroData.title ?: "",
-                        coverUrl = metroData.cover?.url ?: "",
-                        duration = metroData.duration?.value?.toLong() ?: 0L,
-                        authorName = metroData.author?.nick ?: "",
-                        authorIcon = metroData.author?.avatar?.url ?: "",
-                        description = "",
-                        playUrl = metroData.play_url ?: ""
-                    )
-                )
-            }
+    /** 从 metro 数据中解析视频信息 */
+    private fun parseVideoFromMetro(metro: GetPageMetroItem): LightTopicPlaylistVideo? {
+        val metroData = metro.metro_data ?: return null
+        val videoId = metroData.video_id?.toLongOrNull() ?: return null
+        if (videoId == 0L) return null
 
-            if (topicId > 0) {
-                result.add(
-                    LightTopicItem(
-                        topicId = topicId,
-                        title = titleText,
-                        description = description,
-                        videos = videos
-                    )
-                )
-            }
-        }
-
-        return result
+        return LightTopicPlaylistVideo(
+            id = videoId,
+            title = metroData.title ?: "",
+            coverUrl = metroData.cover?.url ?: "",
+            duration = metroData.duration?.value?.toLong() ?: 0L,
+            authorName = metroData.author?.nick ?: "",
+            authorIcon = metroData.author?.avatar?.url ?: "",
+            description = "",
+            playUrl = metroData.play_url ?: ""
+        )
     }
 }

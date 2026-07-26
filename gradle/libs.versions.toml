@@ -22,6 +22,7 @@ activityKtx = "1.13.0"
 constraintlayout = "2.2.1"
 recyclerview = "1.4.0"
 flexbox="3.0.0"
+coordinatorlayout = "1.2.0"
 ksp = "2.3.10"
 legacySupportV4 = "1.0.0"
 lifecycleLivedataKtx = "2.11.0"
@@ -64,6 +65,7 @@ androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", vers
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }

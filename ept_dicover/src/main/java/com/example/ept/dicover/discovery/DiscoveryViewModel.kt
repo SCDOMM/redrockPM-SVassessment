@@ -12,7 +12,6 @@ import com.example.core.model.ApiRequest
 import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,8 +26,6 @@ class DiscoveryViewModel : ViewModel() {
 
     /** 开眼 API 接口实例，用于网络请求 */
     private val api = RetrofitClient.create<SpecficApi>()
-    /** Gson 实例，用于 JSON 解析 */
-    private val gson = Gson()
 
     /** 分类列表，展示视频分类入口 */
     private val _categories = MutableLiveData<List<DiscoverCategoryItem>>()
@@ -66,25 +63,12 @@ class DiscoveryViewModel : ViewModel() {
                 val response = withContext(Dispatchers.IO) {
                     api.getPageRaw(pageLabel = "discover_v2").execute()
                 }
-                Log.d("DiscoveryViewModel", "HTTP status=${response.code()}, isSuccessful=${response.isSuccessful()}")
                 if (!response.isSuccessful()) {
                     _error.value = "HTTP错误: ${response.code()}"
                     return@launch
                 }
                 val rawBody = response.body()?.string() ?: ""
-                Log.d("DiscoveryViewModel", "RAW_LEN=${rawBody.length}")
-                if (rawBody.length > 10) {
-                    // Log in chunks to avoid logcat truncation
-                    val chunkSize = 2000
-                    var offset = 0
-                    while (offset < rawBody.length) {
-                        val end = minOf(offset + chunkSize, rawBody.length)
-                        Log.d("DiscoveryViewModel", "RAW_${offset}: ${rawBody.substring(offset, end)}")
-                        offset = end
-                    }
-                }
-                val body = gson.fromJson(rawBody, GetPageResponse::class.java)
-                Log.d("DiscoveryViewModel", "Parsed code=${body?.code}, result=${body?.result != null}")
+                val body = RetrofitClient.gson.fromJson(rawBody, GetPageResponse::class.java)
 
                 if (body?.code != 0) {
                     _error.value = "接口返回错误: code=${body?.code}"
@@ -98,7 +82,6 @@ class DiscoveryViewModel : ViewModel() {
                 }
 
                 val cardList = result.card_list
-                Log.d("DiscoveryViewModel", "card_list size=${cardList.size}")
 
                 val categories = mutableListOf<DiscoverCategoryItem>()
                 val topics = mutableListOf<TopicItem>()
@@ -108,7 +91,6 @@ class DiscoveryViewModel : ViewModel() {
                     val metroList = card.card_data?.body?.metro_list ?: continue
                     val headerLeft = card.card_data?.header?.left
                     val headerTitle = headerLeft?.firstOrNull()?.metro_data?.text ?: card.card_data?.header?.title ?: ""
-                    Log.d("DiscoveryViewModel", "Card card_id=${card.card_id}, headerTitle='$headerTitle', metroCount=${metroList.size}")
 
                     for (metro in metroList) {
                         val metroData = metro.metro_data ?: continue
@@ -130,7 +112,6 @@ class DiscoveryViewModel : ViewModel() {
                         }
                         // 主题播单：header title 为"主题播单"，数据在 metro_data 的 image_id 字段
                         if (headerTitle == "主题播单" && metro.type == "image" && metroData.image_id > 0) {
-                            Log.d("DiscoveryViewModel", "Topic: id=${metroData.image_id}, title=${metroData.title}")
                             topics.add(TopicItem(id = metroData.image_id, title = metroData.title ?: "", description = "", icon = metroData.cover?.url ?: "", actionUrl = metroData.link))
                         }
                         // 话题广场：header title 为"话题广场"，数据在 metro_data.item_list
@@ -145,7 +126,6 @@ class DiscoveryViewModel : ViewModel() {
                     }
                 }
 
-                Log.d("DiscoveryViewModel", "Loaded ${categories.size} categories, ${topics.size} topics, ${squareItems.size} squareItems")
                 _categories.value = categories
                 _topics.value = topics
                 _squareItems.value = squareItems
@@ -167,19 +147,10 @@ class DiscoveryViewModel : ViewModel() {
         return try {
             val uri = Uri.parse(deepLink)
             val raw = uri.getQueryParameter("api_request") ?: return null
-            gson.fromJson(raw, ApiRequest::class.java)
+            RetrofitClient.gson.fromJson(raw, ApiRequest::class.java)
         } catch (e: Exception) {
             Log.e("DiscoveryViewModel", "parseApiRequest failed: $deepLink", e)
             null
         }
     }
 }
-
-/**
- * 话题/作者数据项
- * @param id 话题/作者 ID
- * @param title 标题/名称
- * @param description 描述
- * @param icon 图标 URL
- * @param actionUrl 点击跳转的 URL
- */

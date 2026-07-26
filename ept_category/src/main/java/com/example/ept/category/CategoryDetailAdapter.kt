@@ -1,4 +1,4 @@
-﻿package com.example.ept.category
+package com.example.ept.category
 
 import com.example.core.model.FeedCategoryItem
 import android.view.LayoutInflater
@@ -80,6 +80,8 @@ class CategoryDetailAdapter(
         val likeCount: TextView = view.findViewById(R.id.tv_like_count)
         val collectionCount: TextView = view.findViewById(R.id.tv_collection_count)
         val commentCount: TextView = view.findViewById(R.id.tv_comment_count)
+        var imageAdapter: CategoryImageAdapter? = null
+        var imageLayoutManager: GridLayoutManager? = null
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -160,12 +162,13 @@ class CategoryDetailAdapter(
                         .into(vh.authorIcon)
                 }
 
-                // 图片网格
-                val imageAdapter = CategoryImageAdapter(item.imageUrls)
-                vh.rvImages.apply {
-                    layoutManager = GridLayoutManager(vh.itemView.context, 2)
-                    adapter = imageAdapter
+                // 图片网格 — 复用已有的 adapter 和 layoutManager
+                if (vh.imageAdapter == null) {
+                    vh.imageLayoutManager = GridLayoutManager(vh.itemView.context, 2)
+                    vh.rvImages.layoutManager = vh.imageLayoutManager
                 }
+                vh.imageAdapter = CategoryImageAdapter(item.imageUrls)
+                vh.rvImages.adapter = vh.imageAdapter
             }
         }
     }

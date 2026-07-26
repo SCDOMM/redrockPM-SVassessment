@@ -102,7 +102,7 @@ class DiscoveryFragment : Fragment() {
         }
         rvTopic.adapter = topicAdapter
 
-        //话题广场
+        // 话题广场
         cardStackView = view.findViewById(R.id.card_stack_view)
         tvIndicator = view.findViewById(R.id.tv_square_indicator)
 
@@ -114,7 +114,6 @@ class DiscoveryFragment : Fragment() {
 
         // 为回收到底部的卡片重新绑定数据
         cardStackView.onCardRecycled = { recycledView ->
-            // 回收的卡片应显示"当前位置 + 可见层数 - 1"的 item，避免与已显示的重复
             val nextIndex = (currentSquareIndex + 2) % squareItems.size
             bindCardData(recycledView, squareItems[nextIndex])
         }
@@ -123,7 +122,6 @@ class DiscoveryFragment : Fragment() {
         cardStackView.cardProvider = {
             val cardView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.item_topic_square_card, cardStackView, false)
-            // 点击监听：通过 tag 传递 topic
             cardView.setOnClickListener {
                 val topic = it.tag as? TopicItem ?: return@setOnClickListener
                 if (topic.id > 0) {
@@ -139,11 +137,6 @@ class DiscoveryFragment : Fragment() {
                 }
             }
             cardView
-        }
-
-        // 话题广场更多
-        view.findViewById<ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
-            TopicSquareListActivity.start(requireContext())
         }
 
         // === 观察数据 ===

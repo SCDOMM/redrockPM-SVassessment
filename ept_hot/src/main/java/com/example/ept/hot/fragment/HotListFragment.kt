@@ -15,7 +15,7 @@ import com.example.ept.hot.R
 import com.example.ept.hot.adapter.HotVideoAdapter
 
 /**
- * description �?热门排行榜页面容�?Fragment
+ * description �?热门排行榜页面容�?Fragment
  * email : 3014386984@qq.com
  * date : 2026/7/15 11:23
  */
@@ -54,9 +54,10 @@ class HotListFragment : Fragment() {
     }
 
     /**
-     * 初始�?RecyclerView 和视频列表适配器，设置点击跳转播放�?     */
+     * 初始�?RecyclerView 和视频列表适配器，设置点击跳转播放�?     */
     private fun setupRecyclerView() {
         adapter = HotVideoAdapter { videoItem ->
+            if (!isAdded) return@HotVideoAdapter
             VideoPlayerActivity.start(requireContext(), videoItem.id.toString())
         }
         recyclerView.apply {
@@ -66,7 +67,7 @@ class HotListFragment : Fragment() {
     }
 
     /**
-     * 配置下拉刷新样式和刷新监�?     */
+     * 配置下拉刷新样式和刷新监�?     */
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -79,7 +80,7 @@ class HotListFragment : Fragment() {
     }
 
     /**
-     * 触发加载排行榜视频数�?     */
+     * 触发加载排行榜视频数�?     */
     private fun loadVideos() {
         viewModel.loadHotVideosByUrl(apiUrl)
     }
@@ -108,7 +109,7 @@ class HotListFragment : Fragment() {
         private const val ARG_API_URL = "api_url"
 
         /**
-         * 创建 Fragment 实例并传�?API URL
+         * 创建 Fragment 实例并传�?API URL
          */
         @JvmStatic
         fun newInstance(apiUrl: String) =

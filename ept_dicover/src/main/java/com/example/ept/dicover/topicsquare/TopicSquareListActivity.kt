@@ -8,8 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.core.model.TabItem
 import com.example.ept.dicover.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -54,8 +57,11 @@ class TopicSquareListActivity : AppCompatActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
 
         viewModel.tabs.observe(this) { tabs ->
-            val adapter = TopicSquareTabAdapter(this, tabs)
-            viewPager.adapter = adapter
+            viewPager.adapter = object : FragmentStateAdapter(this) {
+                override fun getItemCount() = tabs.size
+                override fun createFragment(position: Int): Fragment =
+                    TopicSquareListFragment.newInstance(tabs[position].apiUrl)
+            }
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = tabs[position].name
             }.attach()

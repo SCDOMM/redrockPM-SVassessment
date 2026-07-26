@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.model.GetPageResponse
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +21,6 @@ import kotlinx.coroutines.withContext
 class TopicDetailViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<SpecficApi>()
-    private val gson = Gson()
 
     /** 是否已加载过 */
     var loaded = false
@@ -54,7 +52,7 @@ class TopicDetailViewModel : ViewModel() {
                     return@launch
                 }
 
-                val body = gson.fromJson(rawBody, GetPageResponse::class.java)
+                val body = RetrofitClient.gson.fromJson(rawBody, GetPageResponse::class.java)
                 if (body?.code != 0) {
                     _error.value = "加载失败: code=${body?.code}"
                     return@launch

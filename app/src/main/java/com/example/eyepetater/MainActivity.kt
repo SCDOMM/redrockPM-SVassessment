@@ -47,10 +47,8 @@ class MainActivity : AppCompatActivity() {
         val adapter = ViewPagerAdapter(this)
         viewPager.adapter = adapter
 
-        // Disable user scrolling (optional, remove if you want swipe between tabs)
         viewPager.isUserInputEnabled = false
 
-        // Set initial page to DiscoveryFragment (index 2)
         viewPager.setCurrentItem(2, false)
     }
 
