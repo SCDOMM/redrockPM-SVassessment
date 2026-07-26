@@ -77,7 +77,7 @@ class CategoryDetailActivity : AppCompatActivity() {
 
         var feedAdapter: FragmentStateAdapter? = null
 
-        // AppBarLayout 折叠时禁用 SwipeRefreshLayout，避免上滑触发刷新
+        // AppBarLayout 折叠时禁用 SwipeRefreshLayout，不然下滑会和下拉冲突
         val appBarLayout = findViewById<AppBarLayout>(R.id.appbar)
         appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
             val isExpanded = verticalOffset == 0
