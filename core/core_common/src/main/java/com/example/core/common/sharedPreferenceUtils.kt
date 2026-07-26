@@ -3,7 +3,7 @@ package com.example.core.common
 import android.content.Context
 import androidx.core.content.edit
 import com.google.gson.reflect.TypeToken
-import com.therouter.router.gson
+import com.example.core.network.RetrofitClient
 
 /**   
  * 包名称： com.example.core.common
@@ -17,7 +17,7 @@ fun getHistoryFromPrefs(context: Context): List<String> {
     val prefs = context.getSharedPreferences("searchHistory", 0)
     val json = prefs.getString("search_history", null) ?: return emptyList()
     return try {
-        gson.fromJson(json, object : TypeToken<List<String>>() {}.type) ?: emptyList()
+        RetrofitClient.gson.fromJson(json, object : TypeToken<List<String>>() {}.type) ?: emptyList()
     } catch (e: Exception) {
         emptyList()
     }
@@ -25,7 +25,7 @@ fun getHistoryFromPrefs(context: Context): List<String> {
 
 fun saveHistoryToPrefs(list: List<String>, context: Context) {
     val prefs = context.getSharedPreferences("searchHistory", 0)
-    prefs.edit { putString("search_history", gson.toJson(list)) }
+    prefs.edit { putString("search_history", RetrofitClient.gson.toJson(list)) }
 }
 
 fun addSearchHistory(context: Context, query: String) {

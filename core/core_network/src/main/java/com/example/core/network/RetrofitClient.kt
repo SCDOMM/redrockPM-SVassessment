@@ -39,8 +39,6 @@ object RetrofitClient {
         .addInterceptor ( cookieInterceptor )
         .followRedirects(true)
         .followSslRedirects(true)
-        .followRedirects(true)
-        .followSslRedirects(true)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
@@ -53,7 +51,7 @@ object RetrofitClient {
 
     inline fun <reified T> create(): T = retrofit.create(T::class.java)
 
-    suspend fun resolvePlayUrl(redirectUrl: String): String {
+    fun resolvePlayUrl(redirectUrl: String): String {
         return try {
             val client = okHttpClient.newBuilder()
                 .followRedirects(true)

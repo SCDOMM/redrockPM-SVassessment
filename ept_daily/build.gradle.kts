@@ -51,5 +51,5 @@ dependencies {
     ksp(libs.therouter.compiler)
 }
 ksp {
-    arg("therouter.moduleName", ":ept_home")
+    arg("therouter.moduleName", ":ept_daily")
 }

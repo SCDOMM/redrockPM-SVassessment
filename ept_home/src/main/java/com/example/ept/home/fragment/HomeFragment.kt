@@ -1,7 +1,6 @@
 package com.example.ept.home.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +29,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         view = inflater.inflate(R.layout.fragment_home, container, false)
         ivHomeNotify = view.findViewById(R.id.iv_home_notify)
         rvHomeDefault = view.findViewById(R.id.rv_home_default)
@@ -45,10 +44,10 @@ class HomeFragment : Fragment() {
             video.videoId?.let { VideoPlayerActivity.start(requireContext(), it) }
         }
         rvHomeDefault.layoutManager = LinearLayoutManager(requireContext())
-        val layoutManager = rvHomeDefault.layoutManager as LinearLayoutManager
         rvHomeDefault.adapter = adapter
         ivHomeNotify.setOnClickListener {
-            initNotify()
+            TheRouter.build("http://therouter.com/notify")
+                .navigation(view.context)
         }
         viewModel.liveData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -94,13 +93,4 @@ class HomeFragment : Fragment() {
             }
         })
     }
-    fun initNotify() {
-        ivHomeNotify.setOnClickListener {
-            Log.d("TheRouter测试","1")
-            TheRouter.build("http://therouter.com/notify")
-                .navigation(view.context)
-        }
-    }
-
-
 }

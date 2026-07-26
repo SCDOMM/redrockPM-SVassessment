@@ -17,8 +17,15 @@ suspend fun <T> Call<T>.await(): T = suspendCancellableCoroutine { continuation 
     enqueue(object : Callback<T> {
         override fun onResponse(call: Call<T>, response: Response<T>) {
             if (response.isSuccessful) {
+                val body = response.body()
+                if (body == null) {
+                    continuation.resumeWithException(
+                        NullPointerException("Response body is null (HTTP ${response.code()})")
+                    )
+                    return
+                }
                 @Suppress("UNCHECKED_CAST")
-                continuation.resume(response.body() as T)
+                continuation.resume(body as T)
             } else {
                 continuation.resumeWithException(
                     HttpException(response)

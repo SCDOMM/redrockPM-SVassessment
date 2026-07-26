@@ -8,6 +8,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.FrameLayout
@@ -18,15 +19,15 @@ import kotlin.math.abs
  * email : 3014386984@qq.com
  * date : 2026/7/22  13:23
  */
-class LoopingCardStackView @JvmOverloads constructor(
+class CardStackView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
     // ========== 配置参数 ==========
     var maxVisibleCards = 3           // 可见卡片层数
-    var cardScaleStep = 0.05f         // 每层缩放差值
-    var cardTranslationYStep = 20f    // 每层Y轴偏移(px)
+    var cardScaleStep = 0.06f         // 每层缩放差值（增大让底层卡片更明显）
+    var cardTranslationYStep = 40f    // 每层Y轴偏移(px)（增大让底层卡片从底部露出更多）
     var swipeThreshold = 0.3f         // 滑动触发阈值(占宽度比例)
     var flyOutDuration = 300L         // 飞出动画时长(ms)
     var rewindDuration = 300L         // 回弹动画时长(ms)
@@ -43,10 +44,17 @@ class LoopingCardStackView @JvmOverloads constructor(
     private val cardStack = ArrayDeque<View>()
     private var isAnimating = false
     private var isSwiping = false
-    private lateinit var gestureDetector: GestureDetector
+    private  var gestureDetector: GestureDetector
     private var downX = 0f
     private var downY = 0f
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+
+    /** 顶层卡片的触摸监听器，只在 start() 中绑定一次，避免每张卡都创建匿名对象 */
+    private val topCardTouchListener = OnTouchListener { v, event ->
+        if (v == cardStack.firstOrNull() && !isAnimating) {
+            gestureDetector.onTouchEvent(event)
+        } else false
+    }
 
     init {
         clipChildren = false
@@ -54,6 +62,12 @@ class LoopingCardStackView @JvmOverloads constructor(
 
         gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onDown(e: MotionEvent): Boolean = !isAnimating && cardStack.isNotEmpty()
+
+            /** 轻触 → 触发顶层卡片的 OnClickListener 进入话题详情 */
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
+                if (isAnimating || cardStack.isEmpty()) return false
+                return cardStack.first().performClick()
+            }
 
             override fun onScroll(
                 e1: MotionEvent?, e2: MotionEvent,
@@ -66,7 +80,7 @@ class LoopingCardStackView @JvmOverloads constructor(
                 topCard.rotation = topCard.translationX / width * 20f
                 if (!isSwiping) {
                     isSwiping = true
-                    topCard.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                    topCard.setLayerType(LAYER_TYPE_HARDWARE, null)
                 }
                 return true
             }
@@ -127,13 +141,10 @@ class LoopingCardStackView @JvmOverloads constructor(
         removeAllViews()
         cardStack.clear()
         fillStack()
+        // 只给顶层一张卡片绑监听器，避免每次 recycle 重建
+        cardStack.firstOrNull()?.setOnTouchListener(topCardTouchListener)
     }
 
-    /** 手动触发顶层卡片滑出(如按钮操作) */
-    fun swipeTop(direction: Boolean) {
-        if (isAnimating || cardStack.isEmpty()) return
-        flyOut(cardStack.first(), direction)
-    }
 
     // ========== 核心逻辑 ==========
 
@@ -144,17 +155,28 @@ class LoopingCardStackView @JvmOverloads constructor(
             cardStack.addLast(card)
         }
         updateTransforms()
-        bindTopGesture()
     }
 
     /** 更新所有可见卡片的缩放和位移 */
     private fun updateTransforms() {
+        val visibleCount = minOf(cardStack.size, maxVisibleCards)
+        // 容器底部留出空间给堆叠卡片露出
+        val stackPadding = ((visibleCount - 1) * cardTranslationYStep + 30).toInt()
+        setPadding(paddingLeft, paddingTop, paddingRight, stackPadding)
+
         cardStack.forEachIndexed { index, view ->
-            val scale = 1f - index * cardScaleStep
+            if (index >= maxVisibleCards) {
+                view.visibility = GONE
+                return@forEachIndexed
+            }
+            // 所有卡片从 0.92 基准开始缩小，顶层不填满容器
+            val stackIndex = minOf(index, visibleCount - 1)
+            val baseScale = 0.92f
+            val scale = (baseScale - stackIndex * cardScaleStep).coerceAtLeast(0.80f)
             view.apply {
-                scaleX = scale.coerceAtLeast(0.8f)
-                scaleY = scale.coerceAtLeast(0.8f)
-                translationY = index * cardTranslationYStep
+                scaleX = scale
+                scaleY = scale
+                translationY = stackIndex * cardTranslationYStep
                 translationX = 0f
                 rotation = 0f
                 alpha = 1f
@@ -164,22 +186,31 @@ class LoopingCardStackView @JvmOverloads constructor(
         }
     }
 
-    /** 仅给顶层卡片绑定触摸事件 */
-    private fun bindTopGesture() {
-        cardStack.forEachIndexed { index, view ->
-            view.setOnTouchListener { v, event ->
-                if (index == 0 && !isAnimating) {
-                    gestureDetector.onTouchEvent(event)
-                } else {
-                    false
-                }
+    /** View 从窗口移除时取消所有动画，防止 detached 后动画回调崩溃 */
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        cardStack.forEach { it.animate().cancel() }
+        isAnimating = false
+        isSwiping = false
+    }
+
+    /** 附加到窗口时遍历父视图层级，关闭裁剪，防止卡片拖动时被边界截断 */
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        var p = parent
+        while (p is ViewGroup) {
+            if (p.clipChildren) {
+                p.clipChildren = false
             }
+            p = p.parent
         }
     }
 
-    /** ⭐ 飞出动画 + 循环回收 */
+    /** 飞出动画 + 循环回收 */
     private fun flyOut(card: View, toRight: Boolean) {
         isAnimating = true
+        // 统一在此启用硬件加速，swipeTop() 编程式调用也能覆盖
+        card.setLayerType(LAYER_TYPE_HARDWARE, null)
         val targetX = if (toRight) width * 1.5f else -width * 1.5f
 
         card.animate()
@@ -190,30 +221,31 @@ class LoopingCardStackView @JvmOverloads constructor(
             .setInterpolator(AccelerateInterpolator())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    // ★ 循环核心：从栈顶移除 → 重置 → 放回栈底
-                    cardStack.removeFirst()
-                    removeView(card)
+                    try {
+                        // ★ 循环核心：从栈顶移除 → 重置 → 放回栈底
+                        cardStack.removeFirst()
+                        removeView(card)
 
-                    card.apply {
-                        translationX = 0f; translationY = 0f
-                        rotation = 0f; alpha = 1f
-                        scaleX = 1f; scaleY = 1f
+                        card.apply {
+                            translationX = 0f; translationY = 0f
+                            rotation = 0f; alpha = 1f
+                            scaleX = 1f; scaleY = 1f
+                        }
+
+                        onCardRecycled?.invoke(card)
+
+                        addView(card, 0)
+                        cardStack.addLast(card)
+
+                        updateTransforms()
+                        // 给新的顶层卡片绑监听器
+                        cardStack.firstOrNull()?.setOnTouchListener(topCardTouchListener)
+                        onCardSwiped?.invoke(toRight)
+                    } finally {
+                        isAnimating = false
+                        isSwiping = false
+                        card.setLayerType(LAYER_TYPE_NONE, null)
                     }
-
-                    // 通知外部重新绑定数据
-                    onCardRecycled?.invoke(card)
-
-                    // 加回栈底(视觉最下层)
-                    addView(card, 0)
-                    cardStack.addLast(card)
-
-                    updateTransforms()
-                    bindTopGesture()
-                    isAnimating = false
-                    isSwiping = false
-                    card.setLayerType(View.LAYER_TYPE_NONE, null)
-
-                    onCardSwiped?.invoke(toRight)
                 }
             })
             .start()
@@ -222,6 +254,7 @@ class LoopingCardStackView @JvmOverloads constructor(
     /** 未达阈值时回弹 */
     private fun rewind(card: View) {
         isAnimating = true
+        card.setLayerType(LAYER_TYPE_HARDWARE, null)
         card.animate()
             .translationX(0f)
             .translationY(0f)
@@ -230,9 +263,13 @@ class LoopingCardStackView @JvmOverloads constructor(
             .setInterpolator(OvershootInterpolator(1.5f))
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    isAnimating = false
-                    isSwiping = false
-                    card.setLayerType(View.LAYER_TYPE_NONE, null)
+                    try {
+                        // 动画结束后不需要额外操作
+                    } finally {
+                        isAnimating = false
+                        isSwiping = false
+                        card.setLayerType(LAYER_TYPE_NONE, null)
+                    }
                 }
             })
             .start()

@@ -42,40 +42,6 @@ class RelatedVideoAdapter(
         notifyDataSetChanged()
     }
 
-    /**
-     * 将 MetroItem 列表解析为 RelatedVideoItem 列表
-     */
-    fun parseItems(rawItems: List<MetroItem>): List<RelatedVideoItem> {
-        return rawItems.mapNotNull { item -> parseVideoItem(item) }
-    }
-
-    /**
-     * 根据 metroItem.type 解析 video 类型数据
-     */
-    private fun parseVideoItem(item: MetroItem): RelatedVideoItem? {
-        return try {
-            when (item.type) {
-                "video" -> {
-                    val video = item.metroData ?: return null
-                    RelatedVideoItem(
-                        id = video.videoId?.toLongOrNull() ?: 0,
-                        title = video.title ?: "",
-                        coverUrl = video.cover?.url ?: "",
-                        duration = video.duration?.value?.toLong() ?: 0,
-                        authorName = video.author?.nick ?: "",
-                        authorIcon = video.author?.avatar?.url ?: "",
-                        category = video.tags?.firstOrNull()?.title ?: "",
-                        description = video.description ?: video.text ?: "",
-                        playUrl = video.playUrl ?: ""
-                    )
-                }
-                else -> null
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_related_video, parent, false)

@@ -6,6 +6,7 @@
 package com.example.ept.dicover.discovery
 
 import android.os.Bundle
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,9 @@ import com.example.ept.category.CategoryDetailActivity
 import com.example.ept.dicover.R
 import com.example.ept.dicover.lightTopic.LightTopicListActivity
 import com.example.ept.dicover.lightTopic.LightTopicsActivity
+import com.example.ept.dicover.topicdetail.TopicDetailActivity
+import com.example.core.network.RetrofitClient
+import com.example.core.model.ApiRequest
 import com.example.ept.dicover.topicsquare.TopicSquareListActivity
 import com.therouter.TheRouter
 /**
@@ -38,7 +42,7 @@ class DiscoveryFragment : Fragment() {
     /** 下拉刷新布局 */
     private lateinit var swipeRefresh: SwipeRefreshLayout
     /** 话题广场卡片堆叠视图 */
-    private lateinit var cardStackView: LoopingCardStackView
+    private lateinit var cardStackView: CardStackView
     /** 话题广场页码指示器 */
     private lateinit var tvIndicator: TextView
     /** 话题广场数据列表 */
@@ -80,11 +84,11 @@ class DiscoveryFragment : Fragment() {
         rvCategory.adapter = categoryAdapter
 
         // 主题播单
-        view.findViewById<android.widget.ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
+        view.findViewById<ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
             TopicSquareListActivity.start(requireContext())
         }
         // 主题播单更多
-        view.findViewById<android.widget.ImageView>(R.id.iv_discovery_lightTopicMore).setOnClickListener {
+        view.findViewById<ImageView>(R.id.iv_discovery_lightTopicMore).setOnClickListener {
             LightTopicListActivity.start(requireContext())
         }
         // 横向卡片展示rv
@@ -122,14 +126,22 @@ class DiscoveryFragment : Fragment() {
             cardView.setOnClickListener {
                 val topic = it.tag as? TopicItem ?: return@setOnClickListener
                 if (topic.id > 0) {
-                    LightTopicsActivity.start(requireContext(), topic.id.toInt(), topic.title)
+                    val pageLabel = try {
+                        val uri = Uri.parse(topic.actionUrl)
+                        val raw = uri.getQueryParameter("api_request") ?: ""
+                        RetrofitClient.gson.fromJson(raw, ApiRequest::class.java)
+                            ?.params?.get("page_label") as? String ?: ""
+                    } catch (e: Exception) { "" }
+                    if (pageLabel.isNotEmpty()) {
+                        TopicDetailActivity.start(requireContext(), pageLabel, topic.title)
+                    }
                 }
             }
             cardView
         }
 
         // 话题广场更多
-        view.findViewById<android.widget.ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
+        view.findViewById<ImageView>(R.id.iv_discovery_topicMore).setOnClickListener {
             TopicSquareListActivity.start(requireContext())
         }
 

@@ -170,11 +170,11 @@
 
             </LinearLayout>
 
-            <com.example.ept.dicover.discovery.LoopingCardStackView
+            <com.example.ept.dicover.discovery.CardStackView
                 android:id="@+id/card_stack_view"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
-                android:layout_marginHorizontal="15dp"
+                android:layout_marginHorizontal="4dp"
                 android:layout_marginTop="12dp"
                 android:nestedScrollingEnabled="false" />
 

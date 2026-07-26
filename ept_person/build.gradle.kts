@@ -53,5 +53,5 @@ dependencies {
 
 }
 ksp {
-    arg("therouter.moduleName", ":ept_notify")
+    arg("therouter.moduleName", ":ept_person")
 }

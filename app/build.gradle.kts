@@ -24,9 +24,12 @@ android {
 
     buildTypes {
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -40,7 +43,6 @@ android {
 
 dependencies {
     implementation(project(":ept_category"))
-    implementation(project(":ept_community"))
     implementation(project(":ept_dicover"))
     implementation(project(":ept_home"))
     implementation(project(":ept_daily"))
