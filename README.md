@@ -214,6 +214,7 @@ core_common → {core_model, core_network}
 # 四、功能展示
 
 ## 1.发现
+<img width="504" height="896" alt="discovery" src="https://github.com/user-attachments/assets/e2ce21f4-b00e-4875-bae8-c5cca6cdc293" />
 
 发现页包含三大区域：分类网格（3x6）、主题播单（横向滑动列表）、话题广场（卡片堆叠）。负责各子activity的跳转。
 - 调用 `SpecficApi.getPageRaw(pageLabel="discover_v2")` 获取原始 JSON
@@ -229,6 +230,9 @@ core_common → {core_model, core_network}
 - 滑动完成后循环回收卡片
 
 ## 2.分类和话题详情
+<img width="504" height="896" alt="categoryDetail" src="https://github.com/user-attachments/assets/5f8b74bc-e7c4-46f0-8b62-a4e6feb87c25" />
+<img width="576" height="1024" alt="TopicDetail" src="https://github.com/user-attachments/assets/0ebe16dc-67ff-4fb3-8084-3856a85e0355" />
+
 两个详情页实现类似，布局也类似
 - 展示内容流（视频 + 图文），使用 CoordinatorLayout 实现折叠标题栏效果。
 - 使用多类型适配器，来分别加载（视频帖子/图文帖子）
@@ -237,6 +241,8 @@ core_common → {core_model, core_network}
 - 视频帖子支持跳转详情页
 
 ## 3.主题播单列表
+<img width="504" height="896" alt="lightTopicsList" src="https://github.com/user-attachments/assets/5857d4c4-a802-4985-afb3-a0c99985e506" />
+
 - 展示内容流（播单信息、预览的两个视频卡片）
 - 下滑加载更多
 - 点击卡片跳转播单详情页
@@ -244,15 +250,21 @@ core_common → {core_model, core_network}
 - 下拉刷新
 
 ## 4.话题列表
+<img width="720" height="1280" alt="topicsList   " src="https://github.com/user-attachments/assets/92ad2519-45ae-4e25-80f6-7ce9d7d7bf71" />
+
 - 展示对应tag的内容流（话题头图、话题、话题描述等）
 - 部分tag支持下滑加载
 - 下拉刷新
 
 ## 5.主题播单详情页
+<img width="648" height="1152" alt="lightTopicsDetail" src="https://github.com/user-attachments/assets/2c834bef-fd12-45df-8443-1c0ea209167f" />
+
 - 展示内容流（播单头图、标题、描述等）
 - 支持下拉刷新
 
 ## 6.视频播放页
+<img width="684" height="1216" alt="VideoPlayer" src="https://github.com/user-attachments/assets/52762eac-145f-40d6-9d68-1f964c02988a" />
+
 - 内容展示
 - 调用系统分享功能，分享视频链接
 - 相关推荐视频点击跳转对应视频
