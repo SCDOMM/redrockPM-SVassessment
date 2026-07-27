@@ -15,7 +15,7 @@ import com.example.ept.hot.R
 import com.example.ept.hot.adapter.HotVideoAdapter
 
 /**
- * description �?热门排行榜页面容�?Fragment
+ * description 热门排行榜页面容器 Fragment
  * email : 3014386984@qq.com
  * date : 2026/7/15 11:23
  */
@@ -25,14 +25,14 @@ class HotListFragment : Fragment() {
     private lateinit var adapter: HotVideoAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var isLoading=false
+    private var isLoading = false
 
-    private var apiUrl: String = ""
+    private var strategy: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            apiUrl = it.getString(ARG_API_URL, "")
+            strategy = it.getString(ARG_STRATEGY, "")
         }
     }
 
@@ -54,8 +54,6 @@ class HotListFragment : Fragment() {
         loadVideos()
     }
 
-    /**
-     * 初始�?RecyclerView 和视频列表适配器，设置点击跳转播放�?     */
     private fun setupRecyclerView() {
         adapter = HotVideoAdapter { videoItem ->
             if (!isAdded) return@HotVideoAdapter
@@ -67,8 +65,6 @@ class HotListFragment : Fragment() {
         }
     }
 
-    /**
-     * 配置下拉刷新样式和刷新监�?     */
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -80,15 +76,10 @@ class HotListFragment : Fragment() {
         }
     }
 
-    /**
-     * 触发加载排行榜视频数�?     */
     private fun loadVideos() {
-        viewModel.loadHotVideosByUrl(apiUrl)
+        viewModel.loadHotVideos(strategy)
     }
 
-    /**
-     * 观察 ViewModel 数据变化，更新列表、刷新状态和错误提示
-     */
     private fun observeData() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -107,10 +98,12 @@ class HotListFragment : Fragment() {
             }
         })
         viewModel.hotList.observe(viewLifecycleOwner) { state ->
-            when(state){
-                is HotState.LoadState ->{
-                    isLoading=false
-                    adapter.submitList(adapter.parseItems(state.newList))
+            when (state) {
+                is HotState.LoadState -> {
+                    isLoading = false
+                    val merged = adapter.currentList.toMutableList()
+                    merged.addAll(adapter.parseItems(state.newList))
+                    adapter.submitList(merged)
                 }
                 is HotState.RefreshState -> {
                     adapter.submitList(adapter.parseItems(state.list))
@@ -124,23 +117,20 @@ class HotListFragment : Fragment() {
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {
+                isLoading = false
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     companion object {
-        /** API URL 参数键名 */
-        private const val ARG_API_URL = "api_url"
+        private const val ARG_STRATEGY = "strategy"
 
-        /**
-         * 创建 Fragment 实例并传�?API URL
-         */
         @JvmStatic
-        fun newInstance(apiUrl: String) =
+        fun newInstance(strategy: String) =
             HotListFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_API_URL, apiUrl)
+                    putString(ARG_STRATEGY, strategy)
                 }
             }
     }

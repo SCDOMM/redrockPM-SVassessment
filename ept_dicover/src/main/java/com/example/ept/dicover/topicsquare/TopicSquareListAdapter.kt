@@ -23,21 +23,18 @@ class TopicSquareListAdapter(
     private val onItemClick: (TopicSquareListItem) -> Unit = {}
 ) : ListAdapter<TopicSquareListItem, TopicSquareListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    /** 话题卡片视图持有者 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: ImageView = view.findViewById(R.id.iv_tag_icon)
         val title: TextView = view.findViewById(R.id.tv_tag_title)
         val description: TextView = view.findViewById(R.id.tv_tag_desc)
     }
 
-    /** 创建话题卡片视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_tag_topic, parent, false)
         return ViewHolder(view)
     }
 
-    /** 绑定话题卡片数据：标题、描述、封面图及点击事件 */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
@@ -52,7 +49,6 @@ class TopicSquareListAdapter(
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
-    /** 差异比较回调，用于局部刷新列表 */
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TopicSquareListItem>() {
             override fun areItemsTheSame(old: TopicSquareListItem, new: TopicSquareListItem) = old.id == new.id

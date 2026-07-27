@@ -34,7 +34,6 @@ class TopicSquareListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TopicSquareViewModel
 
-    /** 初始化页面：沉浸式状态栏、Toolbar、TabLayout + ViewPager2 联动 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

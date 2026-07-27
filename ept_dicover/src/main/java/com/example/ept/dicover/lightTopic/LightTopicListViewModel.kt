@@ -31,29 +31,23 @@ class LightTopicListViewModel : ViewModel() {
     var loaded = false
         private set
 
-    /** 主题列表数据 */
     private val _items = MutableLiveData<List<LightTopicItem>>()
     val items: LiveData<List<LightTopicItem>> = _items
 
-    /** 加载状态 */
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    /** 错误信息 */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    /** 分页状态 */
     private var lastItemId: String = ""
     private var cardListJson: String = ""
     private val pageLabel = "discover_special_topic"
     private var isLoadingMore = false
     private var hasMore = true
 
-    /** 已加载的全部主题列表 */
     private val allItems = mutableListOf<LightTopicItem>()
 
-    /** 加载主题播单列表数据（首次加载） */
     fun loadTopics() {
         loaded = true
         allItems.clear()
@@ -114,14 +108,13 @@ class LightTopicListViewModel : ViewModel() {
         }
     }
 
-    /** 从 card_list 中提取 call_card_list 卡片的分页参数 */
+    /**提取分页参数 */
     private fun extractPaginationParams(cards: List<GetPageCard>) {
         val callCard = cards.firstOrNull { it.type == "call_card_list" }
         if (callCard != null) {
             val params = callCard.card_data?.body?.api_request?.params
             if (params != null) {
                 lastItemId = (params["last_item_id"] ?: "0").toString()
-                // card_list 参数可能是序列化的 JSON 字符串或已解析的对象
                 val rawCardList = params["card_list"]
                 cardListJson = when (rawCardList) {
                     is String -> rawCardList
@@ -136,7 +129,6 @@ class LightTopicListViewModel : ViewModel() {
         }
     }
 
-    /** 加载更多 */
     fun loadMore() {
         if (isLoadingMore || !hasMore) return
         if (cardListJson.isEmpty() && lastItemId == "0") return
@@ -170,7 +162,7 @@ class LightTopicListViewModel : ViewModel() {
                 val newCards = result.itemList
                 Log.d("LightTopicListVM", "loadMore returned ${newCards.size} cards, lastItemId=${result.lastItemId}")
 
-                // 解析新卡片中的主题（复用 parseTopics）
+                //复用parseTopics
                 val newTopics = parseTopics(newCards)
 
                 if (newTopics.isNotEmpty()) {
@@ -210,12 +202,10 @@ class LightTopicListViewModel : ViewModel() {
         }
     }
 
-    /** 解析 API 返回的卡片列表，提取主题信息 */
     private fun parseTopics(cards: List<GetPageCard>): List<LightTopicItem> {
         return cards.mapNotNull { parseTopicFromCard(it) }
     }
 
-    /** 从单个卡片中解析主题信息 */
     private fun parseTopicFromCard(card: GetPageCard): LightTopicItem? {
         if (card.type != "set_metro_list") return null
 
@@ -248,7 +238,6 @@ class LightTopicListViewModel : ViewModel() {
         } else null
     }
 
-    /** 从 metro 数据中解析视频信息 */
     private fun parseVideoFromMetro(metro: GetPageMetroItem): LightTopicPlaylistVideo? {
         val metroData = metro.metro_data ?: return null
         val videoId = metroData.video_id?.toLongOrNull() ?: return null

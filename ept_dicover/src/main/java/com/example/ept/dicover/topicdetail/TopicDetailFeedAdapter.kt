@@ -21,7 +21,9 @@ import com.example.ept.dicover.R
  * email : 3014386984@qq.com
  * date : 2026/7/22
  */
-class TopicDetailFeedAdapter : ListAdapter<TopicFeedItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class TopicDetailFeedAdapter(
+    private val onItemClick: (TopicFeedItem) -> Unit = {}
+) : ListAdapter<TopicFeedItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private const val TYPE_VIDEO = 0
@@ -89,11 +91,11 @@ class TopicDetailFeedAdapter : ListAdapter<TopicFeedItem, RecyclerView.ViewHolde
                 } else {
                     holder.coverImage.visibility = View.GONE
                 }
+                holder.itemView.setOnClickListener { onItemClick(item) }
             }
             is ImageViewHolder -> {
                 bindCommonFields(holder, item)
-                val imageUrls = if (item.coverUrl.isNotEmpty()) listOf(item.coverUrl) else emptyList()
-                val imageAdapter = TopicFeedImageAdapter(imageUrls)
+                val imageAdapter = TopicFeedImageAdapter(item.imageUrls)
                 holder.rvImages.apply {
                     layoutManager = GridLayoutManager(holder.itemView.context, 2)
                     adapter = imageAdapter

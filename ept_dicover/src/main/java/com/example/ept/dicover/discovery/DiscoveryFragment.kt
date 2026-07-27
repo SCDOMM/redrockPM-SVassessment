@@ -38,28 +38,28 @@ import com.therouter.TheRouter
  */
 class DiscoveryFragment : Fragment() {
 
-    /** 发现页 ViewModel */
+
     private val viewModel: DiscoveryViewModel by viewModels()
-    /** 下拉刷新布局 */
+
     private lateinit var swipeRefresh: SwipeRefreshLayout
-    /** 话题广场卡片堆叠视图 */
+
     private lateinit var cardStackView: CardStackView
-    /** 话题广场页码指示器 */
+
     private lateinit var tvIndicator: TextView
-    /** 话题广场数据列表 */
+
     private val squareItems = mutableListOf<TopicItem>()
-    /** 当前显示的话题广场索引 */
+
     private var currentSquareIndex = 0
-    /** 话题广场是否已初始化 */
+
     private var isSquareInitialized = false
 
-    /** 创建视图 */
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_discovery, container, false)
 
-    /** 初始化视图和数据观察 */
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -172,7 +172,6 @@ class DiscoveryFragment : Fragment() {
         if (!viewModel.loaded) viewModel.refresh()
     }
 
-    /** 绑定卡片数据（封面图和标题） */
     private fun bindCardData(view: View, topic: TopicItem) {
         val ivCover = view.findViewById<ImageView>(R.id.iv_cover)
         val tvTitle = view.findViewById<TextView>(R.id.tv_title)
@@ -184,7 +183,6 @@ class DiscoveryFragment : Fragment() {
         view.tag = topic
     }
 
-    /** 更新页码指示器文本 */
     private fun updateIndicator() {
         val total = squareItems.size
         if (total > 0) {

@@ -24,7 +24,6 @@ class CategoryDetailViewModel : ViewModel() {
     private val api = RetrofitClient.create<SpecficApi>()
     private val gson = Gson()
 
-    /** 标签信息数据类 */
     data class TagInfo(
         val description: String,
         val headerImage: String,
@@ -32,27 +31,20 @@ class CategoryDetailViewModel : ViewModel() {
         val feedPageLabels: List<Pair<String, String>> = emptyList() // (title, page_label)
     )
 
-    /** 是否已加载 */
     var loaded = false
         private set
 
-    /** 标签信息数据 */
     private val _tagInfo = MutableLiveData<TagInfo?>()
-    /** 标签信息数据（只读） */
     val tagInfo: LiveData<TagInfo?> = _tagInfo
 
-    /** 加载状态 */
     private val _isLoading = MutableLiveData<Boolean>()
-    /** 加载状态（只读） */
     val isLoading: LiveData<Boolean> = _isLoading
 
-    /** 错误信息 */
     private val _error = MutableLiveData<String?>()
-    /** 错误信息（只读） */
     val error: LiveData<String?> = _error
 
     /**
-     * 加载分类详情 header 信息
+     * 加载分类详情
      */
     fun loadCategoryDetail(pageLabel: String) {
         loaded = true

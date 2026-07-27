@@ -38,7 +38,7 @@ class HotActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
 
     private var tabTitles = mutableListOf<String>()
-    private var tabApiUrls = mutableListOf<String>()
+    private var strategies = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,21 +70,17 @@ class HotActivity : AppCompatActivity() {
                 val tabs = response.tabInfo?.tabList ?: emptyList()
 
                 tabTitles.clear()
-                tabApiUrls.clear()
+                strategies.clear()
 
                 tabs.forEach { tab ->
                     tabTitles.add(mapTabName(tab.name))
-                    tabApiUrls.add(tab.apiUrl)
+                    strategies.add(tab.name)
                 }
 
                 setupViewPager()
             } catch (e: Exception) {
                 tabTitles.addAll(listOf("月排行", "周排行", "总排行"))
-                tabApiUrls.addAll(listOf(
-                    "http://baobab.kaiyanapp.com/api/v4/rankList/videos?strategy=monthly",
-                    "http://baobab.kaiyanapp.com/api/v4/rankList/videos?strategy=weekly",
-                    "http://baobab.kaiyanapp.com/api/v4/rankList/videos?strategy=historical"
-                ))
+                strategies.addAll(listOf("monthly", "weekly", "historical"))
                 setupViewPager()
             }
         }
@@ -100,7 +96,7 @@ class HotActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager() {
-        val adapter = HotPagerAdapter(supportFragmentManager, lifecycle, tabApiUrls)
+        val adapter = HotPagerAdapter(supportFragmentManager, lifecycle, strategies)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->

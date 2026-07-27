@@ -1,12 +1,13 @@
 package com.example.ept.dicover.topicdetail
 
-import com.example.core.model.TopicTagInfo
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.model.GetPageCard
 import com.example.core.model.GetPageResponse
+import com.example.core.model.TopicTagInfo
 import com.example.core.network.RetrofitClient
 import com.example.core.network.api.SpecficApi
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +73,7 @@ class TopicDetailViewModel : ViewModel() {
     }
 
     /** 解析卡片列表，提取话题信息 */
-    private fun parseTopicInfo(cards: List<com.example.core.model.GetPageCard>): TopicTagInfo {
+    private fun parseTopicInfo(cards: List<GetPageCard>): TopicTagInfo {
         var title = ""
         var headerImage = ""
         var description = ""
@@ -85,14 +86,13 @@ class TopicDetailViewModel : ViewModel() {
             for (metro in metroList) {
                 val data = metro.metro_data ?: continue
 
-                // 话题标题和封面
+
                 if (metro.type == "topic" && title.isEmpty()) {
                     title = data.title ?: ""
                     headerImage = data.background?.url ?: ""
                     stats = data.tags?.joinToString(" . ") { it.title ?: "" } ?: ""
                 }
 
-                // 描述（富文本）
                 if (metro.type == "item" && description.isEmpty()) {
                     val content = data.content
                     if (content != null) {
@@ -103,7 +103,6 @@ class TopicDetailViewModel : ViewModel() {
                     }
                 }
 
-                // 导航标签（热门推荐、最新发布）
                 if (metro.type == "nav") {
                     val navList = data.nav_list
                     if (navList != null) {
@@ -124,5 +123,3 @@ class TopicDetailViewModel : ViewModel() {
         )
     }
 }
-
-/** 话题信息数据类 */

@@ -59,8 +59,11 @@ data class LightTopicPlaylistVideo(
  */
 data class TopicFeedItem(
     val id: Long,
+    val videoId: String,
+    val resourceType: String,
     val text: String,
     val coverUrl: String,
+    val imageUrls: List<String>,
     val isVideo: Boolean,
     val authorName: String,
     val authorAvatar: String,
