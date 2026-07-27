@@ -1,4 +1,4 @@
-REDROCK移动部门暑假考核项目
+<img width="296" height="640" alt="日报" src="https://github.com/user-attachments/assets/7aff6371-e35b-49ad-9fc8-faea774d122c" /><img width="296" height="640" alt="首页和通知" src="https://github.com/user-attachments/assets/cd03ab23-d8c0-49c7-aa37-bbbec2175ae0" />REDROCK移动部门暑假考核项目
 
 开发者：SCDOMM,CHrainsound
 
@@ -129,7 +129,7 @@ REDROCK移动部门暑假考核项目
 
 ### 首页和通知
 
-![[首页和通知.gif]]
+<img width="296" height="640" alt="首页和通知" src="https://github.com/user-attachments/assets/78585d01-142b-4fc6-9688-6bf9910b8361" />
 
 Q：如何做到同一个RV有不同的item，其中一个甚至能放视频？
 
@@ -173,11 +173,11 @@ override fun onCreateViewHolder(
 
 ### 日报
 
-![[日报.gif]]
+<img width="296" height="640" alt="日报" src="https://github.com/user-attachments/assets/672292db-dd49-4289-a7d6-1fd494e945f1" />
 
 ### 搜索
 
-![[搜索.gif]]
+<img width="296" height="640" alt="搜索" src="https://github.com/user-attachments/assets/cfabe649-6367-4aeb-a40f-0f4006b68c30" />
 
 Q：如何做到同一个搜索框，能展示初始页面，推荐词页面和结果页面？
 
@@ -187,7 +187,7 @@ A：SearchView摆在最上面，下方全部放FrameLayout，用FragmentManager�
 
 ### 个人中心
 
-![[个人中心.gif]]
+<img width="296" height="640" alt="个人中心" src="https://github.com/user-attachments/assets/8dd1e8b9-aca3-492f-a788-69c669f075b5" />
 
 Q：个人中心是怎么做到“最近更新”“最受欢迎”“专辑”等放在同一个RV的？
 
