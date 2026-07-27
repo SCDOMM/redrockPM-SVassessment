@@ -61,6 +61,14 @@ interface UniversalApi {
         @Query("user_type") userType: String = ""
     ): Call<ApiResponse<UserInfo>>
 
+    @FormUrlEncoded
+    @POST("v1/card/metro/call_metro_list_v2")
+    fun loadMorePage(
+        @Field("data_source") dataSource: String = "",
+        @Field("material") materialJSON: String="",
+        @Field("last_item_id") lastItemId: String,
+    ): Call<ApiResponse<PaginatedResult<MetroItem>>>
+
     // ========== 从 KaiyanApi 整合的方法 ==========
 
     @FormUrlEncoded

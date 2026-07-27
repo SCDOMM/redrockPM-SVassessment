@@ -24,26 +24,20 @@ import kotlinx.coroutines.withContext
 
 class DiscoveryViewModel : ViewModel() {
 
-    /** 开眼 API 接口实例，用于网络请求 */
     private val api = RetrofitClient.create<SpecficApi>()
 
-    /** 分类列表，展示视频分类入口 */
     private val _categories = MutableLiveData<List<DiscoverCategoryItem>>()
     val categories: LiveData<List<DiscoverCategoryItem>> = _categories
 
-    /** 主题播单列表，水平滚动展示 */
     private val _topics = MutableLiveData<List<TopicItem>>()
     val topics: LiveData<List<TopicItem>> = _topics
 
-    /** 话题广场数据 */
     private val _squareItems = MutableLiveData<List<TopicItem>>()
     val squareItems: LiveData<List<TopicItem>> = _squareItems
 
-    /** 加载状态，控制下拉刷新动画显示 */
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    /** 错误信息，显示网络请求失败时的错误提示 */
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
