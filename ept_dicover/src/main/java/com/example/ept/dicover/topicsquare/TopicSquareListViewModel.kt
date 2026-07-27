@@ -33,7 +33,6 @@ class TopicSquareListViewModel : ViewModel() {
     val error: LiveData<String?> = _error
 
     private val _hasMore = MutableLiveData(true)
-    val hasMore: LiveData<Boolean> = _hasMore
 
     private var lastItemId: String = ""
     private var materialJSON: String = ""

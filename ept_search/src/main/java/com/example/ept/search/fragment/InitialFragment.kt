@@ -9,9 +9,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.core.media.VideoPlayerActivity
 import com.example.ept.search.R
+import com.google.android.material.card.MaterialCardView
 import com.example.core.common.addSearchHistory
 import com.example.core.common.clearSearchHistory
 import com.example.core.common.getHistoryFromPrefs
@@ -74,6 +77,7 @@ class InitialFragment : Fragment() {
             for (i in 0 ..4){
                 val child=llInitialContainer.getChildAt(i)
                 child.visibility=View.VISIBLE
+                val cvRankingItem = child.findViewById<MaterialCardView>(R.id.cv_ranking_item)
                 val ivCover = child.findViewById<ImageView>(R.id.iv_ranking_cover_item)
                 val tvTitle = child.findViewById<TextView>(R.id.tv_ranking_title_item)
                 Glide.with(ivCover)
@@ -82,6 +86,14 @@ class InitialFragment : Fragment() {
                     .placeholder(R.drawable.eyepetater)
                     .into(ivCover)
                 tvTitle.text = data[i].title
+                cvRankingItem.setOnClickListener {
+                    val videoId = data[i].videoId
+                    if (!videoId.isNullOrEmpty()) {
+                        VideoPlayerActivity.start(requireContext(), videoId)
+                    } else {
+                        Toast.makeText(requireContext(), "视频ID无效", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 

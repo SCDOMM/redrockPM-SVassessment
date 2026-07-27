@@ -41,19 +41,16 @@ class DiscoveryViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    /** 标记是否已加载过数据，防止返回时重复加载 */
+
     var loaded = false
         private set
 
-    /**
-     * 下拉刷新：重新加载分类和推荐主题
-     */
+
     fun refresh() {
         loaded = true
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                // 通过 get_page 接口加载发现页
                 val response = withContext(Dispatchers.IO) {
                     api.getPageRaw(pageLabel = "discover_v2").execute()
                 }
@@ -104,11 +101,11 @@ class DiscoveryViewModel : ViewModel() {
                                 }
                             }
                         }
-                        // 主题播单：header title 为"主题播单"，数据在 metro_data 的 image_id 字段
+                        // 主题播单
                         if (headerTitle == "主题播单" && metro.type == "image" && metroData.image_id > 0) {
                             topics.add(TopicItem(id = metroData.image_id, title = metroData.title ?: "", description = "", icon = metroData.cover?.url ?: "", actionUrl = metroData.link))
                         }
-                        // 话题广场：header title 为"话题广场"，数据在 metro_data.item_list
+                        // 话题广场
                         if (headerTitle == "话题广场" && !metroData.item_list.isNullOrEmpty()) {
                             for (item in metroData.item_list) {
                                 val id = item.image_id.toLongOrNull() ?: 0L
@@ -135,7 +132,6 @@ class DiscoveryViewModel : ViewModel() {
 
     /**
      * 从 deep link 中解析 api_request JSON
-     * 格式: eyepetizer://cardlist/common?title=xxx&api_request={"url":"...","params":{...}}
      */
     private fun parseApiRequest(deepLink: String): ApiRequest? {
         return try {

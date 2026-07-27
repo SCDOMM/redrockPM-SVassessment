@@ -8,29 +8,29 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.ept.hot.fragment.HotListFragment
 
 /**
- * description �?排行�?ViewPager2 适配器，管理各排�?Tab �?Fragment
+ * description 排行榜ViewPager2 适配器
  * email : 3014386984@qq.com
  * date : 2026/7/15 11:23
  */
 class HotPagerAdapter : FragmentStateAdapter {
 
-    private val apiUrls: List<String>
+    private val strategies: List<String>
 
-    constructor(fragment: Fragment, apiUrls: List<String>) : super(fragment) {
-        this.apiUrls = apiUrls
+    constructor(fragment: Fragment, strategies: List<String>) : super(fragment) {
+        this.strategies = strategies
     }
 
-    constructor(fragmentActivity: FragmentActivity, apiUrls: List<String>) : super(fragmentActivity) {
-        this.apiUrls = apiUrls
+    constructor(fragmentActivity: FragmentActivity, strategies: List<String>) : super(fragmentActivity) {
+        this.strategies = strategies
     }
 
-    constructor(fragmentManager: FragmentManager, lifecycle: Lifecycle, apiUrls: List<String>) : super(fragmentManager, lifecycle) {
-        this.apiUrls = apiUrls
+    constructor(fragmentManager: FragmentManager, lifecycle: Lifecycle, strategies: List<String>) : super(fragmentManager, lifecycle) {
+        this.strategies = strategies
     }
 
-    override fun getItemCount(): Int = apiUrls.size
+    override fun getItemCount(): Int = strategies.size
 
     override fun createFragment(position: Int): Fragment {
-        return HotListFragment.newInstance(apiUrls[position])
+        return HotListFragment.newInstance(strategies[position])
     }
 }
