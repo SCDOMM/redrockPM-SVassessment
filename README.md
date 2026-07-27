@@ -101,63 +101,97 @@ tab栏可点击或滑动页面切换不同tab，展示不同话题
 | 图片加载 | Glide |
 
 
-# 二.项目结构
+# 三.项目结构
 
-项目采取MVVM架构和gradle多模块开发，大致分为如下：
+```
+redrockPM-SVassessment/
+├── app/                                          # 应用主模块
+│   └── src/main/
+│       ├── AndroidManifest.xml                   # Activity 注册 + network_security_config
+│       ├── java/.../eyepetater/
+│       │   ├── MainActivity.kt                   # ViewPager2 + BottomNav 四 Tab 导航壳
+│       │   └── ui/theme/
+│       │       ├── Color.kt                      # Compose 颜色定义
+│       └── res/
+│           ├── layout/activity_main.xml          # ViewPager2 + BottomNavigationView
+│           ├── menu/bottom_nav_menu.xml          # 底栏四 Tab 菜单
+│           ├── drawable/                         # 图标
+│           ├── values/colors.xml                 # 浅色模式颜色
+│           ├── values-night/colors.xml           # 深色模式颜色
+│           ├── values/themes.xml                 # 日间主题
+│           ├── values-night/themes.xml           # 夜间主题
+│           └── xml/network_security_config.xml   # 安全配置
+│
+├── core/                                         # 核心层（子模块容器）
+│   ├── core_model/                               # API 数据模型 + 自定义反序列化
+│   │
+│   ├── core_network/                             # Retrofit 客户端 
+│   │
+│   ├── core_common/                              # 通用工具 + JSON 解析辅助
+│   │
+│   └── core_media/                               # 视频播放（GSY Video Player）
+│       └── src/main/
+│           ├── java/.../core/media/
+│              ├── VideoPlayerActivity.kt        # 播放页入口 + 视频详情获取
+│              ├── VideoPlayerFragment.kt        # GSY Player 渲染 + 相关推荐
+│              └── RelatedVideoAdapter.kt        # 相关视频列表适配器
+│
+├── ept_dicover/                                  # 发现页
+│   └── src/main/java/.../ept/dicover/
+│       ├── discovery/
+│       │   ├── DiscoveryFragment.kt              # 发现主页
+│       │   ├── DiscoveryViewModel.kt             # 数据解析
+│       │   ├── CardStackView.kt                  # 自定义 Tinder 风格卡片堆叠组件
+│       │   ├── CategoryAdapter.kt                # 分类网格适配器
+│       │   └── TopicAdapter.kt                   # 主题播单适配器
+│       ├── adapter/VideoCardAdapter.kt           # 视频卡片适配器（播单详情用）
+│       ├── lightTopic/
+│       │   ├── LightTopicsActivity.kt            # 话题播单详情页
+│       │   ├── LightTopicsViewModel.kt           # 播单数据加载
+│       │   ├── LightTopicListActivity.kt         # 播单列表页
+│       │   ├── LightTopicListViewModel.kt        # 播单列表数据加载
+│       │   ├── LightTopicListAdapter.kt          # 播单列表适配器
+│       │   └── PreviewVideoAdapter.kt            # 预览视频缩略图适配器
+│       ├── topicdetail/
+│       │   ├── TopicDetailActivity.kt            # 话题详情（折叠标题栏 + Tab）
+│       │   ├── TopicDetailViewModel.kt           # 话题信息 + Tab 结构解析
+│       │   ├── TopicDetailTabAdapter.kt          # ViewPager2 Tab 适配器
+│       │   ├── TopicDetailFeedFragment.kt        # Tab 内容流
+│       │   ├── TopicDetailFeedViewModel.kt       # 内容流数据加载
+│       │   └── TopicDetailFeedAdapter.kt         # 多类型适配器（视频 + 图文）
+│       └── topicsquare/
+│           ├── TopicSquareListActivity.kt        # 话题广场列表
+│           ├── TopicSquareViewModel.kt           # Tab 数据加载
+│           ├── TopicSquareListFragment.kt        # 单 Tab 列表
+│           ├── TopicSquareListViewModel.kt       # 列表数据加载
+│           └── TopicSquareListAdapter.kt         # 广场列表适配器
+│
+├── ept_category/                                 # 分类详情
+│   └── src/main/java/.../ept/category/
+│       ├── CategoryDetailActivity.kt             # 分类详情页
+│       ├── CategoryDetailViewModel.kt            # 分类信息 + Tab 结构解析
+│       ├── CategoryFeedFragment.kt               # 单 Tab 内容流
+│       ├── CategoryFeedViewModel.kt              # 内容加载 + 分页（video / image 两种类型）
+│       └── CategoryDetailAdapter.kt              # 多类型适配器（header / video / image）
+│
+├── ept_search/                                   # 搜索中心
+│
+├── ept_hot/                                      # 排行榜
+│   └── src/main/java/.../ept/hot/
+│       ├── fragment/
+│       │   ├── HotActivity.kt                    # 排行榜入口
+│       │   ├── HotListFragment.kt                # 单 Tab 列表（下拉刷新 + 无限滚动）
+│       │   └── HotViewModel.kt                   # 数据加载 + 分页
+│       └── adapter/
+│           ├── HotPagerAdapter.kt                # ViewPager2 Tab 适配器
+│           └── HotVideoAdapter.kt                # 视频卡片适配器
+│
+├── ept_person/                                   # 作者主页
+│
+├── ept_notify/                                   # 通知中心
 
-├─ app 应用入口模块
 
-│ └─ MainActivity 主Activity，通过VP2绑定"首页""日报""发现""个人"四个Fragment
-
-├─ core 核心模块
-
-│ ├─ core_common 通用模块
-
-│ │ ├─ parseXXXUtils不同模块的通用数据解析类
-
-│ │ └─ SharedPreferenceUtils SP快速访问工具类
-
-│ ├─ core_model 数据模型模块
-
-│ │ └─ 各种数据类
-
-│ ├─ core_network 网络模块
-
-│ │ ├─ 开眼API相关接口
-
-│ │ └─ RetrofitClient Retrofit网络客户端
-
-│ └─ core_media 媒体模块
-
-│ └─ 视频详细播放页相关程序
-
-├─ ept_daily 日报模块
-
-│ └─ 日报页面相关程序
-
-├─ ept_discover 发现模块
-
-│ └─ 发现页面相关程序
-
-├─ ept_home 主页模块
-
-│ └─ 主页相关程序
-
-├─ ept_notify 通知模块
-
-│ └─ 通知页面相关程序
-
-├─ ept_person 个人中心模块
-
-│ └─ 个人中心相关程序
-
-└─ ept_search 搜索模块
-
-│ └─ 搜索页面相关程序
-
-├─ ept_hot热门模块
-
-└─ 热门排行榜相关程序
+```
 ## 依赖关系
 
 ```
@@ -171,4 +205,64 @@ core_network → core_model
 core_media → {core_model, core_network}
 core_common → {core_model, core_network}
 ```
+# 四、功能展示
+
+## 1.发现
+
+发现页包含三大区域：分类网格（3x6）、主题播单（横向滑动列表）、话题广场（卡片堆叠）。负责各子activity的跳转。
+- 调用 `SpecficApi.getPageRaw(pageLabel="discover_v2")` 获取原始 JSON
+- 解析 `card_list` 分为三类数据：`categories`（分类网格）、`topics`（主题播单）、`squareItems`（话题广场卡片）
+- 分类网格使用 `GridLayoutManager` + `CategoryAdapter`
+- 主题播单使用水平 `LinearLayoutManager` + `TopicAdapter`
+- 话题广场使用自定义 `CardStackView`
+- 支持下拉刷新
+
+**CardStackView — 自定义卡片堆叠组件**
+- 继承 `FrameLayout`，实现最多 3 张可见卡片的堆叠效果
+- 支持左右滑动手势（`GestureDetector` 检测 fling）
+- 滑动完成后循环回收卡片
+
+## 2.分类和话题详情
+两个详情页实现类似，布局也类似
+- 展示内容流（视频 + 图文），使用 CoordinatorLayout 实现折叠标题栏效果。
+- 使用多类型适配器，来分别加载（视频帖子/图文帖子）
+- 下滑加载更多
+- 下拉拉刷新页面
+- 视频帖子支持跳转详情页
+
+## 3.主题播单列表
+- 展示内容流（播单信息、预览的两个视频卡片）
+- 下滑加载更多
+- 点击卡片跳转播单详情页
+- 点击视频进入播放详情页
+- 下拉刷新
+
+## 4.话题列表
+- 展示对应tag的内容流（话题头图、话题、话题描述等）
+- 部分tag支持下滑加载
+- 下拉刷新
+
+## 5.主题播单详情页
+- 展示内容流（播单头图、标题、描述等）
+- 支持下拉刷新
+
+## 6.视频播放页
+- 内容展示
+- 调用系统分享功能，分享视频链接
+- 相关推荐视频点击跳转对应视频
+
+## 7.所有页面均做了深色模式适配
+
+# 五、心得体会
+
+- 熟悉了使用多模块+git合作开发的流程
+
+# 六、待优化
+
+- 没有使用本地缓存机制，导致有时切换页面会重新调用api加载页面
+- 合并不完全，待提高复用率
+  
+# 七、api
+使用非正常渠道获取
+
 
