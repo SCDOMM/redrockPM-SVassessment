@@ -30,14 +30,11 @@ class CategoryFeedViewModel : ViewModel() {
 
     private val allItems = mutableListOf<FeedCategoryItem>()
 
-    private val _items = MutableLiveData<List<FeedCategoryItem>>()
-    val items: LiveData<List<FeedCategoryItem>> = _items
+    private var _liveData = MutableLiveData<FeedState>()
+    val liveData: LiveData<FeedState> get() = _liveData
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
 
     var hasNextPage = true
         private set
@@ -51,9 +48,7 @@ class CategoryFeedViewModel : ViewModel() {
     private var lastDataSource: String = ""
     private var lastCardIndex: Int = 0
 
-    /**
-     * 加载视频列表
-     */
+
     fun loadFeed(pageLabel: String) {
         currentPageLabel = pageLabel
         viewModelScope.launch {
@@ -63,43 +58,40 @@ class CategoryFeedViewModel : ViewModel() {
                     specApi.getPageRaw(pageLabel = pageLabel).execute()
                 }
                 if (!response.isSuccessful) {
-                    _error.value = "HTTP错误: ${response.code()}"
+                    _liveData.postValue(FeedState.ErrorState("HTTP错误: ${response.code()}"))
                     return@launch
                 }
                 val rawBody = response.body()?.string() ?: ""
                 if (rawBody.isEmpty()) {
-                    _error.value = "响应体为空"
+                    _liveData.postValue(FeedState.ErrorState("响应体为空"))
                     return@launch
                 }
                 val body = gson.fromJson(rawBody, GetPageResponse::class.java)
                 if (body?.code != 0) {
-                    _error.value = "加载失败: code=${body?.code}"
+                    _liveData.postValue(FeedState.ErrorState("加载失败: code=${body?.code}"))
                     return@launch
                 }
 
                 val result = body.result
                 if (result == null) {
-                    _error.value = "数据为空"
+                    _liveData.postValue(FeedState.ErrorState("数据为空"))
                     return@launch
                 }
 
                 val cardList = result.card_list
                 allItems.clear()
 
-                // 解析视频
                 for (card in cardList) {
                     allItems.addAll(parseVideoCard(card))
                 }
 
-                // 从 call_metro_list card 中提取分页数据
                 extractPaginationData(cardList)
 
                 hasNextPage = lastItemId.isNotEmpty()
-                _items.value = allItems.toList()
-                _error.value = null
+                _liveData.postValue(FeedState.RefreshState(allItems.toList()))
             } catch (e: Exception) {
                 Log.e("CategoryFeed", "loadFeed failed", e)
-                _error.value = e.message
+                _liveData.postValue(FeedState.ErrorState(e.message.toString()))
             } finally {
                 _isLoading.value = false
             }
@@ -108,7 +100,6 @@ class CategoryFeedViewModel : ViewModel() {
 
     /**
      * 从 card_list 中提取分页所需数据
-     * call_metro_list 类型的 card 包含分页参数
      */
     private fun extractPaginationData(cardList: List<GetPageCard>) {
         for (card in cardList) {
@@ -136,9 +127,7 @@ class CategoryFeedViewModel : ViewModel() {
         hasNextPage = false
     }
 
-    /**
-     * 加载下一页 - 使用 call_metro_list_v2 接口
-     */
+
     fun loadNextPage() {
         if (_isLoading.value == true) return
         if (lastItemId.isEmpty() || lastCardJson.isNullOrEmpty()) {
@@ -179,7 +168,6 @@ class CategoryFeedViewModel : ViewModel() {
                     parseMetroItem(metro)?.let { newItems.add(it) }
                 }
 
-                // 更新 lastItemId 用于下次分页
                 if (result.last_item_id.isNotEmpty()) {
                     lastItemId = result.last_item_id
                 }
@@ -191,8 +179,7 @@ class CategoryFeedViewModel : ViewModel() {
                     hasNextPage = lastItemId.isNotEmpty()
                 }
 
-                _items.value = allItems.toList()
-                _error.value = null
+                _liveData.postValue(FeedState.LoadingMoreState(allItems.toList()))
             } catch (e: Exception) {
                 Log.e("CategoryFeed", "loadNextPage failed", e)
                 hasNextPage = false
@@ -274,5 +261,11 @@ class CategoryFeedViewModel : ViewModel() {
             )
         }
     }
+}
+
+sealed class FeedState {
+    data class RefreshState(val items: List<FeedCategoryItem>) : FeedState()
+    data class LoadingMoreState(val items: List<FeedCategoryItem>) : FeedState()
+    data class ErrorState(val errorMsg: String) : FeedState()
 }
 

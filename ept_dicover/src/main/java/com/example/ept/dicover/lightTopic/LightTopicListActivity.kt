@@ -71,16 +71,20 @@ class LightTopicListActivity : AppCompatActivity() {
         )
         rvTopics.adapter = adapter
 
-        viewModel.items.observe(this) { list ->
-            adapter.submitList(list)
-        }
-
-        viewModel.isLoading.observe(this) { loading ->
-            swipeRefresh.isRefreshing = loading
-        }
-
-        viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
+        viewModel.liveData.observe(this) { state ->
+            when (state) {
+                is LightTopicListState.RefreshState -> {
+                    adapter.submitList(state.items)
+                    swipeRefresh.isRefreshing = false
+                }
+                is LightTopicListState.LoadingMoreState -> {
+                    adapter.submitList(state.items)
+                }
+                is LightTopicListState.ErrorState -> {
+                    swipeRefresh.isRefreshing = false
+                    Toast.makeText(this, state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         swipeRefresh.setOnRefreshListener {

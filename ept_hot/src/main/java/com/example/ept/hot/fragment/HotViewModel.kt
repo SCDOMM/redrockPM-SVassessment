@@ -26,9 +26,6 @@ class HotViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
-
     private var strategy = ""
     private var currentStart = 0
     private var hasMore = true
@@ -45,12 +42,11 @@ class HotViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 val response = api.getRankList(buildUrl(strategy, 0)).await()
-                _hotList.value = HotState.RefreshState(response.itemList)
+                _hotList.postValue(HotState.RefreshState(response.itemList))
                 currentStart = 10
                 hasMore = !response.itemList.isNullOrEmpty()
-                _error.value = null
             } catch (e: Exception) {
-                _error.value = e.message
+                _hotList.postValue(HotState.ErrorState(e.message.toString()))
             } finally {
                 _isLoading.value = false
             }
@@ -63,12 +59,11 @@ class HotViewModel : ViewModel() {
             try {
                 val response = api.getRankList(buildUrl(strategy, currentStart)).await()
                 val list = response.itemList.orEmpty()
-                _hotList.value = HotState.LoadState(list)
+                _hotList.postValue(HotState.LoadingMoreState(list))
                 currentStart += 10
                 hasMore = list.isNotEmpty()
-                _error.value = null
             } catch (e: Exception) {
-                _error.value = e.message
+                _hotList.postValue(HotState.ErrorState(e.message.toString()))
             }
         }
     }
@@ -76,5 +71,6 @@ class HotViewModel : ViewModel() {
 
 sealed class HotState {
     data class RefreshState(val list: List<Item>) : HotState()
-    data class LoadState(val newList: List<Item>) : HotState()
+    data class LoadingMoreState(val newList: List<Item>) : HotState()
+    data class ErrorState(val errorMsg: String) : HotState()
 }

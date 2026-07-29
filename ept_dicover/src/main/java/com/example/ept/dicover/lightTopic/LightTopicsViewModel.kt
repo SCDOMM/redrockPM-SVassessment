@@ -27,41 +27,25 @@ class LightTopicsViewModel : ViewModel() {
     var loaded = false
         private set
 
-    private val _headerImage = MutableLiveData<String>()
-    val headerImage: LiveData<String> = _headerImage
-
-    private val _brief = MutableLiveData<String>()
-    val brief: LiveData<String> = _brief
-
-    private val _text = MutableLiveData<String>()
-    val text: LiveData<String> = _text
-
-    private val _items = MutableLiveData<List<LightTopicPlaylistVideo>>()
-    val items: LiveData<List<LightTopicPlaylistVideo>> = _items
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private var _liveData = MutableLiveData<LightTopicsState>()
+    val liveData: LiveData<LightTopicsState> get() = _liveData
 
     fun loadDetail(topicId: Int) {
         loaded = true
         viewModelScope.launch {
-            _isLoading.value = true
             try {
                 val rawResponse = withContext(Dispatchers.IO) {
                     api.getTopicDetailRaw(topicId).execute()
                 }
 
                 if (!rawResponse.isSuccessful()) {
-                    _error.value = "HTTP错误: ${rawResponse.code()}"
+                    _liveData.postValue(LightTopicsState.ErrorState("HTTP错误: ${rawResponse.code()}"))
                     return@launch
                 }
                 val rawBody = rawResponse.body()?.string() ?: ""
 
                 if (rawBody.isEmpty()) {
-                    _error.value = "响应体为空"
+                    _liveData.postValue(LightTopicsState.ErrorState("响应体为空"))
                     return@launch
                 }
 
@@ -69,18 +53,14 @@ class LightTopicsViewModel : ViewModel() {
                     RetrofitClient.gson.fromJson(rawBody, LightTopicsResponse::class.java)
                 } catch (e: Exception) {
                     Log.e("LightTopicsVM", "JSON parse error", e)
-                    _error.value = "JSON解析失败: ${e.message}"
+                    _liveData.postValue(LightTopicsState.ErrorState("JSON解析失败: ${e.message}"))
                     return@launch
                 }
 
                 if (response == null) {
-                    _error.value = "解析结果为null"
+                    _liveData.postValue(LightTopicsState.ErrorState("解析结果为null"))
                     return@launch
                 }
-
-                _headerImage.value = response.headerImage ?: ""
-                _brief.value = response.brief ?: ""
-                _text.value = response.text ?: ""
 
                 val videoItems = response.itemList
                     .filter { it.type == "autoPlayFollowCard" }
@@ -107,15 +87,27 @@ class LightTopicsViewModel : ViewModel() {
                         )
                     }
 
-                _items.value = videoItems
-                _error.value = null
+                _liveData.postValue(LightTopicsState.RefreshState(
+                    headerImage = response.headerImage ?: "",
+                    brief = response.brief ?: "",
+                    text = response.text ?: "",
+                    items = videoItems
+                ))
                 Log.d("LightTopicsVM", "Loaded ${videoItems.size} videos for topic $topicId")
             } catch (e: Exception) {
                 Log.e("LightTopicsVM", "loadDetail failed", e)
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
+                _liveData.postValue(LightTopicsState.ErrorState(e.message.toString()))
             }
         }
     }
+}
+
+sealed class LightTopicsState {
+    data class RefreshState(
+        val headerImage: String,
+        val brief: String,
+        val text: String,
+        val items: List<LightTopicPlaylistVideo>
+    ) : LightTopicsState()
+    data class ErrorState(val errorMsg: String) : LightTopicsState()
 }

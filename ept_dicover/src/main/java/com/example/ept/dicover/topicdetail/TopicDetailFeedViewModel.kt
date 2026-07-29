@@ -24,17 +24,13 @@ class TopicDetailFeedViewModel : ViewModel() {
     private val api = RetrofitClient.create<SpecficApi>()
     private val gson = RetrofitClient.gson
 
-    private val _feedItems = MutableLiveData<List<TopicFeedItem>>()
-    val feedItems: LiveData<List<TopicFeedItem>> = _feedItems
+    private val _liveData = MutableLiveData<TopicFeedState>()
+    val liveData: LiveData<TopicFeedState> get() = _liveData
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
-
-    private val _hasMore = MutableLiveData(true)
-    val hasMore: LiveData<Boolean> = _hasMore
+    private var hasMore = true
 
     private var lastItemId: String = ""
     private var materialJSON: String = ""
@@ -50,11 +46,10 @@ class TopicDetailFeedViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val items = fetchFeed(pageLabel)
-                _feedItems.value = items
-                _error.value = null
+                _liveData.postValue(TopicFeedState.RefreshState(items))
             } catch (e: Exception) {
                 Log.e("TopicDetailFeedVM", "loadFeed failed", e)
-                _error.value = e.message
+                _liveData.postValue(TopicFeedState.ErrorState(e.message.toString()))
             } finally {
                 _isLoading.value = false
             }
@@ -62,17 +57,22 @@ class TopicDetailFeedViewModel : ViewModel() {
     }
 
     fun loadMore(pageLabel: String) {
-        if (_isLoading.value == true || _hasMore.value == false) return
+        if (_isLoading.value == true || !hasMore) return
         _isLoading.value = true
         viewModelScope.launch {
             try {
                 val newItems = fetchMoreFeed()
-                val current = _feedItems.value.orEmpty()
-                _feedItems.value = current + newItems
-                _error.value = null
+                val current = liveData.value.let {
+                    when (it) {
+                        is TopicFeedState.RefreshState -> it.items
+                        is TopicFeedState.LoadingMoreState -> it.items
+                        else -> emptyList()
+                    }
+                }
+                _liveData.postValue(TopicFeedState.LoadingMoreState(current + newItems))
             } catch (e: Exception) {
                 Log.e("TopicDetailFeedVM", "loadMore failed", e)
-                _error.value = e.message
+                _liveData.postValue(TopicFeedState.ErrorState(e.message.toString()))
             } finally {
                 _isLoading.value = false
             }
@@ -88,7 +88,7 @@ class TopicDetailFeedViewModel : ViewModel() {
         pageParams = ""
         cardIndex = ""
         materialIndex = ""
-        _hasMore.value = true
+        hasMore = true
         loadFeed(pageLabel)
     }
 
@@ -194,7 +194,7 @@ class TopicDetailFeedViewModel : ViewModel() {
                 lastItemId = result.last_item_id
 
                 if (lastItemId.isEmpty() || result.item_list.isEmpty()) {
-                    _hasMore.postValue(false)
+                    hasMore = false
                 }
 
                 for (metro in result.item_list) {
@@ -237,10 +237,16 @@ class TopicDetailFeedViewModel : ViewModel() {
                     )
                 }
             } else {
-                _hasMore.postValue(false)
+                hasMore = false
             }
 
             items
         }
     }
+}
+
+sealed class TopicFeedState {
+    data class RefreshState(val items: List<TopicFeedItem>) : TopicFeedState()
+    data class LoadingMoreState(val items: List<TopicFeedItem>) : TopicFeedState()
+    data class ErrorState(val errorMsg: String) : TopicFeedState()
 }

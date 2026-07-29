@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -139,35 +140,42 @@ class DiscoveryFragment : Fragment() {
             cardView
         }
 
-        // === 观察数据 ===
-        viewModel.categories.observe(viewLifecycleOwner) { categoryAdapter.submitList(it) }
-        viewModel.topics.observe(viewLifecycleOwner) { topicAdapter.submitList(it) }
+        //观察数据
+        viewModel.liveData.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is DiscoveryState.RefreshState -> {
+                    categoryAdapter.submitList(state.categories)
+                    topicAdapter.submitList(state.topics)
 
-        viewModel.squareItems.observe(viewLifecycleOwner) { list ->
-            squareItems.clear()
-            squareItems.addAll(list)
+                    squareItems.clear()
+                    squareItems.addAll(state.squareItems)
 
-            // 加载前几张卡片的图片
-            for (i in 0 until minOf(5, squareItems.size)) {
-                Glide.with(this)
-                    .load(squareItems[i].icon)
-                    .transform(CenterCrop(), RoundedCorners(16))
-                    .preload()
-            }
+                    for (i in 0 until minOf(5, squareItems.size)) {
+                        Glide.with(this)
+                            .load(squareItems[i].icon)
+                            .transform(CenterCrop(), RoundedCorners(16))
+                            .preload()
+                    }
 
-            if (!isSquareInitialized && squareItems.isNotEmpty()) {
-                isSquareInitialized = true
-                currentSquareIndex = 0
-                cardStackView.start()
-                // start() 创建了 maxVisibleCards 个空卡片，手动绑定数据
-                for (i in 0 until minOf(cardStackView.childCount, squareItems.size)) {
-                    bindCardData(cardStackView.getChildAt(i), squareItems[i])
+                    if (!isSquareInitialized && squareItems.isNotEmpty()) {
+                        isSquareInitialized = true
+                        currentSquareIndex = 0
+                        cardStackView.start()
+                        for (i in 0 until minOf(cardStackView.childCount, squareItems.size)) {
+                            bindCardData(cardStackView.getChildAt(i), squareItems[i])
+                        }
+                    }
+                    updateIndicator()
+
+                    swipeRefresh.isRefreshing = false
+                }
+                is DiscoveryState.ErrorState -> {
+                    swipeRefresh.isRefreshing = false
+                    Toast.makeText(requireContext(), "错误！" + state.errorMsg, Toast.LENGTH_SHORT).show()
                 }
             }
-            updateIndicator()
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) { swipeRefresh.isRefreshing = it }
         swipeRefresh.setOnRefreshListener { viewModel.refresh() }
         if (!viewModel.loaded) viewModel.refresh()
     }

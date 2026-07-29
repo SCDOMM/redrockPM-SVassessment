@@ -24,11 +24,8 @@ class TopicSquareViewModel : ViewModel() {
     var loaded = false
         private set
 
-    private val _tabs = MutableLiveData<List<TabItem>>()
-    val tabs: LiveData<List<TabItem>> = _tabs
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private var _liveData = MutableLiveData<TopicSquareState>()
+    val liveData: LiveData<TopicSquareState> get() = _liveData
 
     fun loadTabs() {
         loaded = true
@@ -39,13 +36,13 @@ class TopicSquareViewModel : ViewModel() {
                 }
                 val body = response.body()
                 if (body?.code != 0) {
-                    _error.value = "加载失败: code=${body?.code}"
+                    _liveData.postValue(TopicSquareState.ErrorState("加载失败: code=${body?.code}"))
                     return@launch
                 }
 
                 val navResult = body?.result
                 if (navResult == null) {
-                    _error.value = "数据为空"
+                    _liveData.postValue(TopicSquareState.ErrorState("数据为空"))
                     return@launch
                 }
 
@@ -57,13 +54,17 @@ class TopicSquareViewModel : ViewModel() {
                     )
                 }
 
-                _tabs.value = tabItems
-                _error.value = null
+                _liveData.postValue(TopicSquareState.RefreshState(tabItems))
                 Log.d("TopicSquareVM", "Loaded ${tabItems.size} tabs")
             } catch (e: Exception) {
                 Log.e("TopicSquareVM", "loadTabs failed", e)
-                _error.value = e.message
+                _liveData.postValue(TopicSquareState.ErrorState(e.message.toString()))
             }
         }
     }
+}
+
+sealed class TopicSquareState {
+    data class RefreshState(val tabs: List<TabItem>) : TopicSquareState()
+    data class ErrorState(val errorMsg: String) : TopicSquareState()
 }

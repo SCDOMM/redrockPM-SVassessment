@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.core.media.VideoPlayerActivity
 import com.example.ept.dicover.R
-import com.example.ept.dicover.adapter.VideoCardAdapter
 
 /**
  * description ： 主题播单详情页
@@ -73,33 +72,25 @@ class LightTopicsActivity : AppCompatActivity() {
         }
         rvVideos.adapter = adapter
 
-        viewModel.headerImage.observe(this) { url ->
-            if (url.isNotEmpty()) {
-                Glide.with(this)
-                    .load(url)
-                    .transform(CenterCrop())
-                    .into(ivHeader)
+        viewModel.liveData.observe(this) { state ->
+            when (state) {
+                is LightTopicsState.RefreshState -> {
+                    if (state.headerImage.isNotEmpty()) {
+                        Glide.with(this)
+                            .load(state.headerImage)
+                            .transform(CenterCrop())
+                            .into(ivHeader)
+                    }
+                    tvBrief.text = state.brief
+                    tvText.text = state.text
+                    adapter.submitList(state.items)
+                    swipeRefresh.isRefreshing = false
+                }
+                is LightTopicsState.ErrorState -> {
+                    swipeRefresh.isRefreshing = false
+                    Toast.makeText(this, state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
             }
-        }
-
-        viewModel.brief.observe(this) { brief ->
-            tvBrief.text = brief
-        }
-
-        viewModel.text.observe(this) { text ->
-            tvText.text = text
-        }
-
-        viewModel.items.observe(this) { list ->
-            adapter.submitList(list)
-        }
-
-        viewModel.isLoading.observe(this) { loading ->
-            swipeRefresh.isRefreshing = loading
-        }
-
-        viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 
         swipeRefresh.setOnRefreshListener {

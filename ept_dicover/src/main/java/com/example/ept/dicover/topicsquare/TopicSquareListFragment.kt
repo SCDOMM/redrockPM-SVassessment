@@ -87,18 +87,24 @@ class TopicSquareListFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.topics.observe(viewLifecycleOwner) { items ->
-            adapter.submitList(items)
+        viewModel.liveData.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is TopicSquareListState.RefreshState -> {
+                    adapter.submitList(state.topics)
+                    swipeRefresh.isRefreshing = false
+                }
+                is TopicSquareListState.LoadingMoreState -> {
+                    adapter.submitList(state.topics)
+                }
+                is TopicSquareListState.ErrorState -> {
+                    swipeRefresh.isRefreshing = false
+                    Toast.makeText(requireContext(), state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             swipeRefresh.isRefreshing = isLoading
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }
         }
     }
 }
