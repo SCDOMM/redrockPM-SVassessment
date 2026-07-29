@@ -279,6 +279,7 @@ core_common → {core_model, core_network}
 
 - 没有使用本地缓存机制，导致有时切换页面会重新调用api加载页面
 - 合并不完全，待提高复用率
+- 发现模块拼错了dicovery
   
 # 七、api
 使用非正常渠道获取
