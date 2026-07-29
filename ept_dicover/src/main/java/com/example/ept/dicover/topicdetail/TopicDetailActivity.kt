@@ -85,30 +85,34 @@ class TopicDetailActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.tagInfo.observe(this) { info ->
-            tvTitle.text = info.title
-            tvDescription.text = info.description
-            tvStats.text = info.stats
+        viewModel.liveData.observe(this) { state ->
+            when (state) {
+                is TopicDetailState.RefreshState -> {
+                    val info = state.tagInfo
+                    tvTitle.text = info.title
+                    tvDescription.text = info.description
+                    tvStats.text = info.stats
 
-            if (info.headerImage.isNotEmpty()) {
-                Glide.with(this)
-                    .load(info.headerImage)
-                    .transform(CenterCrop())
-                    .into(ivHeader)
+                    if (info.headerImage.isNotEmpty()) {
+                        Glide.with(this)
+                            .load(info.headerImage)
+                            .transform(CenterCrop())
+                            .into(ivHeader)
+                    }
+
+                    if (feedAdapter == null && info.feedPageLabels.isNotEmpty()) {
+                        feedAdapter = TopicDetailTabAdapter(this, info.feedPageLabels)
+                        viewPager.adapter = feedAdapter
+
+                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                            tab.text = info.feedPageLabels[position].first
+                        }.attach()
+                    }
+                }
+                is TopicDetailState.ErrorState -> {
+                    Toast.makeText(this, state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
             }
-
-            if (feedAdapter == null && info.feedPageLabels.isNotEmpty()) {
-                feedAdapter = TopicDetailTabAdapter(this, info.feedPageLabels)
-                viewPager.adapter = feedAdapter
-
-                TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                    tab.text = info.feedPageLabels[position].first
-                }.attach()
-            }
-        }
-
-        viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 
         viewModel.loadDetail(pageLabel)

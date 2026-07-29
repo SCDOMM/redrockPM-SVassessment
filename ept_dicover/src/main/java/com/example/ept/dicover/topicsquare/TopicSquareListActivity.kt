@@ -55,19 +55,22 @@ class TopicSquareListActivity : AppCompatActivity() {
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
 
-        viewModel.tabs.observe(this) { tabs ->
-            viewPager.adapter = object : FragmentStateAdapter(this) {
-                override fun getItemCount() = tabs.size
-                override fun createFragment(position: Int): Fragment =
-                    TopicSquareListFragment.newInstance(tabs[position].apiUrl)
+        viewModel.liveData.observe(this) { state ->
+            when (state) {
+                is TopicSquareState.RefreshState -> {
+                    viewPager.adapter = object : FragmentStateAdapter(this) {
+                        override fun getItemCount() = state.tabs.size
+                        override fun createFragment(position: Int): Fragment =
+                            TopicSquareListFragment.newInstance(state.tabs[position].apiUrl)
+                    }
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                        tab.text = state.tabs[position].name
+                    }.attach()
+                }
+                is TopicSquareState.ErrorState -> {
+                    Toast.makeText(this, state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
             }
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                tab.text = tabs[position].name
-            }.attach()
-        }
-
-        viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 
         if (!viewModel.loaded) {

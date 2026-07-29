@@ -99,27 +99,25 @@ class HotListFragment : Fragment() {
         })
         viewModel.hotList.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is HotState.LoadState -> {
+                is HotState.RefreshState -> {
+                    adapter.submitList(adapter.parseItems(state.list))
+                }
+                is HotState.LoadingMoreState -> {
                     isLoading = false
                     val merged = adapter.currentList.toMutableList()
                     merged.addAll(adapter.parseItems(state.newList))
                     adapter.submitList(merged)
                 }
-                is HotState.RefreshState -> {
-                    adapter.submitList(adapter.parseItems(state.list))
+                is HotState.ErrorState -> {
+                    isLoading = false
+                    swipeRefreshLayout.isRefreshing = false
+                    Toast.makeText(requireContext(), state.errorMsg, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             swipeRefreshLayout.isRefreshing = isLoading
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                isLoading = false
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }
         }
     }
 

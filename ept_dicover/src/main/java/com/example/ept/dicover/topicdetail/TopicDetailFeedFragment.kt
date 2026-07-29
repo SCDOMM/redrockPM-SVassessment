@@ -89,18 +89,24 @@ class TopicDetailFeedFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.feedItems.observe(viewLifecycleOwner) { items ->
-            adapter.submitList(items)
+        viewModel.liveData.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is TopicFeedState.RefreshState -> {
+                    adapter.submitList(state.items)
+                    swipeRefresh.isRefreshing = false
+                }
+                is TopicFeedState.LoadingMoreState -> {
+                    adapter.submitList(state.items)
+                }
+                is TopicFeedState.ErrorState -> {
+                    swipeRefresh.isRefreshing = false
+                    Toast.makeText(requireContext(), state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             swipeRefresh.isRefreshing = isLoading
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }
         }
     }
 }

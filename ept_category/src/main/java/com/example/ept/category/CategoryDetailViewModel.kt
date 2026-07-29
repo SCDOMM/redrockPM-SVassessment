@@ -24,24 +24,11 @@ class CategoryDetailViewModel : ViewModel() {
     private val api = RetrofitClient.create<SpecficApi>()
     private val gson = Gson()
 
-    data class TagInfo(
-        val description: String,
-        val headerImage: String,
-        val stats: String,
-        val feedPageLabels: List<Pair<String, String>> = emptyList() // (title, page_label)
-    )
-
     var loaded = false
         private set
 
-    private val _tagInfo = MutableLiveData<TagInfo?>()
-    val tagInfo: LiveData<TagInfo?> = _tagInfo
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private var _liveData = MutableLiveData<CategoryDetailState>()
+    val liveData: LiveData<CategoryDetailState> get() = _liveData
 
     /**
      * 加载分类详情
@@ -49,42 +36,37 @@ class CategoryDetailViewModel : ViewModel() {
     fun loadCategoryDetail(pageLabel: String) {
         loaded = true
         viewModelScope.launch {
-            _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
                     api.getPageRaw(pageLabel = pageLabel).execute()
                 }
                 val rawBody = response.body()?.string() ?: ""
                 if (!response.isSuccessful()) {
-                    _error.value = "HTTP错误: ${response.code()}"
+                    _liveData.postValue(CategoryDetailState.ErrorState("HTTP错误: ${response.code()}"))
                     return@launch
                 }
                 if (rawBody.isEmpty()) {
-                    _error.value = "响应体为空"
+                    _liveData.postValue(CategoryDetailState.ErrorState("响应体为空"))
                     return@launch
                 }
 
                 val body = gson.fromJson(rawBody, GetPageResponse::class.java)
                 if (body?.code != 0) {
-                    _error.value = "接口返回错误: code=${body?.code}"
+                    _liveData.postValue(CategoryDetailState.ErrorState("接口返回错误: code=${body?.code}"))
                     return@launch
                 }
 
                 val result = body.result
                 if (result == null) {
-                    _error.value = "接口返回数据为空"
+                    _liveData.postValue(CategoryDetailState.ErrorState("接口返回数据为空"))
                     return@launch
                 }
 
                 val cardList = result.card_list
                 findTagInfo(cardList)
-
-                _error.value = null
             } catch (e: Exception) {
                 Log.e("CategoryDetail", "loadCategoryDetail failed", e)
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
+                _liveData.postValue(CategoryDetailState.ErrorState(e.message.toString()))
             }
         }
     }
@@ -130,6 +112,18 @@ class CategoryDetailViewModel : ViewModel() {
             }
         }
 
-        _tagInfo.value = TagInfo(desc, headerImage, stats, feedTabs)
+        _liveData.postValue(CategoryDetailState.RefreshState(TagInfo(desc, headerImage, stats, feedTabs)))
     }
+}
+
+data class TagInfo(
+    val description: String,
+    val headerImage: String,
+    val stats: String,
+    val feedPageLabels: List<Pair<String, String>> = emptyList()
+)
+
+sealed class CategoryDetailState {
+    data class RefreshState(val tagInfo: TagInfo) : CategoryDetailState()
+    data class ErrorState(val errorMsg: String) : CategoryDetailState()
 }

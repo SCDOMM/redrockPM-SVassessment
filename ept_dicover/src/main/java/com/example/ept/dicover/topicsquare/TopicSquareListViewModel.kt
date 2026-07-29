@@ -23,16 +23,13 @@ class TopicSquareListViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<UniversalApi>()
 
-    private val _topics = MutableLiveData<List<TopicSquareListItem>>()
-    val topics: LiveData<List<TopicSquareListItem>> = _topics
+    private val _liveData = MutableLiveData<TopicSquareListState>()
+    val liveData: LiveData<TopicSquareListState> get() = _liveData
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
-
-    private val _hasMore = MutableLiveData(true)
+    private var hasMore = true
 
     private var lastItemId: String = ""
     private var materialJSON: String = ""
@@ -44,11 +41,10 @@ class TopicSquareListViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val items = fetchTopics(pageLabel)
-                _topics.value = items
-                _error.value = null
+                _liveData.postValue(TopicSquareListState.RefreshState(items))
             } catch (e: Exception) {
                 Log.e("TopicSquareListVM", "loadTopics failed", e)
-                _error.value = e.message
+                _liveData.postValue(TopicSquareListState.ErrorState(e.message.toString()))
             } finally {
                 _isLoading.value = false
             }
@@ -56,17 +52,22 @@ class TopicSquareListViewModel : ViewModel() {
     }
 
     fun loadMore() {
-        if (_isLoading.value == true || _hasMore.value == false) return
+        if (_isLoading.value == true || !hasMore) return
         _isLoading.value = true
         viewModelScope.launch {
             try {
                 val newItems = fetchMoreTopics()
-                val current = _topics.value.orEmpty()
-                _topics.value = current + newItems
-                _error.value = null
+                val current = liveData.value.let {
+                    when (it) {
+                        is TopicSquareListState.RefreshState -> it.topics
+                        is TopicSquareListState.LoadingMoreState -> it.topics
+                        else -> emptyList()
+                    }
+                }
+                _liveData.postValue(TopicSquareListState.LoadingMoreState(current + newItems))
             } catch (e: Exception) {
                 Log.e("TopicSquareListVM", "loadMore failed", e)
-                _error.value = e.message
+                _liveData.postValue(TopicSquareListState.ErrorState(e.message.toString()))
             } finally {
                 _isLoading.value = false
             }
@@ -78,7 +79,7 @@ class TopicSquareListViewModel : ViewModel() {
         materialJSON = ""
         dataSource = ""
         pageLabelParam = ""
-        _hasMore.value = true
+        hasMore = true
         loadTopics(pageLabel)
     }
 
@@ -131,14 +132,14 @@ class TopicSquareListViewModel : ViewModel() {
                 lastItemId = result.lastItemId ?: ""
 
                 if (lastItemId.isEmpty() || result.itemList.isEmpty()) {
-                    _hasMore.postValue(false)
+                    hasMore = false
                 }
 
                 for (metro in result.itemList) {
                     parseTopicItem(metro)?.let { items.add(it) }
                 }
             } else {
-                _hasMore.postValue(false)
+                hasMore = false
             }
 
             items
@@ -175,4 +176,10 @@ class TopicSquareListViewModel : ViewModel() {
     companion object {
 
     }
+}
+
+sealed class TopicSquareListState {
+    data class RefreshState(val topics: List<TopicSquareListItem>) : TopicSquareListState()
+    data class LoadingMoreState(val topics: List<TopicSquareListItem>) : TopicSquareListState()
+    data class ErrorState(val errorMsg: String) : TopicSquareListState()
 }

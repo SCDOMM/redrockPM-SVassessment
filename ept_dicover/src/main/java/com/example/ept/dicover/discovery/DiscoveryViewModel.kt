@@ -26,21 +26,8 @@ class DiscoveryViewModel : ViewModel() {
 
     private val api = RetrofitClient.create<SpecficApi>()
 
-    private val _categories = MutableLiveData<List<DiscoverCategoryItem>>()
-    val categories: LiveData<List<DiscoverCategoryItem>> = _categories
-
-    private val _topics = MutableLiveData<List<TopicItem>>()
-    val topics: LiveData<List<TopicItem>> = _topics
-
-    private val _squareItems = MutableLiveData<List<TopicItem>>()
-    val squareItems: LiveData<List<TopicItem>> = _squareItems
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
-
+    private var _liveData = MutableLiveData<DiscoveryState>()
+    val liveData: LiveData<DiscoveryState> get() = _liveData
 
     var loaded = false
         private set
@@ -49,26 +36,25 @@ class DiscoveryViewModel : ViewModel() {
     fun refresh() {
         loaded = true
         viewModelScope.launch {
-            _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
                     api.getPageRaw(pageLabel = "discover_v2").execute()
                 }
                 if (!response.isSuccessful()) {
-                    _error.value = "HTTP错误: ${response.code()}"
+                    _liveData.postValue(DiscoveryState.ErrorState("HTTP错误: ${response.code()}"))
                     return@launch
                 }
                 val rawBody = response.body()?.string() ?: ""
                 val body = RetrofitClient.gson.fromJson(rawBody, GetPageResponse::class.java)
 
                 if (body?.code != 0) {
-                    _error.value = "接口返回错误: code=${body?.code}"
+                    _liveData.postValue(DiscoveryState.ErrorState("接口返回错误: code=${body?.code}"))
                     return@launch
                 }
 
                 val result = body?.result
                 if (result == null) {
-                    _error.value = "接口返回数据为空"
+                    _liveData.postValue(DiscoveryState.ErrorState("接口返回数据为空"))
                     return@launch
                 }
 
@@ -85,7 +71,6 @@ class DiscoveryViewModel : ViewModel() {
 
                     for (metro in metroList) {
                         val metroData = metro.metro_data ?: continue
-                        // 分类图标
                         val icons = metroData.icons
                         if (!icons.isNullOrEmpty()) {
                             for (iconItem in icons) {
@@ -101,11 +86,9 @@ class DiscoveryViewModel : ViewModel() {
                                 }
                             }
                         }
-                        // 主题播单
                         if (headerTitle == "主题播单" && metro.type == "image" && metroData.image_id > 0) {
                             topics.add(TopicItem(id = metroData.image_id, title = metroData.title ?: "", description = "", icon = metroData.cover?.url ?: "", actionUrl = metroData.link))
                         }
-                        // 话题广场
                         if (headerTitle == "话题广场" && !metroData.item_list.isNullOrEmpty()) {
                             for (item in metroData.item_list) {
                                 val id = item.image_id.toLongOrNull() ?: 0L
@@ -117,15 +100,10 @@ class DiscoveryViewModel : ViewModel() {
                     }
                 }
 
-                _categories.value = categories
-                _topics.value = topics
-                _squareItems.value = squareItems
-                _error.value = null
+                _liveData.postValue(DiscoveryState.RefreshState(categories, topics, squareItems))
             } catch (e: Exception) {
                 Log.e("DiscoveryViewModel", "refresh failed: ${e.javaClass.simpleName}: ${e.message}", e)
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
+                _liveData.postValue(DiscoveryState.ErrorState(e.message.toString()))
             }
         }
     }
@@ -143,4 +121,13 @@ class DiscoveryViewModel : ViewModel() {
             null
         }
     }
+}
+
+sealed class DiscoveryState {
+    data class RefreshState(
+        val categories: List<DiscoverCategoryItem>,
+        val topics: List<TopicItem>,
+        val squareItems: List<TopicItem>
+    ) : DiscoveryState()
+    data class ErrorState(val errorMsg: String) : DiscoveryState()
 }

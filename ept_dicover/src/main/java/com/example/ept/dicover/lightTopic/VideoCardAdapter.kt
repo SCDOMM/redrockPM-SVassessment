@@ -1,6 +1,5 @@
-package com.example.ept.dicover.adapter
+package com.example.ept.dicover.lightTopic
 
-import com.example.core.model.LightTopicPlaylistVideo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.core.model.LightTopicPlaylistVideo
 import com.example.ept.dicover.R
 
 /**
@@ -23,7 +23,6 @@ class VideoCardAdapter(
     private val onItemClick: (LightTopicPlaylistVideo) -> Unit = {}
 ) : ListAdapter<LightTopicPlaylistVideo, VideoCardAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    /** 视图持有者，持有视频卡片各控件引用 */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val authorIcon: ImageView = view.findViewById(R.id.iv_author_icon)
         val authorName: TextView = view.findViewById(R.id.tv_author_name)
@@ -33,14 +32,12 @@ class VideoCardAdapter(
         val duration: TextView = view.findViewById(R.id.tv_duration)
     }
 
-    /** 创建视图持有者 */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_video_card, parent, false)
         return ViewHolder(view)
     }
 
-    /** 绑定视图数据 */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
@@ -48,7 +45,7 @@ class VideoCardAdapter(
         holder.title.text = item.title
         holder.description.text = item.description
 
-        // 时长格式化 mm:ss
+        // 时长格式化
         val totalSeconds = item.duration.toInt()
         val minutes = totalSeconds / 60
         val seconds = totalSeconds % 60
@@ -69,7 +66,6 @@ class VideoCardAdapter(
         holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
-    /** DiffUtil 回调，用于列表差量更新 */
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LightTopicPlaylistVideo>() {
             override fun areItemsTheSame(old: LightTopicPlaylistVideo, new: LightTopicPlaylistVideo) = old.id == new.id

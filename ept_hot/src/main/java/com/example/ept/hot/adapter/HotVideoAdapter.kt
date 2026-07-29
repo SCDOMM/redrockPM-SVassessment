@@ -15,6 +15,11 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.core.model.Item
 import com.example.ept.hot.R
 
+/**
+ * description 热门排行榜页面 Adapter
+ * email : 3014386984@qq.com
+ * date : 2026/7/15 17:23
+ */
 data class VideoItem(
     val id: Long,
     val title: String,

@@ -19,10 +19,8 @@ import com.example.core.media.VideoPlayerActivity
 class CategoryFeedFragment : Fragment() {
 
     companion object {
-        /** 页面标签参数键 */
         private const val ARG_PAGE_LABEL = "page_label"
 
-        /** 创建新的 Fragment 实例 */
         fun newInstance(pageLabel: String): CategoryFeedFragment {
             return CategoryFeedFragment().apply {
                 arguments = Bundle().apply {
@@ -32,12 +30,11 @@ class CategoryFeedFragment : Fragment() {
         }
     }
 
-    /** 页面视图模型 */
     val viewModel: CategoryFeedViewModel by viewModels()
     private lateinit var adapter: CategoryDetailAdapter
     private var pageLabel = ""
+    var onRefreshComplete: (() -> Unit)? = null
 
-    /** 创建视图 */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +42,6 @@ class CategoryFeedFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_category_feed, container, false)
     }
 
-    /** 视图创建完成 */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -75,13 +71,19 @@ class CategoryFeedFragment : Fragment() {
         )
         rvFeed.adapter = adapter
 
-        viewModel.items.observe(viewLifecycleOwner) { list ->
-            adapter.submitList(list)
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
-            errorMsg?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        viewModel.liveData.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is FeedState.RefreshState -> {
+                    adapter.submitList(state.items)
+                    onRefreshComplete?.invoke()
+                }
+                is FeedState.LoadingMoreState -> {
+                    adapter.submitList(state.items)
+                }
+                is FeedState.ErrorState -> {
+                    Toast.makeText(requireContext(), state.errorMsg, Toast.LENGTH_SHORT).show()
+                    onRefreshComplete?.invoke()
+                }
             }
         }
 
@@ -99,7 +101,7 @@ class CategoryFeedFragment : Fragment() {
             }
         })
 
-        if (viewModel.items.value.isNullOrEmpty()) {
+        if (viewModel.liveData.value == null) {
             viewModel.loadFeed(pageLabel)
         }
     }

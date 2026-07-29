@@ -11,7 +11,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -28,12 +27,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 class CategoryDetailActivity : AppCompatActivity() {
 
     companion object {
-        /** 页面标签键 */
         const val EXTRA_PAGE_LABEL = "page_label"
-        /** 分类名称键 */
         const val EXTRA_CATEGORY_NAME = "category_name"
 
-        /** 启动分类详情页 */
         fun start(context: Context, pageLabel: String, categoryName: String) {
             val intent = Intent(context, CategoryDetailActivity::class.java).apply {
                 putExtra(EXTRA_PAGE_LABEL, pageLabel)
@@ -46,9 +42,7 @@ class CategoryDetailActivity : AppCompatActivity() {
     private lateinit var viewModel: CategoryDetailViewModel
     private var currentTabPosition = 0
     private val feedFragments = mutableMapOf<Int, CategoryFeedFragment>()
-    private var refreshObserver: Observer<Boolean>? = null
 
-    /** 页面创建 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -84,53 +78,50 @@ class CategoryDetailActivity : AppCompatActivity() {
             swipeRefresh.isEnabled = isExpanded
         }
 
-        // ViewPager2 页面切换
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 currentTabPosition = position
             }
         })
 
-        // 观察 header 信息
-        viewModel.tagInfo.observe(this) { info ->
-            if (info != null) {
-                if (info.description.isNotEmpty()) {
-                    tvDesc.text = info.description
-                }
-                if (info.stats.isNotEmpty()) {
-                    tvStats.text = info.stats
-                }
-                if (info.headerImage.isNotEmpty()) {
-                    Glide.with(this)
-                        .load(info.headerImage)
-                        .placeholder(android.R.color.darker_gray)
-                        .into(ivHeader)
-                }
-                // 设置 ViewPager2
-                if (info.feedPageLabels.isNotEmpty() && feedAdapter == null) {
-                    val feedPageLabels = info.feedPageLabels.map { it.second }
-                    val tabTitles = info.feedPageLabels.map { it.first }
-
-                    feedAdapter = object : FragmentStateAdapter(this) {
-                        override fun getItemCount() = feedPageLabels.size
-                        override fun createFragment(position: Int): Fragment {
-                            val fragment = CategoryFeedFragment.newInstance(feedPageLabels[position])
-                            feedFragments[position] = fragment
-                            return fragment
-                        }
+        viewModel.liveData.observe(this) { state ->
+            when (state) {
+                is CategoryDetailState.RefreshState -> {
+                    val info = state.tagInfo
+                    if (info.description.isNotEmpty()) {
+                        tvDesc.text = info.description
                     }
-                    viewPager.adapter = feedAdapter
+                    if (info.stats.isNotEmpty()) {
+                        tvStats.text = info.stats
+                    }
+                    if (info.headerImage.isNotEmpty()) {
+                        Glide.with(this)
+                            .load(info.headerImage)
+                            .placeholder(android.R.color.darker_gray)
+                            .into(ivHeader)
+                    }
+                    if (info.feedPageLabels.isNotEmpty() && feedAdapter == null) {
+                        val feedPageLabels = info.feedPageLabels.map { it.second }
+                        val tabTitles = info.feedPageLabels.map { it.first }
 
-                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                        tab.text = tabTitles[position]
-                    }.attach()
+                        feedAdapter = object : FragmentStateAdapter(this) {
+                            override fun getItemCount() = feedPageLabels.size
+                            override fun createFragment(position: Int): Fragment {
+                                val fragment = CategoryFeedFragment.newInstance(feedPageLabels[position])
+                                feedFragments[position] = fragment
+                                return fragment
+                            }
+                        }
+                        viewPager.adapter = feedAdapter
+
+                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                            tab.text = tabTitles[position]
+                        }.attach()
+                    }
                 }
-            }
-        }
-
-        viewModel.error.observe(this) { errorMsg ->
-            errorMsg?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                is CategoryDetailState.ErrorState -> {
+                    Toast.makeText(this, state.errorMsg, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -138,14 +129,7 @@ class CategoryDetailActivity : AppCompatActivity() {
         swipeRefresh.setOnRefreshListener {
             val currentFragment = feedFragments[currentTabPosition]
             if (currentFragment != null) {
-                // 移除旧的 observer 防止泄漏
-                refreshObserver?.let { currentFragment.viewModel.isLoading.removeObserver(it) }
-                refreshObserver = Observer<Boolean> { loading ->
-                    if (!loading) {
-                        swipeRefresh.isRefreshing = false
-                    }
-                }
-                currentFragment.viewModel.isLoading.observe(this, refreshObserver!!)
+                currentFragment.onRefreshComplete = { swipeRefresh.isRefreshing = false }
                 currentFragment.refresh()
             } else {
                 swipeRefresh.isRefreshing = false

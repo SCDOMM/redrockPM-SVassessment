@@ -26,11 +26,8 @@ class TopicDetailViewModel : ViewModel() {
     var loaded = false
         private set
 
-    private val _tagInfo = MutableLiveData<TopicTagInfo>()
-    val tagInfo: LiveData<TopicTagInfo> = _tagInfo
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private var _liveData = MutableLiveData<TopicDetailState>()
+    val liveData: LiveData<TopicDetailState> get() = _liveData
 
     fun loadDetail(pageLabel: String) {
         loaded = true
@@ -41,33 +38,32 @@ class TopicDetailViewModel : ViewModel() {
                 }
                 val rawBody = response.body()?.string() ?: ""
                 if (!response.isSuccessful()) {
-                    _error.value = "HTTP错误: ${response.code()}"
+                    _liveData.postValue(TopicDetailState.ErrorState("HTTP错误: ${response.code()}"))
                     return@launch
                 }
                 if (rawBody.isEmpty()) {
-                    _error.value = "响应体为空"
+                    _liveData.postValue(TopicDetailState.ErrorState("响应体为空"))
                     return@launch
                 }
 
                 val body = RetrofitClient.gson.fromJson(rawBody, GetPageResponse::class.java)
                 if (body?.code != 0) {
-                    _error.value = "加载失败: code=${body?.code}"
+                    _liveData.postValue(TopicDetailState.ErrorState("加载失败: code=${body?.code}"))
                     return@launch
                 }
 
                 val result = body?.result
                 if (result == null) {
-                    _error.value = "数据为空"
+                    _liveData.postValue(TopicDetailState.ErrorState("数据为空"))
                     return@launch
                 }
 
                 val info = parseTopicInfo(result.card_list)
-                _tagInfo.value = info
-                _error.value = null
+                _liveData.postValue(TopicDetailState.RefreshState(info))
                 Log.d("TopicDetailVM", "Loaded topic: ${info.title}")
             } catch (e: Exception) {
                 Log.e("TopicDetailVM", "loadDetail failed", e)
-                _error.value = e.message
+                _liveData.postValue(TopicDetailState.ErrorState(e.message.toString()))
             }
         }
     }
@@ -122,4 +118,9 @@ class TopicDetailViewModel : ViewModel() {
             feedPageLabels = feedTabs
         )
     }
+}
+
+sealed class TopicDetailState {
+    data class RefreshState(val tagInfo: TopicTagInfo) : TopicDetailState()
+    data class ErrorState(val errorMsg: String) : TopicDetailState()
 }

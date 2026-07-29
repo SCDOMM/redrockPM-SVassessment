@@ -31,14 +31,8 @@ class LightTopicListViewModel : ViewModel() {
     var loaded = false
         private set
 
-    private val _items = MutableLiveData<List<LightTopicItem>>()
-    val items: LiveData<List<LightTopicItem>> = _items
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private var _liveData = MutableLiveData<LightTopicListState>()
+    val liveData: LiveData<LightTopicListState> get() = _liveData
 
     private var lastItemId: String = ""
     private var cardListJson: String = ""
@@ -56,7 +50,6 @@ class LightTopicListViewModel : ViewModel() {
         hasMore = true
 
         viewModelScope.launch {
-            _isLoading.value = true
             try {
                 val response = withContext(Dispatchers.IO) {
                     api.getPageRaw(pageLabel = pageLabel).execute()
@@ -66,11 +59,11 @@ class LightTopicListViewModel : ViewModel() {
                 Log.d("LightTopicListVM", "RAW_LEN=${rawBody.length}")
 
                 if (!response.isSuccessful()) {
-                    _error.value = "HTTP错误: ${response.code()}"
+                    _liveData.postValue(LightTopicListState.ErrorState("HTTP错误: ${response.code()}"))
                     return@launch
                 }
                 if (rawBody.isEmpty()) {
-                    _error.value = "响应体为空"
+                    _liveData.postValue(LightTopicListState.ErrorState("响应体为空"))
                     return@launch
                 }
 
@@ -78,13 +71,13 @@ class LightTopicListViewModel : ViewModel() {
                 Log.d("LightTopicListVM", "Parsed code=${body?.code}, result=${body?.result != null}")
 
                 if (body?.code != 0) {
-                    _error.value = "加载失败: code=${body?.code}"
+                    _liveData.postValue(LightTopicListState.ErrorState("加载失败: code=${body?.code}"))
                     return@launch
                 }
 
                 val result = body?.result
                 if (result == null) {
-                    _error.value = "数据为空"
+                    _liveData.postValue(LightTopicListState.ErrorState("数据为空"))
                     return@launch
                 }
                 Log.d("LightTopicListVM", "card_list.size=${result.card_list.size}")
@@ -94,21 +87,16 @@ class LightTopicListViewModel : ViewModel() {
 
                 allItems.clear()
                 allItems.addAll(topicItems)
-                _items.value = allItems.toList()
 
-                // 提取 call_card_list 卡片中的分页参数
                 extractPaginationParams(result.card_list)
-                _error.value = null
+                _liveData.postValue(LightTopicListState.RefreshState(allItems.toList()))
             } catch (e: Exception) {
                 Log.e("LightTopicListVM", "loadTopics failed", e)
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
+                _liveData.postValue(LightTopicListState.ErrorState(e.message.toString()))
             }
         }
     }
 
-    /**提取分页参数 */
     private fun extractPaginationParams(cards: List<GetPageCard>) {
         val callCard = cards.firstOrNull { it.type == "call_card_list" }
         if (callCard != null) {
@@ -167,14 +155,12 @@ class LightTopicListViewModel : ViewModel() {
 
                 if (newTopics.isNotEmpty()) {
                     allItems.addAll(newTopics)
-                    _items.value = allItems.toList()
                 }
 
                 // 更新分页状态
                 val newLastItemId = result.lastItemId
                 if (newLastItemId.isNotEmpty() && newLastItemId != lastItemId) {
                     lastItemId = newLastItemId
-                    // 从新卡片中提取 call_card_list 的 card_list 参数
                     val callCard = newCards.firstOrNull { it.type == "call_card_list" }
                     if (callCard != null) {
                         val params = callCard.card_data?.body?.api_request?.params
@@ -193,6 +179,7 @@ class LightTopicListViewModel : ViewModel() {
                 if (newTopics.isEmpty() || newCards.isEmpty()) {
                     hasMore = false
                 }
+                _liveData.postValue(LightTopicListState.LoadingMoreState(allItems.toList()))
                 Log.d("LightTopicListVM", "loadMore done: totalItems=${allItems.size}, hasMore=$hasMore, lastItemId=$lastItemId")
             } catch (e: Exception) {
                 Log.e("LightTopicListVM", "loadMore failed", e)
@@ -254,4 +241,10 @@ class LightTopicListViewModel : ViewModel() {
             playUrl = metroData.play_url ?: ""
         )
     }
+}
+
+sealed class LightTopicListState {
+    data class RefreshState(val items: List<LightTopicItem>) : LightTopicListState()
+    data class LoadingMoreState(val items: List<LightTopicItem>) : LightTopicListState()
+    data class ErrorState(val errorMsg: String) : LightTopicListState()
 }
